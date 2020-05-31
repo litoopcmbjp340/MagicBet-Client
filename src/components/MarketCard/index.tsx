@@ -25,6 +25,8 @@ import {
 } from "@chakra-ui/core";
 
 import Info from "components/Modals/Info";
+import Chart from "./Chart";
+import NewChart from "./NewChart";
 
 import { shortenAddress } from "utils";
 import dynamic from "next/dynamic";
@@ -65,6 +67,7 @@ const SelectCurrency = styled.select`
 const MarketCard = ({ marketContract, daiContract }: any) => {
   const { active, account, library } = useWeb3React<Web3Provider>();
   const toast = useToast();
+  const Chart = dynamic(() => import("./Chart"));
 
   const [amountToBet, setAmountToBet] = useState<number>(0);
   const [accruedInterest, setAccruedInterest] = useState<number>(0);
@@ -255,8 +258,6 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
     }
   };
 
-  const Chart = dynamic(() => import("./Chart"));
-
   return !prompt ? null : (
     <>
       <Box
@@ -313,10 +314,11 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
         </Heading>
         <Flex justifyContent="center" margin="0">
           <Box width="75%">
-            {/* <Chart
+            <Chart
               marketContract={marketContract}
               forceRerender={forceRerender}
-            /> */}
+            />
+            <NewChart marketContract={marketContract} />
           </Box>
           {active && (
             <Form onSubmit={placeBet}>

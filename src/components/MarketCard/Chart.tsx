@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import styled from "@emotion/styled";
 import ReactApexChart from "react-apexcharts";
 import { utils } from "ethers";
 import { Box } from "@chakra-ui/core";
@@ -142,12 +141,6 @@ const Apex = ({ marketContract, forceRerender }: IApex) => {
       });
 
       //!Biden
-      // start ...83420
-      // period1 ...83420 - 83480
-      // period2 ...83480 - 83540
-      // period3 ...83540 - 83600 (83552)
-      // period4 ...83600 - 83660 (83628)
-      // period5 ...83660 - 83720
       let totalBidenBettingPeriod1 = 0;
       let totalBidenBettingPeriod2 = 0;
       let totalBidenBettingPeriod3 = 0;
