@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { utils } from "ethers";
-import { Box } from "@chakra-ui/core";
+import { Box, Flex } from "@chakra-ui/core";
 import {
   LineChart,
   Line,
@@ -88,7 +88,6 @@ export default function Chart({ marketContract }: any) {
         }
 
         let outcomeBetsAndTimestamp = await getBetsAndTimestamps();
-        console.log("outcomeBetsAndTimestamp:", outcomeBetsAndTimestamp);
 
         //!CHART
         const start = await marketContract.marketOpeningTimeActual();
@@ -142,25 +141,27 @@ export default function Chart({ marketContract }: any) {
 const Graph = ({ data }: any) => {
   return (
     <Box mt="3rem">
-      <LineChart
-        width={600}
-        height={300}
-        data={data}
-        margin={{
-          top: 5,
-          right: 30,
-          left: 20,
-          bottom: 5,
-        }}
-      >
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="name" />
-        <YAxis />
-        <Tooltip />
-        <Legend />
-        <Line type="monotone" dataKey="Biden" stroke="#0015BC" />
-        <Line type="monotone" dataKey="Trump" stroke="#FF0000" />
-      </LineChart>
+      <Flex justifyContent="center">
+        <LineChart
+          width={600}
+          height={300}
+          data={data}
+          margin={{
+            top: 5,
+            right: 30,
+            left: 20,
+            bottom: 5,
+          }}
+        >
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="name" />
+          <YAxis />
+          <Tooltip />
+          <Legend />
+          <Line type="monotone" dataKey="Biden" stroke="#0015BC" />
+          <Line type="monotone" dataKey="Trump" stroke="#FF0000" />
+        </LineChart>
+      </Flex>
     </Box>
   );
 };

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import styled from "@emotion/styled";
-import { Flex, Box } from "@chakra-ui/core";
+import { Flex, Box, Heading } from "@chakra-ui/core";
 
 import { useContract } from "utils/hooks";
 import Market from "./Market";
@@ -69,13 +69,31 @@ const Markets = () => {
 
   return (
     <>
-      <Box backgroundColor="gray.100" margin="0" padding="1rem">
+      <Box
+        backgroundColor="white.100"
+        borderTopWidth="1px"
+        borderBottomWidth="1px"
+        boxShadow="0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)"
+        borderRadius="0.25rem"
+        paddingBottom="1rem"
+      >
         <Flex
           flexDirection="column"
           flexWrap="wrap"
           margin="0 auto"
           width="100%"
+          justifyContent="space-between"
+          padding="1rem 1.5rem"
         >
+          <Heading
+            as="h3"
+            size="lg"
+            fontSize="1.5rem"
+            font-weight="500"
+            color="black.100"
+          >
+            Markets
+          </Heading>
           <Flex flex="1" justifyContent="spaceBetween" margin="0">
             <ActiveMarket>ActiveMarket 1</ActiveMarket>
             <ActiveMarket>ActiveMarket 2</ActiveMarket>

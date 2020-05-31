@@ -306,7 +306,7 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
           {prompt}
         </Heading>
         <Flex justifyContent="center" margin="0">
-          <Box width="75%">
+          <Box width="60%">
             <Chart marketContract={marketContract} />
           </Box>
           {active && (

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { AbstractConnector } from "@web3-react/abstract-connector";
 import { useWeb3React } from "@web3-react/core";
-// import { Box as ThreeBox } from "3box";
+import Box from "3box";
 import styled from "@emotion/styled";
 import {
   Flex,
@@ -10,9 +10,8 @@ import {
   Icon,
   Text,
   Link,
-  Box,
-  IconButton,
-  useColorMode,
+  Avatar,
+  Box as ChakraBox,
 } from "@chakra-ui/core";
 
 import { useEagerConnect, useInactiveListener } from "utils/hooks";
@@ -25,7 +24,6 @@ const Header = () => {
 
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
   const [image, setImage] = useState<any>();
-  const { colorMode, toggleColorMode } = useColorMode();
 
   const [activatingConnector, setActivatingConnector] = useState<
     AbstractConnector
@@ -57,21 +55,21 @@ const Header = () => {
     </Text>
   );
 
-  // useEffect(() => {
-  //   (async () => {
-  //     if (active) {
-  //       try {
-  //         const profile = await ThreeBox.getProfile(account);
-  //         if (profile.image) {
-  //           let image = profile.image[0]["contentUrl"]["/"];
-  //           setImage(image);
-  //         }
-  //       } catch (error) {
-  //         console.error(error);
-  //       }
-  //     }
-  //   })();
-  // }, [active, account]);
+  useEffect(() => {
+    (async () => {
+      if (active) {
+        try {
+          const profile = await Box.getProfile(account);
+          if (profile.image) {
+            let image = profile.image[0]["contentUrl"]["/"];
+            setImage(image);
+          }
+        } catch (error) {
+          console.error(error);
+        }
+      }
+    })();
+  }, [active, account]);
 
   const Image = styled.img`
     display: inline-block;
@@ -107,7 +105,7 @@ const Header = () => {
           >
             🎩
           </span>
-          <Heading as="h1" size="lg">
+          <Heading as="h1" size="xl">
             MagicBet
           </Heading>
         </Flex>
@@ -139,10 +137,7 @@ const Header = () => {
             <>
               {account !== null && (
                 <>
-                  {image ? (
-                    <>
-                      {console.log("image:", image)}
-                      <Button
+                  {/* <Button
                         backgroundColor="Transparent"
                         backgroundRepeat="no-repeat"
                         border="none"
@@ -154,10 +149,8 @@ const Header = () => {
                           src={`https://ipfs.infura.io/ipfs/${image}`}
                           alt="3Box profile picture"
                         />
-                      </Button>
-                    </>
-                  ) : (
-                    <Button
+                      </Button> */}
+                  {/* <Button
                       backgroundColor="red.100"
                       border="1px"
                       borderRadius="4px"
@@ -172,8 +165,28 @@ const Header = () => {
                       onClick={() => deactivate()}
                     >
                       {shortenAddress(account)}
-                    </Button>
+                    </Button> */}
+
+                  {image ? (
+                    <Avatar
+                      size="md"
+                      name="Profile"
+                      showBorder
+                      src={`https://ipfs.infura.io/ipfs/${image}`}
+                    />
+                  ) : (
+                    <Avatar showBorder src="https://bit.ly/broken-link" />
                   )}
+                  <Button
+                    backgroundColor="red.100"
+                    aria-label="LogOut"
+                    marginLeft="1rem"
+                    size="lg"
+                    onClick={() => deactivate()}
+                    padding="0"
+                  >
+                    <Icon name="power" color="white.200" size="1.5rem" />
+                  </Button>
                 </>
               )}
             </>
@@ -199,7 +212,7 @@ const Header = () => {
             </Button>
           )}
           {active && (
-            <Box
+            <ChakraBox
               display={{ sm: "block", md: "none" }}
               onClick={() => setIsExpanded(!isExpanded)}
               padding="0.625rem"
@@ -209,19 +222,19 @@ const Header = () => {
               ) : (
                 <Icon name="menuIconClosed" size="32px" color="white.100" />
               )}
-            </Box>
+            </ChakraBox>
           )}
         </Flex>
       </Flex>
       {isExpanded && (
-        <Box
+        <ChakraBox
           height="auto"
           width="100%"
           position="absolute"
           backgroundColor="white.100"
           display={{ sm: "block", md: "none" }}
         >
-          <Box
+          <ChakraBox
             margin="0"
             padding="0"
             borderBottom="1px solid rgba(0, 0, 0, 0.8)"
@@ -259,8 +272,8 @@ const Header = () => {
                 Account
               </Link>
             </MenuItem>
-          </Box>
-        </Box>
+          </ChakraBox>
+        </ChakraBox>
       )}
     </>
   );

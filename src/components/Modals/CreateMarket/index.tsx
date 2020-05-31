@@ -88,17 +88,15 @@ const CreateMarket = ({ isOpen, onClose }: ICreateMarketModal) => {
       OUTCOMES
     );
     await tx.wait();
+
     setLoading(false);
-    // close;
+    isOpen = false;
   };
 
   function validateMarketEventName(value: any) {
     let error;
-    if (!value) {
-      error = "Name is required";
-    } else if (value !== "Naruto") {
-      error = "Jeez! You're not a fan 😱";
-    }
+    if (!value) error = "Market Event Name is required";
+
     return error || true;
   }
 
@@ -118,11 +116,7 @@ const CreateMarket = ({ isOpen, onClose }: ICreateMarketModal) => {
               <ModalCloseButton />
               <ModalBody>
                 <form onSubmit={createMarket}>
-                  <FormControl
-                    width="100%"
-                    marginBottom="1rem"
-                    isInvalid={errors.name}
-                  >
+                  <FormControl marginBottom="1rem" isInvalid={errors.name}>
                     <FormLabel color="#777" htmlFor="marketEventName">
                       Market Event Name
                     </FormLabel>
@@ -130,6 +124,7 @@ const CreateMarket = ({ isOpen, onClose }: ICreateMarketModal) => {
                       borderColor="gray.100"
                       name="marketEventName"
                       type="text"
+                      isRequired
                       placeholder={marketEventName}
                       value={marketEventName}
                       ref={register({ validate: validateMarketEventName })}
@@ -140,7 +135,7 @@ const CreateMarket = ({ isOpen, onClose }: ICreateMarketModal) => {
                     </FormErrorMessage>
                   </FormControl>
 
-                  <FormControl width="100%" marginBottom="1rem">
+                  <FormControl marginBottom="1rem">
                     <FormLabel color="#777" htmlFor="realitioQuestion">
                       Realit.io Question
                     </FormLabel>
@@ -148,11 +143,12 @@ const CreateMarket = ({ isOpen, onClose }: ICreateMarketModal) => {
                       borderColor="gray.100"
                       name="realitioQuestion"
                       type="text"
+                      isRequired
                       value={realitioQuestion}
                       onChange={(e: any) => setRealitioQuestion(e.target.value)}
                     />
                   </FormControl>
-                  <FormControl width="100%" marginBottom="1rem">
+                  <FormControl marginBottom="1rem">
                     <FormLabel color="#777" htmlFor="arbitrator">
                       Arbitrator
                     </FormLabel>
@@ -160,12 +156,13 @@ const CreateMarket = ({ isOpen, onClose }: ICreateMarketModal) => {
                       borderColor="gray.100"
                       name="arbitrator"
                       type="text"
+                      isRequired
                       value={arbitrator}
                       onChange={(e: any) => setArbitrator(e.target.value)}
                     />
                   </FormControl>
                   <Flex width="100%" marginBottom="1rem">
-                    <FormControl>
+                    <FormControl marginRight="0.5rem">
                       <FormLabel color="#777" htmlFor="marketOpeningTime">
                         Opening
                       </FormLabel>
@@ -173,13 +170,14 @@ const CreateMarket = ({ isOpen, onClose }: ICreateMarketModal) => {
                         borderColor="gray.100"
                         name="marketOpeningTime"
                         type="number"
+                        isRequired
                         value={marketOpeningTime}
                         onChange={(e: any) =>
                           setMarketOpeningTime(e.target.value)
                         }
                       />
                     </FormControl>
-                    <FormControl>
+                    <FormControl marginRight="0.5rem">
                       <FormLabel color="#777" htmlFor="marketLockingTime">
                         Locking
                       </FormLabel>
@@ -187,13 +185,14 @@ const CreateMarket = ({ isOpen, onClose }: ICreateMarketModal) => {
                         borderColor="gray.100"
                         name="marketLockingTime"
                         type="number"
+                        isRequired
                         value={marketLockingTime}
                         onChange={(e: any) =>
                           setMarketLockingTime(e.target.value)
                         }
                       />
                     </FormControl>
-                    <FormControl>
+                    <FormControl marginRight="0.5rem">
                       <FormLabel color="#777" htmlFor="marketResolutionTime">
                         Resolution
                       </FormLabel>
@@ -201,13 +200,16 @@ const CreateMarket = ({ isOpen, onClose }: ICreateMarketModal) => {
                         borderColor="gray.100"
                         name="marketResolutionTime"
                         type="number"
+                        isRequired
                         value={marketResolutionTime}
                         onChange={(e: any) =>
                           setMarketResolutionTime(e.target.value)
                         }
                       />
                     </FormControl>
-                    <FormControl>
+                  </Flex>
+                  <Flex width="100%" marginBottom="1rem">
+                    <FormControl width="25%" marginRight="0.5rem">
                       <FormLabel color="#777" htmlFor="timeout">
                         Timeout
                       </FormLabel>
@@ -215,25 +217,26 @@ const CreateMarket = ({ isOpen, onClose }: ICreateMarketModal) => {
                         borderColor="gray.100"
                         name="timeout"
                         type="number"
+                        isRequired
                         value={timeout}
                         onChange={(e: any) => setTimeout(e.target.value)}
                       />
                     </FormControl>
+                    <FormControl width="75%">
+                      <FormLabel color="#777" htmlFor="tokens">
+                        Outcomes
+                      </FormLabel>
+                      <Input
+                        borderColor="gray.100"
+                        type="text"
+                        name="tokens"
+                        isRequired
+                        placeholder="Token"
+                        value={outcomes}
+                        onChange={(e: any) => setOutcomes(e.target.value)}
+                      />
+                    </FormControl>
                   </Flex>
-                  <FormControl marginBottom="1rem">
-                    <FormLabel color="#777" htmlFor="tokens">
-                      Outcomes
-                    </FormLabel>
-                    <Input
-                      borderColor="gray.100"
-                      type="text"
-                      name="tokens"
-                      placeholder="Token"
-                      isReadOnly
-                      value={outcomes}
-                    />
-                  </FormControl>
-
                   <Button
                     backgroundColor="black.100"
                     borderRadius="0.33rem"

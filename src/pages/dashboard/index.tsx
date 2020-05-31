@@ -17,6 +17,7 @@ import {
   Switch,
   Button,
   useDisclosure,
+  IconButton,
   FormLabel,
   Tooltip,
 } from "@chakra-ui/core";
@@ -144,7 +145,9 @@ const Dashboard = () => {
           )}
 
           {active && (
-            <Button
+            <IconButton
+              aria-label="market info"
+              icon="add"
               position="fixed"
               cursor="pointer"
               bottom="0"
@@ -152,12 +155,11 @@ const Dashboard = () => {
               borderRadius="0.25rem"
               alignItems="center"
               fontWeight="700"
-              backgroundColor="white.100"
+              color="white.100"
+              backgroundColor="red.100"
               margin="2rem"
               onClick={() => mintDai(wallet)}
-            >
-              <img src={DaiIcon} alt="Dai Icon" />
-            </Button>
+            />
           )}
         </Flex>
       </Box>
