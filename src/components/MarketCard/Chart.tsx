@@ -1,270 +1,166 @@
 import React, { useState, useEffect } from "react";
-import ReactApexChart from "react-apexcharts";
 import { utils } from "ethers";
 import { Box } from "@chakra-ui/core";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+} from "recharts";
 
-interface IApex {
-  marketContract: any;
-  forceRerender: boolean;
-}
-
-const Apex = ({ marketContract, forceRerender }: IApex) => {
-  const [painted, setPainted] = useState(false);
-  const [TrumpBettingPeriod1, setTrumpBettingPeriod1] = useState<number>(0);
-  const [TrumpBettingPeriod2, setTrumpBettingPeriod2] = useState<number>(0);
-  const [TrumpBettingPeriod3, setTrumpBettingPeriod3] = useState<number>(0);
-  const [TrumpBettingPeriod4, setTrumpBettingPeriod4] = useState<number>(0);
-  const [TrumpBettingPeriod5, setTrumpBettingPeriod5] = useState<number>(0);
-  const [BidenBettingPeriod1, setBidenBettingPeriod1] = useState<number>(0);
-  const [BidenBettingPeriod2, setBidenBettingPeriod2] = useState<number>(0);
-  const [BidenBettingPeriod3, setBidenBettingPeriod3] = useState<number>(0);
-  const [BidenBettingPeriod4, setBidenBettingPeriod4] = useState<number>(0);
-  const [BidenBettingPeriod5, setBidenBettingPeriod5] = useState<number>(0);
-
-  if (forceRerender) {
-    console.log({ forceRerender });
-  }
+export default function Chart({ marketContract }: any) {
+  const [data, setData] = useState<any>([]);
 
   useEffect(() => {
     (async () => {
-      //!BETS
-      //!Trump
-      let betsForTrump: string[] = [];
-      let amountOfBetsForTrump = await marketContract.getBetAmountsArray(0);
-      amountOfBetsForTrump.forEach((bet: any) => {
-        let formattedBets = utils.formatEther(bet.toString());
-        betsForTrump.push(formattedBets);
-      });
+      let numberOfOutcomes = await marketContract.numberOfOutcomes();
+      let outcomeName: any;
+      let newData1 = {
+        name: "0 min",
+      };
 
-      //!Biden
-      let betsForBiden: string[] = [];
-      let amountOfBetsForBiden = await marketContract.getBetAmountsArray(1);
-      amountOfBetsForBiden.forEach((bet: any) => {
-        let formattedBet = utils.formatEther(bet.toString());
-        betsForBiden.push(formattedBet);
-      });
+      let newData2 = {
+        name: "1 min",
+      };
 
-      //!TIMESTAMP
-      //!Trump
-      let timestampsForTrump: string[] = [];
-      let betTimestampsOnTrump = await marketContract.getTimestampsArray(0);
-      betTimestampsOnTrump.forEach((timestamp: any) => {
-        let formattedTimestamp = timestamp.toString();
-        timestampsForTrump.push(formattedTimestamp);
-      });
+      let newData3 = {
+        name: "2 min",
+      };
 
-      //!Biden
-      let timestampsForBiden: string[] = [];
-      let betTimestampsOnBidem = await marketContract.getTimestampsArray(1);
-      betTimestampsOnBidem.forEach((timestamp: any) => {
-        let formattedTimestamp = timestamp.toString();
-        timestampsForBiden.push(formattedTimestamp);
-      });
+      let newData4 = {
+        name: "3 min",
+      };
 
-      //! Combine
-      interface IBetsAndTimestamps {
-        id: number;
-        amount: number;
-        timestamp: number;
-      }
-      //!Trump
-      let trumpBetsAndTimestamp: IBetsAndTimestamps[] = [];
-      for (let i = 0; i < timestampsForTrump.length; i++) {
-        let id = i;
-        let amount = betsForTrump[i];
-        let timestamp = timestampsForTrump[i];
-        let newBetAndTimestamp = {
-          id: id,
-          amount: parseInt(amount),
-          timestamp: parseInt(timestamp),
-        };
+      let newData5 = {
+        name: "4 min",
+      };
 
-        trumpBetsAndTimestamp.push(newBetAndTimestamp);
-      }
+      for (let i = 0; i < numberOfOutcomes; i++) {
+        outcomeName = await marketContract.outcomeNames(i);
+        let pair = { [outcomeName]: 0 };
+        newData1 = { ...newData1, ...pair };
+        newData2 = { ...newData2, ...pair };
+        newData3 = { ...newData3, ...pair };
+        newData4 = { ...newData4, ...pair };
+        newData5 = { ...newData5, ...pair };
 
-      //!Biden
-      let bidenBetsAndTimestamp: IBetsAndTimestamps[] = [];
-      for (let i = 0; i < timestampsForBiden.length; i++) {
-        let id = i;
-        let amount = betsForBiden[i];
-        let timestamp = timestampsForBiden[i];
-        let newBetAndTimestamp = {
-          id: id,
-          amount: parseInt(amount),
-          timestamp: parseInt(timestamp),
-        };
-        bidenBetsAndTimestamp.push(newBetAndTimestamp);
-      }
+        async function getBetsAndTimestamps() {
+          let betsForOutcome: string[] = [];
+          let amountOfBetsForOutcome = await marketContract.getBetAmountsArray(
+            i
+          );
+          amountOfBetsForOutcome.forEach((bet: any) => {
+            let formattedBets = utils.formatEther(bet.toString());
+            betsForOutcome.push(formattedBets);
+          });
+          let timestampsForOutcome: string[] = [];
+          let betTimestampsOnOutcome = await marketContract.getTimestampsArray(
+            i
+          );
+          betTimestampsOnOutcome.forEach((timestamp: any) => {
+            let formattedTimestamp = timestamp.toString();
+            timestampsForOutcome.push(formattedTimestamp);
+          });
 
-      //!CHART
-      const start = await marketContract.marketOpeningTimeActual();
-      const startPeriod = start.toNumber();
+          //!Combine
+          interface IBetsAndTimestamps {
+            id: number;
+            amount: number;
+            timestamp: number;
+          }
+          let outcomeBetsAndTimestamp: IBetsAndTimestamps[] = [];
+          for (let i = 0; i < 5; i++) {
+            let id = i;
+            let amount = betsForOutcome[i];
+            let timestamp = timestampsForOutcome[i];
+            let newBetAndTimestamp = {
+              id: id,
+              amount: parseInt(amount),
+              timestamp: parseInt(timestamp),
+            };
 
-      //!Trump
-      let totalTrumpBettingPeriod1 = 0;
-      let totalTrumpBettingPeriod2 = 0;
-      let totalTrumpBettingPeriod3 = 0;
-      let totalTrumpBettingPeriod4 = 0;
-      let totalTrumpBettingPeriod5 = 0;
-      trumpBetsAndTimestamp.forEach((item: any) => {
-        if (startPeriod < item.timestamp && item.timestamp < startPeriod + 60) {
-          totalTrumpBettingPeriod1 = totalTrumpBettingPeriod1 + item.amount;
-        } else if (
-          startPeriod + 60 < item.timestamp &&
-          item.timestamp < startPeriod + 120
-        ) {
-          totalTrumpBettingPeriod2 = totalTrumpBettingPeriod2 + item.amount;
-        } else if (
-          startPeriod + 120 < item.timestamp &&
-          item.timestamp < startPeriod + 180
-        ) {
-          totalTrumpBettingPeriod3 = totalTrumpBettingPeriod3 + item.amount;
-        } else if (
-          startPeriod + 180 < item.timestamp &&
-          item.timestamp < startPeriod + 240
-        ) {
-          totalTrumpBettingPeriod4 = totalTrumpBettingPeriod4 + item.amount;
-        } else if (
-          startPeriod + 240 < item.timestamp &&
-          item.timestamp < startPeriod + 300
-        ) {
-          totalTrumpBettingPeriod5 = totalTrumpBettingPeriod5 + item.amount;
-        } else {
-          console.log("Transaction Timestamp Extends Charts X-Axis...");
+            outcomeBetsAndTimestamp.push(newBetAndTimestamp);
+          }
+          return outcomeBetsAndTimestamp;
         }
 
-        setTrumpBettingPeriod1(totalTrumpBettingPeriod1);
-        setTrumpBettingPeriod2(totalTrumpBettingPeriod2);
-        setTrumpBettingPeriod3(totalTrumpBettingPeriod3);
-        setTrumpBettingPeriod4(totalTrumpBettingPeriod4);
-        setTrumpBettingPeriod5(totalTrumpBettingPeriod5);
-      });
+        let outcomeBetsAndTimestamp = await getBetsAndTimestamps();
+        console.log("outcomeBetsAndTimestamp:", outcomeBetsAndTimestamp);
 
-      //!Biden
-      let totalBidenBettingPeriod1 = 0;
-      let totalBidenBettingPeriod2 = 0;
-      let totalBidenBettingPeriod3 = 0;
-      let totalBidenBettingPeriod4 = 0;
-      let totalBidenBettingPeriod5 = 0;
-      bidenBetsAndTimestamp.forEach((item: any) => {
-        if (startPeriod < item.timestamp && item.timestamp < startPeriod + 60) {
-          totalBidenBettingPeriod1 = totalBidenBettingPeriod1 + item.amount;
-        } else if (
-          startPeriod + 60 < item.timestamp ||
-          item.timestamp < startPeriod + 120
-        ) {
-          totalBidenBettingPeriod2 = totalBidenBettingPeriod2 + item.amount;
-        } else if (
-          startPeriod + 120 < item.timestamp ||
-          item.timestamp < startPeriod + 180
-        ) {
-          totalBidenBettingPeriod3 = totalBidenBettingPeriod3 + item.amount;
-        } else if (
-          startPeriod + 180 < item.timestamp &&
-          item.timestamp < startPeriod + 240
-        ) {
-          totalBidenBettingPeriod4 = totalBidenBettingPeriod4 + item.amount;
-        } else if (
-          startPeriod + 240 < item.timestamp &&
-          item.timestamp < startPeriod + 300
-        ) {
-          totalBidenBettingPeriod5 = totalBidenBettingPeriod5 + item.amount;
-        } else {
-          console.log("Transaction Timestamp Extends Charts X-Axis...");
-        }
+        //!CHART
+        const start = await marketContract.marketOpeningTimeActual();
+        const startPeriod = start.toNumber();
 
-        setBidenBettingPeriod1(totalBidenBettingPeriod1);
-        setBidenBettingPeriod2(totalBidenBettingPeriod2);
-        setBidenBettingPeriod3(totalBidenBettingPeriod3);
-        setBidenBettingPeriod4(totalBidenBettingPeriod4);
-        setBidenBettingPeriod5(totalBidenBettingPeriod5);
-      });
-      setPainted(true);
+        // eslint-disable-next-line no-loop-func
+        outcomeBetsAndTimestamp.forEach((item: any) => {
+          if (
+            startPeriod < item.timestamp &&
+            item.timestamp < startPeriod + 60
+          ) {
+            //@ts-ignore
+            newData1[outcomeName] = newData1[outcomeName] + item.amount;
+          } else if (
+            startPeriod + 60 < item.timestamp &&
+            item.timestamp < startPeriod + 120
+          ) {
+            //@ts-ignore
+            newData2[outcomeName] = newData2[outcomeName] + item.amount;
+          } else if (
+            startPeriod + 120 < item.timestamp &&
+            item.timestamp < startPeriod + 180
+          ) {
+            //@ts-ignore
+            newData3[outcomeName] = newData3[outcomeName] + item.amount;
+          } else if (
+            startPeriod + 180 < item.timestamp &&
+            item.timestamp < startPeriod + 240
+          ) {
+            //@ts-ignore
+            newData4[outcomeName] = newData4[outcomeName] + item.amount;
+          } else if (
+            startPeriod + 240 < item.timestamp &&
+            item.timestamp < startPeriod + 300
+          ) {
+            //@ts-ignore
+            newData5[outcomeName] = newData5[outcomeName] + item.amount;
+          } else {
+            console.log("Transaction Timestamp Extends Charts X-Axis...");
+          }
+        });
+        setData([newData1, newData2, newData3, newData4, newData5]);
+      }
     })();
-  }, [marketContract, forceRerender]);
+    //eslint-disable-next-line
+  }, [marketContract]);
 
-  let series = [
-    {
-      name: "Donald Trump",
-      data: [
-        TrumpBettingPeriod1,
-        TrumpBettingPeriod2,
-        TrumpBettingPeriod3,
-        TrumpBettingPeriod4,
-        TrumpBettingPeriod5,
-      ],
-    },
-    {
-      name: "Joe Biden",
-      data: [
-        BidenBettingPeriod1,
-        BidenBettingPeriod2,
-        BidenBettingPeriod3,
-        BidenBettingPeriod4,
-        BidenBettingPeriod5,
-      ],
-    },
-  ];
+  return <Graph data={data} />;
+}
 
-  const [options] = useState({
-    chart: {
-      width: 5,
-      type: "line",
-      dropShadow: {
-        enabled: true,
-        color: "#000",
-        top: 18,
-        left: 7,
-        blur: 10,
-        opacity: 0.2,
-      },
-      toolbar: {
-        show: false,
-      },
-    },
-    colors: ["#FF0000", "#0015BC"],
-    dataLabels: {
-      enabled: true,
-    },
-    stroke: {
-      curve: "smooth",
-    },
-    grid: {
-      borderColor: "#e7e7e7",
-      row: {
-        colors: ["#f3f3f3", "transparent"], // takes an array which will be repeated on columns
-        opacity: 0.5,
-      },
-    },
-    markers: {
-      size: 1,
-    },
-    xaxis: {
-      categories: ["0 min", "1 min", "2 min", "3 min", "4 min"],
-    },
-    yaxis: {
-      min: 0,
-      max: 25,
-    },
-    legend: {
-      show: true,
-      position: "top",
-      horizontalAlign: "left",
-      floating: true,
-      offsetY: -5,
-    },
-  });
-
-  return !painted ? null : (
-    <Box margin="3rem">
-      <ReactApexChart
-        options={options}
-        series={series}
-        type="line"
-        height={350}
-      />
+const Graph = ({ data }: any) => {
+  return (
+    <Box mt="3rem">
+      <LineChart
+        width={600}
+        height={300}
+        data={data}
+        margin={{
+          top: 5,
+          right: 30,
+          left: 20,
+          bottom: 5,
+        }}
+      >
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis dataKey="name" />
+        <YAxis />
+        <Tooltip />
+        <Legend />
+        <Line type="monotone" dataKey="Biden" stroke="#0015BC" />
+        <Line type="monotone" dataKey="Trump" stroke="#FF0000" />
+      </LineChart>
     </Box>
   );
 };
-
-export default Apex;

@@ -43,10 +43,16 @@ const CreateMarket = ({ isOpen, onClose }: ICreateMarketModal) => {
   const [marketEventName, setMarketEventName] = useState<string>(
     "Who will win the 2020 US General Election?"
   );
-  const [marketOpeningTime, setMarketOpeningTime] = useState<number>(0);
-  const [marketLockingTime, setMarketLockingTime] = useState<number>(0);
-  const [marketResolutionTime, setMarketResolutionTime] = useState<any>(0);
-  const [timeout, setTimeout] = useState<number>(40);
+  const [marketOpeningTime, setMarketOpeningTime] = useState<number>(
+    1590480640
+  );
+  const [marketLockingTime, setMarketLockingTime] = useState<number>(
+    1590480640
+  );
+  const [marketResolutionTime, setMarketResolutionTime] = useState<any>(
+    1590480640
+  );
+  const [timeout, setTimeout] = useState<number>(10);
   const [arbitrator, setArbitrator] = useState<string>(
     "0xd47f72a2d1d0E91b0Ec5e5f5d02B2dc26d00A14D"
   );

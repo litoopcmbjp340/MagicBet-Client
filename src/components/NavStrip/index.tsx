@@ -1,10 +1,6 @@
 import React from "react";
 
 import Link from "next/link";
-import Dashboard from "assets/dashboard.svg";
-import Markets from "assets/Markets.svg";
-import Account from "assets/Account.svg";
-import styled from "@emotion/styled";
 import { Flex, Box, Icon, Link as ChakraLink } from "@chakra-ui/core";
 
 const NavStrip = () => {

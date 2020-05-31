@@ -15,24 +15,17 @@ import {
   Button,
   Text,
   Select,
-  NumberInput,
-  NumberInputField,
-  NumberInputStepper,
-  NumberIncrementStepper,
-  NumberDecrementStepper,
   useDisclosure,
   useToast,
 } from "@chakra-ui/core";
 
 import Info from "components/Modals/Info";
 import Chart from "./Chart";
-import NewChart from "./NewChart";
 
 import { shortenAddress } from "utils";
 import dynamic from "next/dynamic";
 
 import styled from "@emotion/styled";
-import { info } from "console";
 
 const Form = styled.form`
   width: 25%;
@@ -67,7 +60,7 @@ const SelectCurrency = styled.select`
 const MarketCard = ({ marketContract, daiContract }: any) => {
   const { active, account, library } = useWeb3React<Web3Provider>();
   const toast = useToast();
-  const Chart = dynamic(() => import("./Chart"));
+  // const Chart = dynamic(() => import("./Chart.txt"));
 
   const [amountToBet, setAmountToBet] = useState<number>(0);
   const [accruedInterest, setAccruedInterest] = useState<number>(0);
@@ -314,11 +307,7 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
         </Heading>
         <Flex justifyContent="center" margin="0">
           <Box width="75%">
-            <Chart
-              marketContract={marketContract}
-              forceRerender={forceRerender}
-            />
-            <NewChart marketContract={marketContract} />
+            <Chart marketContract={marketContract} />
           </Box>
           {active && (
             <Form onSubmit={placeBet}>
@@ -456,7 +445,7 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
               _hover={{ bg: "red.100" }}
               onClick={async () => await marketContract.determineWinner()}
             >
-              Determine Winner
+              Get Winner from Oracle
             </Button>
             <Button
               my="0.25rem"
