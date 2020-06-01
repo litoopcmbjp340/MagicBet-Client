@@ -8,7 +8,6 @@ import {
   Heading,
   Switch,
   Button,
-  useDisclosure,
   Icon,
   Tooltip,
 } from "@chakra-ui/core";
@@ -41,7 +40,6 @@ const Dashboard = () => {
   const [checked, setChecked] = useState(false);
   const [marketContract, setMarketContract] = useState<Contract>();
   const [newMarketAddress, setNewMarketAddress] = useState();
-  const { isOpen, onOpen, onClose } = useDisclosure();
 
   if (factoryContract)
     factoryContract.on("MarketCreated", (address: any) =>
@@ -71,7 +69,7 @@ const Dashboard = () => {
       }
     })();
     //eslint-disable-next-line
-  }, [factoryContract]);
+  }, [factoryContract, marketContract]);
 
   return (
     <>

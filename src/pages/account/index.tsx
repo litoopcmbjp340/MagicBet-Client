@@ -12,8 +12,6 @@ import {
   Link,
 } from "@chakra-ui/core";
 
-import BoxLogo from "assets/threebox.svg";
-
 const Account = () => {
   const { active, account } = useWeb3React<Web3Provider>();
 
@@ -52,7 +50,7 @@ const Account = () => {
         </Flex>
         {active && (
           <>
-            {box ? (
+            {false ? (
               <Flex
                 flexWrap="wrap"
                 flexDirection="column"
@@ -105,7 +103,7 @@ const Account = () => {
                   isExternal
                   rel="noopener noreferrer"
                 >
-                  <Image src={BoxLogo} alt="3Box logo" size="100px" />
+                  <Text>Help Grow Web3...</Text>
                 </Link>
               </Button>
             )}

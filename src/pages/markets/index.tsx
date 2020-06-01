@@ -13,20 +13,25 @@ const Table = styled.table`
 
 const TableBody = styled.tbody``;
 
-const TableHead = styled.th`
+const TableHead = styled.th<{ roundedLeft?: boolean; roundedRight?: boolean }>`
   border-bottom: 1px solid #ddd;
-  background-color: #dddddd;
-  color: white.100;
+  background-color: #252c41;
+  color: #f4f5f9;
+  border-top-left-radius: ${(props) => (props.roundedLeft ? "0.5rem" : 0)};
+  border-top-right-radius: ${(props) => (props.roundedRight ? "0.5rem" : 0)};
 `;
 
 const TableHeadTop = styled.thead`
   border-bottom: 1px solid #ddd;
-  background-color: #dddddd;
-  color: white.100;
+  background-color: #252c41;
+  color: #f4f5f9;
 `;
 
 const TableRow = styled.tr`
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid #252c41;
+  &:hover {
+    background-color: #dddfe6;
+  }
 `;
 
 const Markets = () => {
@@ -68,17 +73,35 @@ const Markets = () => {
   );
 
   return (
-    <>
-      <Box backgroundColor="white.100" margin="0" padding="1.5rem 1rem">
-        <Box>
+    <Box backgroundColor="white.100" margin="0" paddingBottom="1rem">
+      <Flex
+        marginBottom="-1px"
+        flexDirection="column"
+        flexWrap="wrap"
+        margin="0 auto"
+        width="100%"
+        justifyContent="space-between"
+        padding="1rem 1.5rem"
+      >
+        <Heading
+          as="h3"
+          size="lg"
+          fontSize="1.5rem"
+          font-weight="500"
+          color="black.100"
+        >
+          Markets
+        </Heading>
+
+        <Box mt="1rem">
           <Table>
             <TableHeadTop>
               <TableRow>
-                <TableHead>Address</TableHead>
+                <TableHead roundedLeft>Address</TableHead>
                 <TableHead>Question</TableHead>
                 <TableHead>Winning Outcome</TableHead>
                 <TableHead>Winnings</TableHead>
-                <TableHead>Finish Date</TableHead>
+                <TableHead roundedRight>Finish Date</TableHead>
               </TableRow>
             </TableHeadTop>
             <TableBody>
@@ -93,8 +116,8 @@ const Markets = () => {
             </TableBody>
           </Table>
         </Box>
-      </Box>
-    </>
+      </Flex>
+    </Box>
   );
 };
 

@@ -127,8 +127,6 @@ export default function Chart({ marketContract, forceRerender }: IChart) {
           } else if (startPeriod + 240 < item.timestamp) {
             //@ts-ignore
             newData5[outcomeName] = newData5[outcomeName] + item.amount;
-          } else {
-            console.log("Transaction Timestamp Extends Charts X-Axis...");
           }
         });
         setData([newData1, newData2, newData3, newData4, newData5]);

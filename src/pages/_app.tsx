@@ -23,7 +23,7 @@ import "../components/Modals/CreateMarket/customReactDatePickerStyles.css";
 const useIsomorphicLayoutEffect =
   typeof window !== "undefined" ? useLayoutEffect : useEffect;
 
-function FunctionalApp({ Component }: { Component: NextComponentType }) {
+function Application({ Component }: { Component: NextComponentType }) {
   const [painted, setPainted] = useState(false);
   useIsomorphicLayoutEffect(() => {
     setPainted(true);
@@ -33,17 +33,15 @@ function FunctionalApp({ Component }: { Component: NextComponentType }) {
   const requiredChainId = 42;
 
   return !painted ? null : (
-    <>
-      <Layout>
-        {error ? (
-          <Error />
-        ) : chainId !== undefined && chainId !== requiredChainId ? (
-          <SwitchChain requiredChainId={requiredChainId} />
-        ) : (
-          <Component />
-        )}
-      </Layout>
-    </>
+    <Layout>
+      {error ? (
+        <Error />
+      ) : chainId !== undefined && chainId !== requiredChainId ? (
+        <SwitchChain requiredChainId={requiredChainId} />
+      ) : (
+        <Component />
+      )}
+    </Layout>
   );
 }
 
@@ -76,21 +74,22 @@ export default class App extends NextApp {
             href="/favicon.ico"
           />
         </Head>
-        <ContractProvider>
-          <ModalProvider>
-            <ApolloProvider client={client}>
-              <ThemeProvider theme={theme}>
-                {/* <ColorModeProvider> */}
-                <CSSReset />
-                <Global styles={GlobalStyle} />
-                <Web3ReactProvider getLibrary={getLibrary}>
-                  <FunctionalApp Component={Component} />
-                </Web3ReactProvider>
-                {/* </ColorModeProvider> */}
-              </ThemeProvider>
-            </ApolloProvider>
-          </ModalProvider>
-        </ContractProvider>
+
+        <Web3ReactProvider getLibrary={getLibrary}>
+          <ContractProvider>
+            <ModalProvider>
+              <ApolloProvider client={client}>
+                <ThemeProvider theme={theme}>
+                  {/* <ColorModeProvider> */}
+                  <CSSReset />
+                  <Global styles={GlobalStyle} />
+                  <Application Component={Component} />
+                  {/* </ColorModeProvider> */}
+                </ThemeProvider>
+              </ApolloProvider>
+            </ModalProvider>
+          </ContractProvider>
+        </Web3ReactProvider>
       </>
     );
   }

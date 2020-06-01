@@ -49,51 +49,57 @@ const InfoModal = ({ isOpen, onClose }: ICreateMarketModal) => {
   useEffect(() => {
     (async () => {
       if (factoryContract) {
-        const provider = new providers.Web3Provider(
-          window.web3.currentProvider
-        );
-
-        let deployedMarkets = await factoryContract.getMarkets();
-
-        let mostRecentlyDeployedAddress =
-          deployedMarkets[deployedMarkets.length - 1];
-
-        if (deployedMarkets.length !== 0) {
-          const marketContract = new Contract(
-            mostRecentlyDeployedAddress,
-            BTMarketContract.abi,
-            provider
+        try {
+          const provider = new providers.Web3Provider(
+            window.web3.currentProvider
           );
 
-          const marketState = await marketContract.state();
-          setMarketState(MarketStates[marketState]);
-          const owner = await marketContract.owner();
-          setOwner(owner);
-          const numberOfParticipants = await marketContract.getMarketSize();
-          setNumberOfParticipants(numberOfParticipants.toNumber());
-          const pot = await marketContract.totalBets();
-          setPot(utils.formatUnits(pot.toString(), 18));
+          let deployedMarkets = await factoryContract.getMarkets();
 
-          let numberOfOutcomes = await marketContract.numberOfOutcomes();
+          let mostRecentlyDeployedAddress =
+            deployedMarkets[deployedMarkets.length - 1];
 
-          if (numberOfOutcomes !== 0) {
-            let newOutcomesArray = [];
-            for (let i = 0; i < numberOfOutcomes; i++) {
-              let newOutcome: IOutcomeObject = { name: "", bets: 0 };
+          if (deployedMarkets.length !== 0) {
+            const marketContract = new Contract(
+              mostRecentlyDeployedAddress,
+              BTMarketContract.abi,
+              provider
+            );
 
-              const outcomeName = await marketContract.outcomeNames(i);
-              newOutcome.name = outcomeName;
+            const marketState = await marketContract.state();
+            setMarketState(MarketStates[marketState]);
+            const owner = await marketContract.owner();
+            setOwner(owner);
+            const numberOfParticipants = await marketContract.getMarketSize();
+            setNumberOfParticipants(numberOfParticipants.toNumber());
+            const pot = await marketContract.totalBets();
+            setPot(utils.formatUnits(pot.toString(), 18));
 
-              //outcome bets
-              const numberOfBets = await marketContract.totalBetsPerOutcome(i);
-              const fortmatted = utils.formatUnits(numberOfBets, 18);
-              const float = parseFloat(fortmatted);
-              const bet = Math.ceil(float);
-              newOutcome.bets = bet;
-              newOutcomesArray.push(newOutcome);
+            let numberOfOutcomes = await marketContract.numberOfOutcomes();
+
+            if (numberOfOutcomes !== 0) {
+              let newOutcomesArray = [];
+              for (let i = 0; i < numberOfOutcomes; i++) {
+                let newOutcome: IOutcomeObject = { name: "", bets: 0 };
+
+                const outcomeName = await marketContract.outcomeNames(i);
+                newOutcome.name = outcomeName;
+
+                //outcome bets
+                const numberOfBets = await marketContract.totalBetsPerOutcome(
+                  i
+                );
+                const fortmatted = utils.formatUnits(numberOfBets, 18);
+                const float = parseFloat(fortmatted);
+                const bet = Math.ceil(float);
+                newOutcome.bets = bet;
+                newOutcomesArray.push(newOutcome);
+              }
+              setOutcomeNamesAndAmounts(newOutcomesArray);
             }
-            setOutcomeNamesAndAmounts(newOutcomesArray);
           }
+        } catch (error) {
+          console.error(error);
         }
       }
     })();

@@ -122,9 +122,21 @@ const Header = () => {
               {account !== null && (
                 <>
                   {image ? (
-                    <Avatar size="md" name="Profile" showBorder src={image} />
+                    <Link
+                      href="https://3box.io/hub"
+                      isExternal
+                      rel="noopener noreferrer"
+                    >
+                      <Avatar size="md" name="Profile" showBorder src={image} />
+                    </Link>
                   ) : (
-                    <Avatar showBorder src="https://bit.ly/broken-link" />
+                    <Link
+                      href="https://3box.io/hub"
+                      isExternal
+                      rel="noopener noreferrer"
+                    >
+                      <Avatar showBorder src="https://bit.ly/broken-link" />
+                    </Link>
                   )}
                   <Button
                     backgroundColor="red.100"

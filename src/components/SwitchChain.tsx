@@ -12,10 +12,17 @@ export default function SwitchChain({
   const { chainId } = useWeb3React();
 
   return (
-    <Flex flexGrow={1} alignItems="center" justifyContent="center">
+    <Flex
+      flexGrow={1}
+      alignItems="center"
+      justifyContent="center"
+      backgroundColor="white.100"
+      paddingBottom="1rem"
+    >
       <Stack direction="column" alignItems="center">
         <Text fontSize="1.5rem">
-          You are currently connected to {getEthNetworkNameById(chainId)}
+          {/* You are currently connected to {getEthNetworkNameById(chainId)} */}
+          Wrong Network
         </Text>
         <Text fontSize="1.5rem">
           Please connect to {requiredChainId === 42 && "Kovan"}

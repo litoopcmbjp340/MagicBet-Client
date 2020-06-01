@@ -3,7 +3,13 @@ import { Flex, Stack, Text, Button } from "@chakra-ui/core";
 
 export default function Error() {
   return (
-    <Flex flexGrow={1} alignItems="center" justifyContent="center">
+    <Flex
+      flexGrow={1}
+      alignItems="center"
+      justifyContent="center"
+      backgroundColor="white.100"
+      paddingBottom="1rem"
+    >
       <Stack direction="column" alignItems="center">
         <Text fontSize="1.5rem">Something went wrong.</Text>
         <Text>

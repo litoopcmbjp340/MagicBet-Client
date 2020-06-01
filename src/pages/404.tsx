@@ -7,8 +7,9 @@ const NotFound = () => {
       flexDirection="column"
       justifyContent="space-evenly"
       textAlign="center"
-      marginTop="1rem"
       height="100%"
+      backgroundColor="white.100"
+      paddingBottom="1rem"
     >
       <Heading as="h1">Page Not Found</Heading>
       <Text>
