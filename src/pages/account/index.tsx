@@ -2,9 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useWeb3React } from "@web3-react/core";
 import { Web3Provider } from "@ethersproject/providers";
 import Box from "3box";
-
-import BoxLogo from "assets/threebox.svg";
-import styled from "@emotion/styled";
 import {
   Box as ChakraBox,
   Flex,
@@ -14,6 +11,8 @@ import {
   Button,
   Link,
 } from "@chakra-ui/core";
+
+import BoxLogo from "assets/threebox.svg";
 
 const Account = () => {
   const { active, account } = useWeb3React<Web3Provider>();

@@ -2,9 +2,6 @@ import React, { useState, useEffect, useContext } from "react";
 import { ContractContext } from "state/contracts/Context";
 import { providers, utils, Contract } from "ethers";
 import { v4 as uuidv4 } from "uuid";
-
-import { shortenAddress } from "utils";
-import BTMarketContract from "abis/BTMarket.json";
 import {
   Modal,
   ModalOverlay,
@@ -17,9 +14,10 @@ import {
   Heading,
 } from "@chakra-ui/core";
 
+import { shortenAddress } from "utils";
+import BTMarketContract from "abis/BTMarket.json";
 import BTMarketFactoryContract from "abis/BTMarketFactory.json";
 import addresses, { KOVAN_ID } from "utils/addresses";
-
 import { useContract } from "utils/hooks";
 
 interface IOutcomeObject {

@@ -18,12 +18,18 @@ import {
   useDisclosure,
   useToast,
 } from "@chakra-ui/core";
+import dynamic from "next/dynamic";
+import styled from "@emotion/styled";
 
 import Info from "components/Modals/Info";
 import Chart from "./Chart";
-
 import { shortenAddress } from "utils";
-import dynamic from "next/dynamic";
+
+const GraphWrapper = styled.div`
+  @media (max-width: 900px) {
+    display: none;
+  }
+`;
 
 const MarketCard = ({ marketContract, daiContract }: any) => {
   const { active, account, library } = useWeb3React<Web3Provider>();
@@ -263,18 +269,21 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
           {prompt}
         </Heading>
         <Flex justifyContent="center" margin="0">
-          <Box width="60%">
-            <Chart
-              marketContract={marketContract}
-              forceRerender={forceRerender}
-            />
-          </Box>
+          <GraphWrapper>
+            <Flex flexGrow={3}>
+              <Chart
+                marketContract={marketContract}
+                forceRerender={forceRerender}
+              />
+            </Flex>
+          </GraphWrapper>
           {active && (
             <form onSubmit={placeBet}>
               <Flex
                 flexDirection="column"
                 justifyContent="center"
                 alignItems="center"
+                flexGrow={1}
                 ml="2rem"
                 mt="1rem"
               >

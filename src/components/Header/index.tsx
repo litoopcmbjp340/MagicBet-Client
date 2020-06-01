@@ -71,12 +71,10 @@ const Header = () => {
         as="header"
         align="center"
         justify="space-between"
-        wrap="wrap"
         padding="0.75rem 1.25rem"
         color="white.100"
         backgroundColor="black.100"
         margin="0 auto"
-        minWidth="435px"
       >
         <Flex
           flexDirection="row"
@@ -112,7 +110,7 @@ const Header = () => {
             marginRight="1rem"
             cursor="pointer"
             href="https://github.com/BetTogether"
-            target="_blank"
+            isExternal
             rel="noreferrer noopener"
             aria-label="Github Link"
           >
@@ -151,9 +149,7 @@ const Header = () => {
               cursor="pointer"
               margin="0"
               position="relative"
-              transition="all 80ms ease-in-out"
               width="auto"
-              fontSize="1.1rem"
               onClick={() => {
                 setActivatingConnector(injected);
                 activate(injected);
@@ -169,9 +165,9 @@ const Header = () => {
               padding="0.625rem"
             >
               {isExpanded ? (
-                <Icon name="menuIconOpen" size="32px" color="white.100" />
+                <Icon name="menuIconOpen" size="2rem" />
               ) : (
-                <Icon name="menuIconClosed" size="32px" color="white.100" />
+                <Icon name="menuIconClosed" size="2rem" />
               )}
             </ChakraBox>
           )}
@@ -194,7 +190,7 @@ const Header = () => {
               <Link
                 textTransform="uppercase"
                 fontWeight="bold"
-                cursor=" pointer"
+                cursor="pointer"
                 href="/dashboard"
                 onClick={() => setIsExpanded(false)}
               >
@@ -205,7 +201,7 @@ const Header = () => {
               <Link
                 textTransform="uppercase"
                 fontWeight="bold"
-                cursor=" pointer"
+                cursor="pointer"
                 href="/markets"
                 onClick={() => setIsExpanded(false)}
               >
@@ -216,7 +212,7 @@ const Header = () => {
               <Link
                 textTransform="uppercase"
                 fontWeight="bold"
-                cursor=" pointer"
+                cursor="pointer"
                 href="/account"
                 onClick={() => setIsExpanded(false)}
               >
