@@ -1,5 +1,6 @@
 import React, { useState, useContext } from "react";
 import { useForm } from "react-hook-form";
+import DatePicker from "react-datepicker";
 
 import { ContractContext } from "state/contracts/Context";
 
@@ -41,13 +42,13 @@ const CreateMarket = ({ isOpen }: any) => {
     "Who will win the 2020 US General Election?"
   );
   const [marketOpeningTime, setMarketOpeningTime] = useState<number>(
-    1590480640
+    Date.now() / 1000
   );
   const [marketLockingTime, setMarketLockingTime] = useState<number>(
-    1590480640
+    Date.now() / 1000
   );
   const [marketResolutionTime, setMarketResolutionTime] = useState<any>(
-    1590480640
+    Date.now() / 1000
   );
   const [timeout, setTimeout] = useState<number>(10);
   const [arbitrator, setArbitrator] = useState<string>(
@@ -66,9 +67,9 @@ const CreateMarket = ({ isOpen }: any) => {
     setLoading(true);
 
     const MARKET_EVENT_NAME = marketEventName;
-    const MARKET_OPENING_TIME = marketOpeningTime;
-    const MARKET_LOCKING_TIME = marketLockingTime;
-    const MARKET_RESOLUTION_TIME = marketResolutionTime;
+    const MARKET_OPENING_TIME = Math.round(marketOpeningTime).toString();
+    const MARKET_LOCKING_TIME = Math.round(marketLockingTime).toString();
+    const MARKET_RESOLUTION_TIME = Math.round(marketResolutionTime).toString();
     const TIMEOUT = timeout;
     const ARBITRATOR = arbitrator;
     const REALITIO_QUESTION = realitioQuestion;
@@ -174,45 +175,30 @@ const CreateMarket = ({ isOpen }: any) => {
                       <FormLabel color="#777" htmlFor="marketOpeningTime">
                         Opening
                       </FormLabel>
-                      <Input
-                        borderColor="gray.100"
-                        name="marketOpeningTime"
-                        type="number"
-                        isRequired
-                        value={marketOpeningTime}
-                        onChange={(e: any) =>
-                          setMarketOpeningTime(e.target.value)
-                        }
+                      <DatePicker
+                        selected={new Date(marketOpeningTime * 1000)}
+                        onChange={(date: Date) => setMarketOpeningTime(date.getTime() / 1000)}
+                        id="marketOpeningTime"
                       />
                     </FormControl>
                     <FormControl marginRight="0.5rem">
                       <FormLabel color="#777" htmlFor="marketLockingTime">
                         Locking
                       </FormLabel>
-                      <Input
-                        borderColor="gray.100"
-                        name="marketLockingTime"
-                        type="number"
-                        isRequired
-                        value={marketLockingTime}
-                        onChange={(e: any) =>
-                          setMarketLockingTime(e.target.value)
-                        }
+                      <DatePicker
+                        selected={new Date(marketLockingTime * 1000)}
+                        onChange={(date: Date) => setMarketLockingTime(date.getTime() / 1000)}
+                        id="marketLockingTime"
                       />
                     </FormControl>
                     <FormControl marginRight="0.5rem">
                       <FormLabel color="#777" htmlFor="marketResolutionTime">
                         Resolution
                       </FormLabel>
-                      <Input
-                        borderColor="gray.100"
-                        name="marketResolutionTime"
-                        type="number"
-                        isRequired
-                        value={marketResolutionTime}
-                        onChange={(e: any) =>
-                          setMarketResolutionTime(e.target.value)
-                        }
+                      <DatePicker
+                        selected={new Date(marketResolutionTime * 1000)}
+                        onChange={(date: Date) => setMarketResolutionTime(date.getTime() / 1000)}
+                        id="marketResolutionTime"
                       />
                     </FormControl>
                   </Flex>

@@ -17,6 +17,9 @@ import Error from "components/Error";
 import SwitchChain from "components/SwitchChain";
 import { ModalProvider } from "state/modals/Context";
 
+import "../components/Modals/CreateMarket/react-datepicker.css";
+import "../components/Modals/CreateMarket/customReactDatePickerStyles.css";
+
 const useIsomorphicLayoutEffect =
   typeof window !== "undefined" ? useLayoutEffect : useEffect;
 

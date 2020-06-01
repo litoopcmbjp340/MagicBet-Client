@@ -69,34 +69,6 @@ const Markets = () => {
 
   return (
     <>
-      <Box backgroundColor="white.100" paddingBottom="1rem">
-        <Flex
-          flexDirection="column"
-          flexWrap="wrap"
-          margin="0 auto"
-          width="100%"
-          justifyContent="space-between"
-          padding="1rem 1.5rem"
-        >
-          <Heading
-            as="h3"
-            size="lg"
-            fontSize="1.5rem"
-            font-weight="500"
-            color="black.100"
-          >
-            Markets
-          </Heading>
-          <Flex flex="1" justifyContent="spaceBetween" margin="0">
-            <ActiveMarket>ActiveMarket 1</ActiveMarket>
-            <ActiveMarket>ActiveMarket 2</ActiveMarket>
-          </Flex>
-          <Flex flex="1" justifyContent="spaceBetween" margin="1.5rem 0 0">
-            <ActiveMarket>ActiveMarket 3</ActiveMarket>
-            <ActiveMarket>ActiveMarket 4</ActiveMarket>
-          </Flex>
-        </Flex>
-      </Box>
       <Box backgroundColor="white.100" margin="0" padding="1.5rem 1rem">
         <Box>
           <Table>

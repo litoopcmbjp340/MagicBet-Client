@@ -38,11 +38,14 @@ function Market({ market }: { market: string }) {
         BTMarketContract.abi,
         wallet
       );
-      const _question = await marketContract.eventName();
-      const _questionId = await marketContract.questionId();
-      const _maxInterests = await marketContract.getMaxTotalInterest();
-      const _marketResolutionTime = await marketContract.marketResolutionTime();
-      const _winningOutcomeId = await marketContract.winningOutcome();
+
+      const [_question, _questionId, _maxInterests, _marketResolutionTime, _winningOutcomeId] = await Promise.all([
+        marketContract.eventName(),
+        marketContract.questionId(),
+        marketContract.getMaxTotalInterest(),
+        marketContract.marketResolutionTime(),
+        marketContract.winningOutcome(),
+      ]);
       let _winningOutcome;
 
       if (_winningOutcomeId.toString() !== "69") {
