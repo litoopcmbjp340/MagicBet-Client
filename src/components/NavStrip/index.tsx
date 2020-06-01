@@ -23,12 +23,19 @@ const StyledLink = styled.a<{ active: boolean }>`
   }
 `;
 
+const Wrapper = styled.div`
+  display: none;
+  @media (min-width: 768px) {
+    display: block;
+  }
+`;
+
 const NavStrip = () => {
   const router = useRouter();
 
   return (
-    <Box display={{ sm: "none", md: "block" }} backgroundColor="red.100">
-      <Box width="100%" margin="0 auto">
+    <Wrapper>
+      <Box width="100%" margin="0 auto" bg="red.100">
         <Flex as="nav" justifyContent="center">
           <Flex marginRight="2rem" fontSize="1.25rem">
             <Link href="/dashboard" passHref>
@@ -57,7 +64,7 @@ const NavStrip = () => {
           </Flex>
         </Flex>
       </Box>
-    </Box>
+    </Wrapper>
   );
 };
 

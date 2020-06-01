@@ -3,7 +3,7 @@ import CountUp from "react-countup";
 import CountDown from "react-countdown";
 import { useWeb3React } from "@web3-react/core";
 import { Web3Provider } from "@ethersproject/providers";
-import { utils, Contract } from "ethers";
+import { utils } from "ethers";
 import {
   Box,
   Flex,
@@ -24,26 +24,6 @@ import Chart from "./Chart";
 
 import { shortenAddress } from "utils";
 import dynamic from "next/dynamic";
-
-import styled from "@emotion/styled";
-
-const Form = styled.form`
-  width: 25%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  flex-grow: 1;
-`;
-
-const Option = styled.option`
-  color: black.100;
-  background: white.100;
-  display: flex;
-  min-height: 2rem;
-  padding: 0px 2px 1px;
-  cursor: pointer;
-`;
 
 const MarketCard = ({ marketContract, daiContract }: any) => {
   const { active, account, library } = useWeb3React<Web3Provider>();
@@ -203,14 +183,14 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
       setRerender(!forceRerender);
     } catch (error) {
       console.error(error);
-      toast({
-        title: "Transaction Failed",
-        description: "Try increasing gas",
-        status: "error",
-        position: "bottom",
-        duration: 5000,
-        isClosable: true,
-      });
+      // toast({
+      //   title: "Transaction Failed",
+      //   description: "Try increasing gas",
+      //   status: "error",
+      //   position: "bottom",
+      //   duration: 5000,
+      //   isClosable: true,
+      // });
     }
   };
 
@@ -235,12 +215,7 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
 
   return !prompt ? null : (
     <>
-      <Box
-        backgroundColor="gray.100"
-        borderRadius="0.5rem"
-        // boxShadow="0 2px 10px rgba(0, 0, 0, 0.3)"
-        margin="0 1.5rem"
-      >
+      <Box backgroundColor="gray.100" borderRadius="0.5rem" margin="0 1.5rem">
         <Flex
           borderBottom="1px solid black.100"
           alignItems="center"
@@ -248,7 +223,7 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
           padding="0.5rem 1rem"
         >
           <span>{shortenAddress(marketContract.address)}</span>
-          <Flex flexDirection="column" justifyContent="space-between">
+          <Flex flexDirection="column" justifyContent="space-between" ml="2rem">
             <Text
               color="#555"
               font-size="12px"
@@ -269,13 +244,13 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
             </Box>
           </Flex>
           <Flex alignItems="center" justifyContent="center">
-            <span>
+            <Text width="5.5rem">
               {marketResolutionTime ? (
                 <CountDown date={Date.now() + marketResolutionTime} />
               ) : (
                 "-"
               )}
-            </span>
+            </Text>
             <IconButton
               aria-label="market info"
               icon="info"
@@ -295,135 +270,143 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
             />
           </Box>
           {active && (
-            <Form onSubmit={placeBet}>
-              <Select
-                width="50%"
-                height="3rem"
-                margin="0"
-                color="#777"
-                borderColor="gray.100"
-                value={choice}
-                onChange={(e: any) => setChoice(e.target.value)}
-              >
-                <Option disabled value="" />
-                {outcomes.map((outcome: any) => (
-                  <Option key={outcome} value={outcome}>
-                    {outcome}
-                  </Option>
-                ))}
-              </Select>
-
-              <Button
-                textTransform="uppercase"
-                fontWeight="500"
-                color="#777"
-                backgroundColor="white.100"
-                border="none"
-                box-shadow="0 0.5rem 1rem rgba(0, 0, 0, 0.1)"
-                transition="all 0.3s ease 0s"
-                outline="none"
-                cursor="pointer"
-                my="1.25rem"
-                type="button"
-                _hover={{
-                  backgroundColor: "red.100",
-                  boxShadow: "0px 15px 20px rgba(0, 0, 0, 0.3)",
-                  color: "white.100",
-                  transform: "translateY(-5px)",
-                }}
-                onClick={() => setUsingDai(!usingDai)}
-              >
-                {usingDai ? "Dai" : "Ether"}
-              </Button>
+            <form onSubmit={placeBet}>
               <Flex
                 flexDirection="column"
                 justifyContent="center"
                 alignItems="center"
+                ml="2rem"
+                mt="1rem"
               >
-                {usingDai ? (
-                  <Flex
-                    justifyContent="center"
-                    alignItems="center"
-                    color="black.100"
-                    fontSize="1.25rem"
-                  >
-                    {daiBalance ? daiBalance : "-"}
-                  </Flex>
-                ) : (
-                  <Flex
-                    justifyContent="center"
-                    alignItems="center"
-                    color="black.100"
-                    fontSize="1.25rem"
-                  >
-                    {etherBalance ? etherBalance : "-"}
-                  </Flex>
-                )}
-
-                <Input
-                  borderStyle="none"
-                  backgroundColor="gray.100"
-                  color="black.100"
-                  fontSize="70px"
-                  my="1"
-                  py="3rem"
-                  textAlign="center"
+                <Select
                   width="50%"
-                  type="number"
-                  placeholder="0"
-                  min={0}
-                  max={100}
-                  onChange={(e: any) => setAmountToBet(e.target.value)}
-                  onKeyDown={(e: any) =>
-                    (e.key === "e" && e.preventDefault()) ||
-                    (e.key === "+" && e.preventDefault()) ||
-                    (e.key === "-" && e.preventDefault())
-                  }
-                />
-              </Flex>
+                  height="3rem"
+                  margin="0"
+                  color="#777"
+                  borderColor="gray.100"
+                  value={choice}
+                  onChange={(e: any) => setChoice(e.target.value)}
+                >
+                  <option disabled value="" />
+                  {outcomes.map((outcome: any) => (
+                    <option key={outcome} value={outcome}>
+                      {outcome}
+                    </option>
+                  ))}
+                </Select>
 
-              {!!(library && account) && (
-                <>
-                  <Button
-                    borderBottomRightRadius="0.5rem"
-                    borderTopRightRadius="0.5rem"
-                    borderBottomLeftRadius="0.5rem"
-                    borderTopLeftRadius="0.5rem"
-                    cursor="pointer"
-                    fontSize="1.33rem"
-                    width="8rem"
-                    border="2px solid red.100"
-                    color="white.100"
-                    backgroundColor="red.100"
-                    type="submit"
-                    isDisabled={
-                      amountToBet <= 0 ||
-                      marketState !== "OPEN" ||
-                      choice === ""
+                <Button
+                  textTransform="uppercase"
+                  fontWeight="500"
+                  color="#777"
+                  backgroundColor="white.100"
+                  border="none"
+                  box-shadow="0 0.5rem 1rem rgba(0, 0, 0, 0.1)"
+                  transition="all 0.3s ease 0s"
+                  outline="none"
+                  cursor="pointer"
+                  my="1.25rem"
+                  type="button"
+                  _hover={{
+                    backgroundColor: "red.100",
+                    boxShadow: "0px 15px 20px rgba(0, 0, 0, 0.3)",
+                    color: "white.100",
+                    transform: "translateY(-5px)",
+                  }}
+                  onClick={() => setUsingDai(!usingDai)}
+                >
+                  {usingDai ? "Dai" : "Ether"}
+                </Button>
+                <Flex
+                  flexDirection="column"
+                  justifyContent="center"
+                  alignItems="center"
+                >
+                  {usingDai ? (
+                    <Flex
+                      justifyContent="center"
+                      alignItems="center"
+                      color="black.100"
+                      fontSize="1.25rem"
+                    >
+                      {daiBalance ? daiBalance : "-"}
+                    </Flex>
+                  ) : (
+                    <Flex
+                      justifyContent="center"
+                      alignItems="center"
+                      color="black.100"
+                      fontSize="1.25rem"
+                    >
+                      {etherBalance ? etherBalance : "-"}
+                    </Flex>
+                  )}
+
+                  <Input
+                    borderStyle="none"
+                    backgroundColor="gray.100"
+                    color="black.100"
+                    fontSize="70px"
+                    my="1"
+                    py="3rem"
+                    textAlign="center"
+                    width="50%"
+                    type="number"
+                    placeholder="0"
+                    min={0}
+                    max={100}
+                    onChange={(e: any) => setAmountToBet(e.target.value)}
+                    onKeyDown={(e: any) =>
+                      (e.key === "e" && e.preventDefault()) ||
+                      (e.key === "+" && e.preventDefault()) ||
+                      (e.key === "-" && e.preventDefault())
                     }
-                  >
-                    Enter
-                  </Button>
-                  {marketState === "WITHDRAW" && (
+                  />
+                </Flex>
+
+                {!!(library && account) && (
+                  <>
                     <Button
+                      borderBottomRightRadius="0.5rem"
+                      borderTopRightRadius="0.5rem"
+                      borderBottomLeftRadius="0.5rem"
+                      borderTopLeftRadius="0.5rem"
                       cursor="pointer"
                       fontSize="1.33rem"
-                      mt="1rem"
                       width="8rem"
-                      border="1px"
-                      borderColor="red.100"
-                      borderRadius="0.5rem"
-                      color="red.100"
-                      backgroundColor="white.100"
-                      type="button"
-                      onClick={() => withdraw()}
+                      border="2px solid red.100"
+                      color="white.100"
+                      backgroundColor="red.100"
+                      type="submit"
+                      isDisabled={
+                        amountToBet <= 0 ||
+                        marketState !== "OPEN" ||
+                        choice === ""
+                      }
                     >
-                      Withdraw
+                      Enter
                     </Button>
-                  )}
-                </>
-              )}
-            </Form>
+                    {marketState === "WITHDRAW" && (
+                      <Button
+                        cursor="pointer"
+                        fontSize="1.33rem"
+                        mt="1rem"
+                        width="8rem"
+                        border="1px"
+                        borderColor="red.100"
+                        borderRadius="0.5rem"
+                        color="red.100"
+                        backgroundColor="white.100"
+                        type="button"
+                        onClick={() => withdraw()}
+                      >
+                        Withdraw
+                      </Button>
+                    )}
+                  </>
+                )}
+              </Flex>
+            </form>
           )}
         </Flex>
         {checkOwner() && (

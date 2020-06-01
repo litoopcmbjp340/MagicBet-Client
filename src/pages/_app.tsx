@@ -66,7 +66,12 @@ export default class App extends NextApp {
             name="viewport"
             content="initial-scale=1.0, width=device-width"
           />
-          <link rel="icon" type="image/x-icon" href="../static/favicon.ico" />
+          <link
+            key="favicon"
+            rel="icon"
+            type="image/x-icon"
+            href="/favicon.ico"
+          />
         </Head>
         <ContractProvider>
           <ModalProvider>
