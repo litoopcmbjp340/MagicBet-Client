@@ -15,6 +15,7 @@ import { client } from "utils";
 import { ContractProvider } from "state/contracts/Context";
 import Error from "components/Error";
 import SwitchChain from "components/SwitchChain";
+import { ModalProvider } from "state/modals/Context";
 
 const useIsomorphicLayoutEffect =
   typeof window !== "undefined" ? useLayoutEffect : useEffect;
@@ -68,17 +69,19 @@ export default class App extends NextApp {
           <link rel="icon" type="image/x-icon" href="../static/favicon.ico" />
         </Head>
         <ContractProvider>
-          <ApolloProvider client={client}>
-            <ThemeProvider theme={theme}>
-              {/* <ColorModeProvider> */}
-              <CSSReset />
-              <Global styles={GlobalStyle} />
-              <Web3ReactProvider getLibrary={getLibrary}>
-                <FunctionalApp Component={Component} />
-              </Web3ReactProvider>
-              {/* </ColorModeProvider> */}
-            </ThemeProvider>
-          </ApolloProvider>
+          <ModalProvider>
+            <ApolloProvider client={client}>
+              <ThemeProvider theme={theme}>
+                {/* <ColorModeProvider> */}
+                <CSSReset />
+                <Global styles={GlobalStyle} />
+                <Web3ReactProvider getLibrary={getLibrary}>
+                  <FunctionalApp Component={Component} />
+                </Web3ReactProvider>
+                {/* </ColorModeProvider> */}
+              </ThemeProvider>
+            </ApolloProvider>
+          </ModalProvider>
         </ContractProvider>
       </>
     );

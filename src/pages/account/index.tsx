@@ -1,32 +1,19 @@
 import React, { useState, useEffect } from "react";
 import { useWeb3React } from "@web3-react/core";
 import { Web3Provider } from "@ethersproject/providers";
-// import Box from "3box";
+import Box from "3box";
 
 import BoxLogo from "assets/threebox.svg";
 import styled from "@emotion/styled";
-import { Box, Flex, Heading, Text } from "@chakra-ui/core";
-
-export const ThreeBoxLink = styled.a`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border: none;
-  border-radius: 0.5rem;
-  padding: 0.5rem;
-  font-size: 1rem;
-  cursor: pointer;
-  outline: none;
-  box-shadow: none;
-  background-color: gray.100;
-  width: 20rem;
-`;
-
-export const LogoImage = styled.img`
-  margin-left: 0.5rem;
-  height: 6rem;
-  width: 6rem;
-`;
+import {
+  Box as ChakraBox,
+  Flex,
+  Image,
+  Heading,
+  Text,
+  Button,
+  Link,
+} from "@chakra-ui/core";
 
 const Account = () => {
   const { active, account } = useWeb3React<Web3Provider>();
@@ -35,32 +22,26 @@ const Account = () => {
   const [email, setEmail] = useState("");
   const [box, setBox] = useState("");
 
-  // useEffect(() => {
-  //   (async () => {
-  //     if (active) {
-  //       const profile = await Box.getProfile(account);
-  //       setName(profile.name);
-  //       const boxProvider = await Box.get3idConnectProvider();
-  //       const box = await Box.openBox(account, boxProvider);
-  //       console.log("box:", box);
-  //       setBox(box);
-  //       await box.syncDone;
-  //       const email = await box.private.get("email");
-  //       console.log("email:", email);
-  //       setEmail(email);
-  //     }
-  //   })();
-  // }, [active, account]);
+  useEffect(() => {
+    (async () => {
+      if (active) {
+        const profile = await Box.getProfile(account);
+        setName(profile.name);
+        const boxProvider = await Box.get3idConnectProvider();
+        const box = await Box.openBox(account, boxProvider);
+        console.log("box:", box);
+        setBox(box);
+        await box.syncDone;
+        const email = await box.private.get("email");
+        console.log("email:", email);
+        setEmail(email);
+      }
+    })();
+  }, [active, account]);
 
   return (
-    <Box
-      backgroundColor="white.100"
-      borderTopWidth="1px"
-      borderBottomWidth="1px"
-      boxShadow="0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)"
-      paddingBottom="1rem"
-    >
-      <Box borderBottomWidth="1px">
+    <ChakraBox backgroundColor="white.100" paddingBottom="1rem">
+      <ChakraBox>
         <Flex
           justifyContent="space-between"
           alignItems="center"
@@ -119,21 +100,20 @@ const Account = () => {
                 </Flex>
               </Flex>
             ) : (
-              <Flex justifyContent="center" alignItems="center">
-                <ThreeBoxLink
+              <Button ml="2rem">
+                <Link
                   href="https://3box.io/hub"
-                  target="_blank"
+                  isExternal
                   rel="noopener noreferrer"
                 >
-                  Help grow the next web with
-                  <LogoImage src={BoxLogo} alt="3Box logo" />
-                </ThreeBoxLink>
-              </Flex>
+                  <Image src={BoxLogo} alt="3Box logo" size="100px" />
+                </Link>
+              </Button>
             )}
           </>
         )}
-      </Box>
-    </Box>
+      </ChakraBox>
+    </ChakraBox>
   );
 };
 

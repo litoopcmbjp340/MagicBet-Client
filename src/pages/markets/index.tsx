@@ -69,14 +69,7 @@ const Markets = () => {
 
   return (
     <>
-      <Box
-        backgroundColor="white.100"
-        borderTopWidth="1px"
-        borderBottomWidth="1px"
-        boxShadow="0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)"
-        borderRadius="0.25rem"
-        paddingBottom="1rem"
-      >
+      <Box backgroundColor="white.100" paddingBottom="1rem">
         <Flex
           flexDirection="column"
           flexWrap="wrap"

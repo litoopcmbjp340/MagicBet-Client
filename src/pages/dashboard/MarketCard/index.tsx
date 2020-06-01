@@ -256,7 +256,7 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
       <Box
         backgroundColor="gray.100"
         borderRadius="0.5rem"
-        boxShadow="0 2px 10px rgba(0, 0, 0, 0.3)"
+        // boxShadow="0 2px 10px rgba(0, 0, 0, 0.3)"
         margin="0 1.5rem"
       >
         <Flex
@@ -327,11 +327,28 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
                   </Option>
                 ))}
               </Select>
+
+              {/* width: 140px;
+              height: 45px; */}
+
               <Button
-                cursor="pointer"
+                textTransform="uppercase"
+                fontWeight="500"
                 color="#777"
-                marginTop="10px"
+                backgroundColor="white.100"
+                border="none"
+                box-shadow="0 0.5rem 1rem rgba(0, 0, 0, 0.1)"
+                transition="all 0.3s ease 0s"
+                outline="none"
+                cursor="pointer"
+                my="1.25rem"
                 type="button"
+                _hover={{
+                  backgroundColor: "red.100",
+                  boxShadow: "0px 15px 20px rgba(0, 0, 0, 0.3)",
+                  color: "white.100",
+                  transform: "translateY(-5px)",
+                }}
                 onClick={() => setUsingDai(!usingDai)}
               >
                 {usingDai ? "Dai" : "Ether"}
@@ -346,6 +363,7 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
                     justifyContent="center"
                     alignItems="center"
                     color="black.100"
+                    fontSize="1.25rem"
                   >
                     {daiBalance ? daiBalance : "-"}
                   </Flex>
@@ -354,6 +372,7 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
                     justifyContent="center"
                     alignItems="center"
                     color="black.100"
+                    fontSize="1.25rem"
                   >
                     {etherBalance ? etherBalance : "-"}
                   </Flex>

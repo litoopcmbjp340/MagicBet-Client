@@ -4,7 +4,7 @@
   </span>
   MagicBet - Client
 </h1>
-<h2 align="center">Loseless Ethereum Betting</h2>
+<h2 align="center">Lossless Ethereum Betting</h2>
 
 <p align="center">
     <a href="https://BetTogether.github.io/MagicBet-Client/">

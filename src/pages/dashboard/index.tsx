@@ -1,14 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useWeb3React } from "@web3-react/core";
 import { Web3Provider } from "@ethersproject/providers";
-import BTMarketFactoryContract from "abis/BTMarketFactory.json";
-
-import addresses, { KOVAN_ID } from "utils/addresses";
-import { useContract } from "utils/hooks";
-import CreateMarket from "components/Modals/CreateMarket";
-import { mintDai } from "utils";
-
-import DaiIcon from "assets/dai.svg";
 import { providers, Contract } from "ethers";
 import {
   Box,
@@ -17,20 +9,23 @@ import {
   Switch,
   Button,
   useDisclosure,
-  IconButton,
-  FormLabel,
+  Icon,
   Tooltip,
 } from "@chakra-ui/core";
 
 import BTMarketContract from "abis/BTMarket.json";
 import IERC20 from "abis/IERC20.json";
-
-import MarketCard from "components/MarketCard";
-const daiAddress = addresses[KOVAN_ID].tokens.DAI;
-
-const factoryAddress = addresses[KOVAN_ID].marketFactory;
+import BTMarketFactoryContract from "abis/BTMarketFactory.json";
+import MarketCard from "./MarketCard";
+import CreateMarket from "components/Modals/CreateMarket";
+import addresses, { KOVAN_ID } from "utils/addresses";
+import { useContract } from "utils/hooks";
+import { mintDai } from "utils";
+import { ModalContext } from "state/modals/Context";
 
 const Dashboard = () => {
+  const daiAddress = addresses[KOVAN_ID].tokens.DAI;
+  const factoryAddress = addresses[KOVAN_ID].marketFactory;
   const { active } = useWeb3React<Web3Provider>();
   const factoryContract = useContract(
     factoryAddress,
@@ -41,14 +36,17 @@ const Dashboard = () => {
   const provider = new providers.Web3Provider(window.web3.currentProvider);
   const wallet = provider.getSigner();
 
+  const { modalState, modalDispatch } = useContext(ModalContext);
+
   const [checked, setChecked] = useState(false);
   const [marketContract, setMarketContract] = useState<Contract>();
   const [newMarketAddress, setNewMarketAddress] = useState();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  // factoryContract.on("MarketCreated", (address: any) =>
-  //   setNewMarketAddress(address)
-  // );
+  if (factoryContract)
+    factoryContract.on("MarketCreated", (address: any) =>
+      setNewMarketAddress(address)
+    );
 
   useEffect(() => {
     (async () => {
@@ -59,7 +57,6 @@ const Dashboard = () => {
             let marketContractAddress: string =
               deployedMarkets[deployedMarkets.length - 1];
 
-            console.log("marketContractAddress:", marketContractAddress);
             const marketInstance = new Contract(
               marketContractAddress,
               BTMarketContract.abi,
@@ -78,14 +75,7 @@ const Dashboard = () => {
 
   return (
     <>
-      <Box
-        backgroundColor="white.100"
-        borderTopWidth="1px"
-        borderBottomWidth="1px"
-        boxShadow="0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)"
-        borderRadius="0.25rem"
-        paddingBottom="1rem"
-      >
+      <Box backgroundColor="white.100" paddingBottom="1rem">
         <Flex
           marginBottom="-1px"
           justifyContent="space-between"
@@ -107,7 +97,7 @@ const Dashboard = () => {
               label="Want an Email Alert?"
               aria-label="send an email alert"
             > */}
-            <Switch color="red.100" size="lg" />
+            <Switch color="red" size="lg" />
             {/* </Tooltip> */}
           </Flex>
         </Flex>
@@ -138,32 +128,36 @@ const Dashboard = () => {
               cursor="pointer"
               _hover={{ bg: "red.100" }}
               isDisabled={!active}
-              onClick={() => onOpen()}
+              onClick={() =>
+                modalDispatch({
+                  type: "TOGGLE_CREATE_MARKET_MODAL",
+                  payload: !modalState.createMarketModalIsOpen,
+                })
+              }
             >
               Create Market
             </Button>
           )}
 
           {active && (
-            <IconButton
-              aria-label="market info"
-              icon="add"
+            <Button
+              backgroundColor="red.100"
               position="fixed"
-              cursor="pointer"
               bottom="0"
               right="0"
-              borderRadius="0.25rem"
-              alignItems="center"
               fontWeight="700"
               color="white.100"
-              backgroundColor="red.100"
               margin="2rem"
+              cursor="pointer"
+              padding="0"
               onClick={() => mintDai(wallet)}
-            />
+            >
+              <Icon name="daiIcon" color="white.200" size="1.5rem" />
+            </Button>
           )}
         </Flex>
       </Box>
-      <CreateMarket isOpen={isOpen} onClose={onClose} />
+      <CreateMarket isOpen={modalState.createMarketModalIsOpen} />
     </>
   );
 };

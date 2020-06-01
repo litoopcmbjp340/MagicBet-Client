@@ -22,17 +22,14 @@ import {
 } from "@chakra-ui/core";
 
 import BTMarketFactoryContract from "abis/BTMarketFactory.json";
-
+import { ModalContext } from "state/modals/Context";
 import addresses, { KOVAN_ID } from "utils/addresses";
 const factoryAddress = addresses[KOVAN_ID].marketFactory;
 
-interface ICreateMarketModal {
-  isOpen: boolean;
-  onClose: () => void;
-}
-
-const CreateMarket = ({ isOpen, onClose }: ICreateMarketModal) => {
+const CreateMarket = ({ isOpen }: any) => {
   const { contractState } = useContext(ContractContext);
+  const { modalState, modalDispatch } = useContext(ModalContext);
+
   const factoryContract = useContract(
     factoryAddress,
     BTMarketFactoryContract.abi,
@@ -90,7 +87,11 @@ const CreateMarket = ({ isOpen, onClose }: ICreateMarketModal) => {
     await tx.wait();
 
     setLoading(false);
-    isOpen = false;
+
+    modalDispatch({
+      type: "TOGGLE_CREATE_MARKET_MODAL",
+      payload: !modalState.createMarketModalIsOpen,
+    });
   };
 
   function validateMarketEventName(value: any) {
@@ -102,7 +103,7 @@ const CreateMarket = ({ isOpen, onClose }: ICreateMarketModal) => {
 
   return (
     <>
-      <Modal isOpen={isOpen} onClose={onClose} isCentered>
+      <Modal isOpen={isOpen} isCentered>
         <ModalOverlay />
 
         <ModalContent backgroundColor="white.100" borderRadius="0.25rem">
@@ -113,7 +114,14 @@ const CreateMarket = ({ isOpen, onClose }: ICreateMarketModal) => {
           ) : (
             <>
               <ModalHeader>Create a Market</ModalHeader>
-              <ModalCloseButton />
+              <ModalCloseButton
+                onClick={() =>
+                  modalDispatch({
+                    type: "TOGGLE_CREATE_MARKET_MODAL",
+                    payload: !modalState.createMarketModalIsOpen,
+                  })
+                }
+              />
               <ModalBody>
                 <form onSubmit={createMarket}>
                   <FormControl marginBottom="1rem" isInvalid={errors.name}>

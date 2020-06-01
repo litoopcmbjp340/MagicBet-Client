@@ -35,7 +35,7 @@ export default function Chart({ marketContract }: any) {
       };
 
       let newData5 = {
-        name: "4 min",
+        name: "4 min+",
       };
 
       for (let i = 0; i < numberOfOutcomes; i++) {
@@ -119,10 +119,7 @@ export default function Chart({ marketContract }: any) {
           ) {
             //@ts-ignore
             newData4[outcomeName] = newData4[outcomeName] + item.amount;
-          } else if (
-            startPeriod + 240 < item.timestamp &&
-            item.timestamp < startPeriod + 300
-          ) {
+          } else if (startPeriod + 240 < item.timestamp) {
             //@ts-ignore
             newData5[outcomeName] = newData5[outcomeName] + item.amount;
           } else {

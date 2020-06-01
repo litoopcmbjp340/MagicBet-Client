@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { AbstractConnector } from "@web3-react/abstract-connector";
 import { useWeb3React } from "@web3-react/core";
 import Box from "3box";
-import styled from "@emotion/styled";
 import {
   Flex,
   Heading,
@@ -15,7 +14,6 @@ import {
 } from "@chakra-ui/core";
 
 import { useEagerConnect, useInactiveListener } from "utils/hooks";
-import { shortenAddress } from "utils";
 import { injected } from "utils/connectors";
 
 const Header = () => {
@@ -37,10 +35,6 @@ const Header = () => {
 
   useInactiveListener(!triedEager || !!activatingConnector);
 
-  const currentConnector = injected;
-  const connected = currentConnector === connector;
-  const disabled = connected || !!error;
-
   const MenuItem = ({ children }: any) => (
     <Text
       color="black.100"
@@ -61,8 +55,8 @@ const Header = () => {
         try {
           const profile = await Box.getProfile(account);
           if (profile.image) {
-            let image = profile.image[0]["contentUrl"]["/"];
-            setImage(image);
+            let imageHash = profile.image[0]["contentUrl"]["/"];
+            setImage(`https://ipfs.infura.io/ipfs/${imageHash}`);
           }
         } catch (error) {
           console.error(error);
@@ -70,14 +64,6 @@ const Header = () => {
       }
     })();
   }, [active, account]);
-
-  const Image = styled.img`
-    display: inline-block;
-    border: 0.2rem solid white.100;
-    width: 3rem;
-    height: 3rem;
-    border-radius: 50%;
-  `;
 
   return (
     <>
@@ -137,43 +123,8 @@ const Header = () => {
             <>
               {account !== null && (
                 <>
-                  {/* <Button
-                        backgroundColor="Transparent"
-                        backgroundRepeat="no-repeat"
-                        border="none"
-                        cursor="pointer"
-                        overflow="hidden"
-                        onClick={() => deactivate()}
-                      >
-                        <Image
-                          src={`https://ipfs.infura.io/ipfs/${image}`}
-                          alt="3Box profile picture"
-                        />
-                      </Button> */}
-                  {/* <Button
-                      backgroundColor="red.100"
-                      border="1px"
-                      borderRadius="4px"
-                      borderColor="red.100"
-                      color="white.100"
-                      cursor="pointer"
-                      margin="0"
-                      position="relative"
-                      transition="all 80ms ease-in-out"
-                      width="auto"
-                      fontSize="1.1rem"
-                      onClick={() => deactivate()}
-                    >
-                      {shortenAddress(account)}
-                    </Button> */}
-
                   {image ? (
-                    <Avatar
-                      size="md"
-                      name="Profile"
-                      showBorder
-                      src={`https://ipfs.infura.io/ipfs/${image}`}
-                    />
+                    <Avatar size="md" name="Profile" showBorder src={image} />
                   ) : (
                     <Avatar showBorder src="https://bit.ly/broken-link" />
                   )}
@@ -182,8 +133,8 @@ const Header = () => {
                     aria-label="LogOut"
                     marginLeft="1rem"
                     size="lg"
-                    onClick={() => deactivate()}
                     padding="0"
+                    onClick={() => deactivate()}
                   >
                     <Icon name="power" color="white.200" size="1.5rem" />
                   </Button>
@@ -204,7 +155,7 @@ const Header = () => {
               width="auto"
               fontSize="1.1rem"
               onClick={() => {
-                setActivatingConnector(currentConnector);
+                setActivatingConnector(injected);
                 activate(injected);
               }}
             >
