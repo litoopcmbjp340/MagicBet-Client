@@ -45,18 +45,6 @@ const Option = styled.option`
   cursor: pointer;
 `;
 
-const SelectCurrency = styled.select`
-  width: 25%;
-  margin-top: 1rem;
-  border-radius: 1rem;
-  white-space: normal;
-  background-color: transparent;
-  color: black.100;
-  font-size: 1rem;
-  border: 1px solid gray.100;
-  outline: none;
-`;
-
 const MarketCard = ({ marketContract, daiContract }: any) => {
   const { active, account, library } = useWeb3React<Web3Provider>();
   const toast = useToast();
@@ -80,12 +68,12 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   //!FOR EVENTS
-  //const [eventState, setEventState] = useState();
-  //const [eventBet, setEventBet] = useState();
-  // marketContract.on("StateChanged", (state: any) => setEventState(state));
-  // marketContract.on("ParticipantEntered", (address: any) =>
-  //   setEventBet(address)
-  // );
+  const [eventState, setEventState] = useState();
+  const [eventBet, setEventBet] = useState();
+  marketContract.on("StateChanged", (state: any) => setEventState(state));
+  marketContract.on("ParticipantEntered", (address: any) =>
+    setEventBet(address)
+  );
 
   useEffect(() => {
     (async () => {
@@ -103,7 +91,7 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
         setAccruedInterest(parseFloat(accIntFormatted));
       }
     })();
-  }, [MarketStates, account, marketContract]);
+  }, [MarketStates, account, marketContract, eventState, eventBet]);
 
   useEffect(() => {
     (async () => {
@@ -148,13 +136,8 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
     })();
   }, [marketContract]);
 
-  //Place a bet
   const placeBet = async (e: FormEvent) => {
     e.preventDefault();
-    if (marketState !== "OPEN") {
-      console.log("marketState !== OPEN");
-      return;
-    }
 
     let amountToBetMultiplied = amountToBet * 1000000000000000000;
 
@@ -166,7 +149,7 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
         description: "Add more Dai to wallet",
         status: "warning",
         position: "bottom",
-        duration: 9000,
+        duration: 5000,
         isClosable: true,
       });
       return;
@@ -204,7 +187,7 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
         description: `${shortenAddress(tx.hash)}`,
         status: "info",
         position: "bottom",
-        duration: 9000,
+        duration: 5000,
         isClosable: true,
       });
 
@@ -214,7 +197,7 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
         description: `${shortenAddress(result.transactionHash)}`,
         status: "success",
         position: "bottom",
-        duration: 9000,
+        duration: 5000,
         isClosable: true,
       });
       setRerender(!forceRerender);
@@ -225,13 +208,12 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
         description: "Try increasing gas",
         status: "error",
         position: "bottom",
-        duration: 9000,
+        duration: 5000,
         isClosable: true,
       });
     }
   };
 
-  //Withdraw functionality once the smart contract code is available
   const withdraw = async () => {
     try {
       let tx = await marketContract.withdraw();
@@ -307,7 +289,10 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
         </Heading>
         <Flex justifyContent="center" margin="0">
           <Box width="60%">
-            <Chart marketContract={marketContract} />
+            <Chart
+              marketContract={marketContract}
+              forceRerender={forceRerender}
+            />
           </Box>
           {active && (
             <Form onSubmit={placeBet}>
@@ -327,9 +312,6 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
                   </Option>
                 ))}
               </Select>
-
-              {/* width: 140px;
-              height: 45px; */}
 
               <Button
                 textTransform="uppercase"
@@ -414,7 +396,11 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
                     color="white.100"
                     backgroundColor="red.100"
                     type="submit"
-                    isDisabled={amountToBet <= 0}
+                    isDisabled={
+                      amountToBet <= 0 ||
+                      marketState !== "OPEN" ||
+                      choice === ""
+                    }
                   >
                     Enter
                   </Button>

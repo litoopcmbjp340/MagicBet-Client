@@ -11,7 +11,12 @@ import {
   Legend,
 } from "recharts";
 
-export default function Chart({ marketContract }: any) {
+interface IChart {
+  marketContract: any;
+  forceRerender: boolean;
+}
+
+export default function Chart({ marketContract, forceRerender }: IChart) {
   const [data, setData] = useState<any>([]);
 
   useEffect(() => {
@@ -129,8 +134,7 @@ export default function Chart({ marketContract }: any) {
         setData([newData1, newData2, newData3, newData4, newData5]);
       }
     })();
-    //eslint-disable-next-line
-  }, [marketContract]);
+  }, [marketContract, forceRerender]);
 
   return <Graph data={data} />;
 }
