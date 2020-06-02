@@ -1,15 +1,15 @@
 import React from "react";
 import { Flex, Stack, Text } from "@chakra-ui/core";
-import { useWeb3React } from "@web3-react/core";
+// import { useWeb3React } from "@web3-react/core";
 
-import { getEthNetworkNameById } from "utils";
+// import { getEthNetworkNameById } from "utils";
 
 export default function SwitchChain({
   requiredChainId,
 }: {
   requiredChainId: number;
 }) {
-  const { chainId } = useWeb3React();
+  // const { chainId } = useWeb3React();
 
   return (
     <Flex

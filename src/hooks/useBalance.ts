@@ -11,6 +11,7 @@ enum DataType {
   BlockNumber,
   ETHBalance,
   TokenBalance,
+  TokenAllowance,
 }
 
 function getETHBalance(
@@ -110,4 +111,41 @@ export function useKeepSWRDataLiveAsBlocksArrive(
   useEffect(() => {
     mutateRef.current();
   }, [data]);
+}
+
+function getTokenAllowance(
+  contract: Contract,
+  token: Token
+): (owner: string, spender: string) => Promise<TokenAmount> {
+  return async (owner: string, spender: string): Promise<TokenAmount> =>
+    contract
+      .allowance(owner, spender)
+      .then(
+        (balance: { toString: () => string }) =>
+          new TokenAmount(token, balance.toString())
+      );
+}
+
+export function useTokenAllowance(
+  token?: Token,
+  owner?: string,
+  spender?: string
+): responseInterface<TokenAmount, any> {
+  const contract = useContract(token?.address, IERC20.abi);
+  const shouldFetch =
+    !!contract && typeof owner === "string" && typeof spender === "string";
+  const result = useSWR(
+    shouldFetch
+      ? [
+          owner,
+          spender,
+          token!.chainId,
+          token!.address,
+          DataType.TokenAllowance,
+        ]
+      : null,
+    getTokenAllowance(contract!, token!)
+  );
+  useKeepSWRDataLiveAsBlocksArrive(result.mutate);
+  return result;
 }

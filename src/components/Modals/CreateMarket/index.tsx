@@ -18,7 +18,6 @@ import {
 
 import { Spinner } from "@chakra-ui/core";
 
-import { ContractContext } from "state/contracts/Context";
 import { useContract } from "hooks/useContract";
 
 import BTMarketFactoryContract from "abis/BTMarketFactory.json";
@@ -27,7 +26,6 @@ import addresses, { KOVAN_ID } from "utils/addresses";
 const factoryAddress = addresses[KOVAN_ID].marketFactory;
 
 const CreateMarket = ({ isOpen }: any) => {
-  const { contractState } = useContext(ContractContext);
   const { modalState, modalDispatch } = useContext(ModalContext);
 
   const factoryContract = useContract(
@@ -102,162 +100,160 @@ const CreateMarket = ({ isOpen }: any) => {
   }
 
   return (
-    <>
-      <Modal isOpen={isOpen} isCentered>
-        <ModalOverlay />
+    <Modal isOpen={isOpen} isCentered>
+      <ModalOverlay />
 
-        <ModalContent backgroundColor="light.100" borderRadius="0.25rem">
-          {loading ? (
-            <Flex justifyContent="center" my="1rem" mx="0">
-              <Spinner color="primary.100" size="xl" thickness="4px" />
-            </Flex>
-          ) : (
-            <>
-              <ModalHeader>Create a Market</ModalHeader>
-              <ModalCloseButton
-                onClick={() =>
-                  modalDispatch({
-                    type: "TOGGLE_CREATE_MARKET_MODAL",
-                    payload: !modalState.createMarketModalIsOpen,
-                  })
-                }
-              />
-              <ModalBody>
-                <form onSubmit={createMarket}>
-                  <FormControl marginBottom="1rem" isInvalid={errors.name}>
-                    <FormLabel color="#777" htmlFor="marketEventName">
-                      Market Event Name
-                    </FormLabel>
-                    <Input
-                      borderColor="secondary.100"
-                      name="marketEventName"
-                      type="text"
-                      isRequired
-                      placeholder={marketEventName}
-                      value={marketEventName}
-                      ref={register({ validate: validateMarketEventName })}
-                      onChange={(e: any) => setMarketEventName(e.target.value)}
-                    />
-                    <FormErrorMessage>
-                      {errors.name && errors.name.message}
-                    </FormErrorMessage>
-                  </FormControl>
+      <ModalContent backgroundColor="light.100" borderRadius="0.25rem">
+        {loading ? (
+          <Flex justifyContent="center" my="1rem" mx="0">
+            <Spinner color="primary.100" size="xl" thickness="4px" />
+          </Flex>
+        ) : (
+          <>
+            <ModalHeader>Create a Market</ModalHeader>
+            <ModalCloseButton
+              onClick={() =>
+                modalDispatch({
+                  type: "TOGGLE_CREATE_MARKET_MODAL",
+                  payload: !modalState.createMarketModalIsOpen,
+                })
+              }
+            />
+            <ModalBody>
+              <form onSubmit={createMarket}>
+                <FormControl marginBottom="1rem" isInvalid={errors.name}>
+                  <FormLabel color="#777" htmlFor="marketEventName">
+                    Market Event Name
+                  </FormLabel>
+                  <Input
+                    borderColor="secondary.100"
+                    name="marketEventName"
+                    type="text"
+                    isRequired
+                    placeholder={marketEventName}
+                    value={marketEventName}
+                    ref={register({ validate: validateMarketEventName })}
+                    onChange={(e: any) => setMarketEventName(e.target.value)}
+                  />
+                  <FormErrorMessage>
+                    {errors.name && errors.name.message}
+                  </FormErrorMessage>
+                </FormControl>
 
-                  <FormControl marginBottom="1rem">
-                    <FormLabel color="#777" htmlFor="realitioQuestion">
-                      Realit.io Question
+                <FormControl marginBottom="1rem">
+                  <FormLabel color="#777" htmlFor="realitioQuestion">
+                    Realit.io Question
+                  </FormLabel>
+                  <Input
+                    borderColor="secondary.100"
+                    name="realitioQuestion"
+                    type="text"
+                    isRequired
+                    value={realitioQuestion}
+                    onChange={(e: any) => setRealitioQuestion(e.target.value)}
+                  />
+                </FormControl>
+                <FormControl marginBottom="1rem">
+                  <FormLabel color="#777" htmlFor="arbitrator">
+                    Arbitrator
+                  </FormLabel>
+                  <Input
+                    borderColor="secondary.100"
+                    name="arbitrator"
+                    type="text"
+                    isRequired
+                    value={arbitrator}
+                    onChange={(e: any) => setArbitrator(e.target.value)}
+                  />
+                </FormControl>
+                <Flex width="100%" marginBottom="1rem">
+                  <FormControl marginRight="0.5rem">
+                    <FormLabel color="#777" htmlFor="marketOpeningTime">
+                      Opening
+                    </FormLabel>
+                    <DatePicker
+                      selected={new Date(marketOpeningTime * 1000)}
+                      onChange={(date: Date) =>
+                        setMarketOpeningTime(date.getTime() / 1000)
+                      }
+                      id="marketOpeningTime"
+                    />
+                  </FormControl>
+                  <FormControl marginRight="0.5rem">
+                    <FormLabel color="#777" htmlFor="marketLockingTime">
+                      Locking
+                    </FormLabel>
+                    <DatePicker
+                      selected={new Date(marketLockingTime * 1000)}
+                      onChange={(date: Date) =>
+                        setMarketLockingTime(date.getTime() / 1000)
+                      }
+                      id="marketLockingTime"
+                    />
+                  </FormControl>
+                  <FormControl marginRight="0.5rem">
+                    <FormLabel color="#777" htmlFor="marketResolutionTime">
+                      Resolution
+                    </FormLabel>
+                    <DatePicker
+                      selected={new Date(marketResolutionTime * 1000)}
+                      onChange={(date: Date) =>
+                        setMarketResolutionTime(date.getTime() / 1000)
+                      }
+                      id="marketResolutionTime"
+                    />
+                  </FormControl>
+                </Flex>
+                <Flex width="100%" marginBottom="1rem">
+                  <FormControl width="25%" marginRight="0.5rem">
+                    <FormLabel color="#777" htmlFor="timeout">
+                      Timeout
                     </FormLabel>
                     <Input
                       borderColor="secondary.100"
-                      name="realitioQuestion"
-                      type="text"
+                      name="timeout"
+                      type="number"
                       isRequired
-                      value={realitioQuestion}
-                      onChange={(e: any) => setRealitioQuestion(e.target.value)}
+                      value={timeout}
+                      onChange={(e: any) => setTimeout(e.target.value)}
                     />
                   </FormControl>
-                  <FormControl marginBottom="1rem">
-                    <FormLabel color="#777" htmlFor="arbitrator">
-                      Arbitrator
+                  <FormControl width="75%">
+                    <FormLabel color="#777" htmlFor="tokens">
+                      Outcomes
                     </FormLabel>
                     <Input
                       borderColor="secondary.100"
-                      name="arbitrator"
                       type="text"
+                      name="tokens"
                       isRequired
-                      value={arbitrator}
-                      onChange={(e: any) => setArbitrator(e.target.value)}
+                      placeholder="Token"
+                      value={outcomes}
+                      onChange={(e: any) => setOutcomes(e.target.value)}
                     />
                   </FormControl>
-                  <Flex width="100%" marginBottom="1rem">
-                    <FormControl marginRight="0.5rem">
-                      <FormLabel color="#777" htmlFor="marketOpeningTime">
-                        Opening
-                      </FormLabel>
-                      <DatePicker
-                        selected={new Date(marketOpeningTime * 1000)}
-                        onChange={(date: Date) =>
-                          setMarketOpeningTime(date.getTime() / 1000)
-                        }
-                        id="marketOpeningTime"
-                      />
-                    </FormControl>
-                    <FormControl marginRight="0.5rem">
-                      <FormLabel color="#777" htmlFor="marketLockingTime">
-                        Locking
-                      </FormLabel>
-                      <DatePicker
-                        selected={new Date(marketLockingTime * 1000)}
-                        onChange={(date: Date) =>
-                          setMarketLockingTime(date.getTime() / 1000)
-                        }
-                        id="marketLockingTime"
-                      />
-                    </FormControl>
-                    <FormControl marginRight="0.5rem">
-                      <FormLabel color="#777" htmlFor="marketResolutionTime">
-                        Resolution
-                      </FormLabel>
-                      <DatePicker
-                        selected={new Date(marketResolutionTime * 1000)}
-                        onChange={(date: Date) =>
-                          setMarketResolutionTime(date.getTime() / 1000)
-                        }
-                        id="marketResolutionTime"
-                      />
-                    </FormControl>
-                  </Flex>
-                  <Flex width="100%" marginBottom="1rem">
-                    <FormControl width="25%" marginRight="0.5rem">
-                      <FormLabel color="#777" htmlFor="timeout">
-                        Timeout
-                      </FormLabel>
-                      <Input
-                        borderColor="secondary.100"
-                        name="timeout"
-                        type="number"
-                        isRequired
-                        value={timeout}
-                        onChange={(e: any) => setTimeout(e.target.value)}
-                      />
-                    </FormControl>
-                    <FormControl width="75%">
-                      <FormLabel color="#777" htmlFor="tokens">
-                        Outcomes
-                      </FormLabel>
-                      <Input
-                        borderColor="secondary.100"
-                        type="text"
-                        name="tokens"
-                        isRequired
-                        placeholder="Token"
-                        value={outcomes}
-                        onChange={(e: any) => setOutcomes(e.target.value)}
-                      />
-                    </FormControl>
-                  </Flex>
-                  <Button
-                    backgroundColor="dark.100"
-                    borderRadius="0.33rem"
-                    color="light.100"
-                    textAlign="center"
-                    padding="0.8rem"
-                    marginBottom="1rem"
-                    width="100%"
-                    cursor="pointer"
-                    _hover={{ backgroundColor: "primary.100" }}
-                    isLoading={formState.isSubmitting}
-                    type="submit"
-                  >
-                    Create Market
-                  </Button>
-                </form>
-              </ModalBody>
-            </>
-          )}
-        </ModalContent>
-      </Modal>
-    </>
+                </Flex>
+                <Button
+                  backgroundColor="dark.100"
+                  borderRadius="0.33rem"
+                  color="light.100"
+                  textAlign="center"
+                  padding="0.8rem"
+                  marginBottom="1rem"
+                  width="100%"
+                  cursor="pointer"
+                  _hover={{ backgroundColor: "primary.100" }}
+                  isLoading={formState.isSubmitting}
+                  type="submit"
+                >
+                  Create Market
+                </Button>
+              </form>
+            </ModalBody>
+          </>
+        )}
+      </ModalContent>
+    </Modal>
   );
 };
 

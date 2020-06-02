@@ -22,8 +22,12 @@ import styled from "@emotion/styled";
 import Info from "components/Modals/Info";
 import Chart from "./Chart";
 import { shortenAddress } from "utils";
-
-import { useETHBalance } from "hooks/useBalance";
+import {
+  useETHBalance,
+  useTokenBalance,
+  useTokenAllowance,
+} from "hooks/useBalance";
+import { useTokens } from "utils/tokens";
 
 const GraphWrapper = styled.div`
   @media (max-width: 900px) {
@@ -34,6 +38,9 @@ const GraphWrapper = styled.div`
 const MarketCard = ({ marketContract, daiContract }: any) => {
   const { active, account, library } = useWeb3React<Web3Provider>();
   const { data } = useETHBalance(account!, false);
+  const tokens = useTokens();
+  const daiToken = tokens[0][5];
+  const { data: tokenData } = useTokenBalance(daiToken, account!, false);
   const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
   // const Chart = dynamic(() => import("./Chart"));
@@ -49,8 +56,6 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
   const [outcomes, setOutcomes] = useState<any>([]);
   const [daiApproved, setDaiApproved] = useState<boolean>(false);
   const [forceRerender, setRerender] = useState<boolean>(false);
-  const [etherBalance, setEtherBalance] = useState<any>();
-  const [daiBalance, setDaiBalance] = useState<any>();
   const [usingDai, setUsingDai] = useState<boolean>(true);
 
   const [eventState, setEventState] = useState();
@@ -81,31 +86,19 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
         setMarketResolutionTime(_marketResolutionTime);
         setPrompt(_eventName);
         const accIntFormatted = utils.formatEther(_accruedInterest);
-        let val = parseFloat(accIntFormatted);
+        const val = parseFloat(accIntFormatted);
         setAccruedInterest(val);
       }
     })();
   }, [MarketStates, account, marketContract, eventState, eventBet]);
 
-  //TODO: CLEAN UP...
   useEffect(() => {
     (async () => {
       if (account && library && daiContract) {
-        library
-          .getBalance(account)
-          .then((etherBalance: { toString: () => string }) => {
-            let formattedEther = utils.formatUnits(etherBalance.toString(), 18);
-            let formattedEtherBalance = parseFloat(formattedEther);
-            setEtherBalance(formattedEtherBalance.toFixed(2));
-          });
-
-        let daiBalance = await daiContract.balanceOf(account);
-        let formattedDai = utils.formatUnits(daiBalance, 18);
-
-        setDaiBalance(formattedDai);
         const getAllowance = async () => {
           return await daiContract.allowance(account, marketContract.address);
         };
+        // const { data: _allowance } = useTokenAllowance(daiToken, account, marketContract.address)
         if (account) {
           getAllowance().then((allowance) => {
             if (allowance.toString() !== "0") setDaiApproved(true);
@@ -115,7 +108,7 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
     })();
   }, [account, daiContract, library, marketContract.address]);
 
-  //TODO: CLEAN UP...
+  //TODO: CLEAN
   useEffect(() => {
     (async () => {
       let numberOfOutcomes = await marketContract.numberOfOutcomes();
@@ -353,7 +346,9 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
                       color="dark.100"
                       fontSize="1.25rem"
                     >
-                      {daiBalance ? daiBalance : "-"}
+                      {tokenData
+                        ? tokenData.toSignificant(6, { groupSeparator: "," })
+                        : "-"}
                     </Flex>
                   ) : (
                     <Flex
@@ -365,7 +360,6 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
                       {data
                         ? data.toSignificant(4, { groupSeparator: "," })
                         : "-"}
-                      {/* {etherBalance ? etherBalance : "-"} */}
                     </Flex>
                   )}
 

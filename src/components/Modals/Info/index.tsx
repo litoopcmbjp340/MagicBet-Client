@@ -14,8 +14,8 @@ import {
 } from "@chakra-ui/core";
 
 import { shortenAddress } from "utils";
-import BTMarketContract from "abis/BTMarket.json";
 import { useFactoryContract } from "utils/getContract";
+import BTMarketContract from "abis/BTMarket.json";
 
 interface IOutcomeObject {
   name: string;

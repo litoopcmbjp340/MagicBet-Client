@@ -18,6 +18,7 @@ import {
 
 import { useEagerConnect } from "hooks/useEagerConnect";
 import { useInactiveListener } from "hooks/useInactiveListener";
+import { useThreeBox } from "hooks/useThreeBox";
 import { injected, getNetwork } from "utils/connectors";
 
 const Header = () => {
@@ -51,6 +52,8 @@ const Header = () => {
 
   useInactiveListener(!triedEager || !!activatingConnector);
 
+  const threeBox = useThreeBox(account);
+
   const MenuItem = ({ children }: any) => (
     <Text
       color="dark.100"
@@ -65,23 +68,7 @@ const Header = () => {
     </Text>
   );
 
-  useEffect(() => {
-    (async () => {
-      if (active) {
-        try {
-          const profile = await Box.getProfile(account);
-          if (profile.image) {
-            let imageHash = profile.image[0]["contentUrl"]["/"];
-            setImage(`https://ipfs.infura.io/ipfs/${imageHash}`);
-          }
-        } catch (error) {
-          console.error(error);
-        }
-      }
-    })();
-  }, [active, account]);
-
-  const bgColor = { light: "#252c41", dark: "#00ff00" };
+  // const bgColor = { light: "#252c41", dark: "#00ff00" };
 
   return (
     <>
@@ -113,7 +100,7 @@ const Header = () => {
           </Heading>
         </Flex>
         <Flex alignItems="center" justifyContent="flex-end">
-          <IconButton
+          {/* <IconButton
             aria-label={`Switch to ${
               colorMode === "light" ? "dark" : "light"
             } mode`}
@@ -124,7 +111,7 @@ const Header = () => {
             onClick={toggleColorMode}
             icon={colorMode === "light" ? "moon" : "sun"}
             _hover={{ bg: "Transparent" }}
-          />
+          /> */}
           <Link
             background="none"
             marginRight="1rem"

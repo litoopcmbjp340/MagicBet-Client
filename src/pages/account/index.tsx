@@ -5,7 +5,6 @@ import Box from "3box";
 import {
   Box as ChakraBox,
   Flex,
-  Image,
   Heading,
   Text,
   Button,
