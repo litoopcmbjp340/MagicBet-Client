@@ -30,34 +30,55 @@ function Market({ market }: { market: string }) {
   const [winningOutcome, setWinningOutcome] = useState<number>(0);
 
   useEffect(() => {
+    let isStale = false;
     (async () => {
-      const provider = new providers.Web3Provider(window.web3.currentProvider);
-      const wallet = provider.getSigner();
-      const marketContract: any = new Contract(
-        market,
-        BTMarketContract.abi,
-        wallet
-      );
-
-      const [_question, _questionId, _maxInterests, _marketResolutionTime, _winningOutcomeId] = await Promise.all([
-        marketContract.eventName(),
-        marketContract.questionId(),
-        marketContract.getMaxTotalInterest(),
-        marketContract.marketResolutionTime(),
-        marketContract.winningOutcome(),
-      ]);
-      let _winningOutcome;
-
-      if (_winningOutcomeId.toString() !== "69") {
-        _winningOutcome = await marketContract.outcomeNames(_winningOutcomeId);
+      let marketContract: any;
+      if (!isStale) {
+        const provider = new providers.Web3Provider(
+          window.web3.currentProvider
+        );
+        const wallet = provider.getSigner();
+        marketContract = new Contract(market, BTMarketContract.abi, wallet);
       }
 
-      setQuestion(_question);
-      setQuestionId(_questionId);
-      setMaxInterest(_maxInterests);
-      setMarketResolutionTime(_marketResolutionTime);
-      setWinningOutcome(_winningOutcome);
+      try {
+        const [
+          _question,
+          _questionId,
+          _maxInterests,
+          _marketResolutionTime,
+          _winningOutcomeId,
+        ] = await Promise.all([
+          marketContract.eventName(),
+          marketContract.questionId(),
+          marketContract.getMaxTotalInterest(),
+          marketContract.marketResolutionTime(),
+          marketContract.winningOutcome(),
+        ]);
+
+        let _winningOutcome;
+        if (_winningOutcomeId.toString() !== "69") {
+          _winningOutcome = await marketContract.outcomeNames(
+            _winningOutcomeId
+          );
+        }
+        if (!isStale) {
+          setQuestion(_question);
+          setQuestionId(_questionId);
+          setMaxInterest(_maxInterests);
+          setMarketResolutionTime(_marketResolutionTime);
+          setWinningOutcome(_winningOutcome);
+        }
+      } catch (error) {
+        if (!isStale) {
+          console.error(error);
+        }
+      }
     })();
+
+    return () => {
+      isStale = true;
+    };
   }, [market]);
 
   return (

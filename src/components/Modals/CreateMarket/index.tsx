@@ -1,12 +1,6 @@
 import React, { useState, useContext } from "react";
 import { useForm } from "react-hook-form";
 import DatePicker from "react-datepicker";
-
-import { ContractContext } from "state/contracts/Context";
-
-import { Spinner } from "@chakra-ui/core";
-import { useContract } from "utils/hooks";
-
 import {
   Modal,
   ModalOverlay,
@@ -21,6 +15,11 @@ import {
   Input,
   Flex,
 } from "@chakra-ui/core";
+
+import { Spinner } from "@chakra-ui/core";
+
+import { ContractContext } from "state/contracts/Context";
+import { useContract } from "hooks/useContract";
 
 import BTMarketFactoryContract from "abis/BTMarketFactory.json";
 import { ModalContext } from "state/modals/Context";
@@ -107,10 +106,10 @@ const CreateMarket = ({ isOpen }: any) => {
       <Modal isOpen={isOpen} isCentered>
         <ModalOverlay />
 
-        <ModalContent backgroundColor="white.100" borderRadius="0.25rem">
+        <ModalContent backgroundColor="light.100" borderRadius="0.25rem">
           {loading ? (
             <Flex justifyContent="center" my="1rem" mx="0">
-              <Spinner color="red.100" size="xl" thickness="4px" />
+              <Spinner color="primary.100" size="xl" thickness="4px" />
             </Flex>
           ) : (
             <>
@@ -130,7 +129,7 @@ const CreateMarket = ({ isOpen }: any) => {
                       Market Event Name
                     </FormLabel>
                     <Input
-                      borderColor="gray.100"
+                      borderColor="secondary.100"
                       name="marketEventName"
                       type="text"
                       isRequired
@@ -149,7 +148,7 @@ const CreateMarket = ({ isOpen }: any) => {
                       Realit.io Question
                     </FormLabel>
                     <Input
-                      borderColor="gray.100"
+                      borderColor="secondary.100"
                       name="realitioQuestion"
                       type="text"
                       isRequired
@@ -162,7 +161,7 @@ const CreateMarket = ({ isOpen }: any) => {
                       Arbitrator
                     </FormLabel>
                     <Input
-                      borderColor="gray.100"
+                      borderColor="secondary.100"
                       name="arbitrator"
                       type="text"
                       isRequired
@@ -177,7 +176,9 @@ const CreateMarket = ({ isOpen }: any) => {
                       </FormLabel>
                       <DatePicker
                         selected={new Date(marketOpeningTime * 1000)}
-                        onChange={(date: Date) => setMarketOpeningTime(date.getTime() / 1000)}
+                        onChange={(date: Date) =>
+                          setMarketOpeningTime(date.getTime() / 1000)
+                        }
                         id="marketOpeningTime"
                       />
                     </FormControl>
@@ -187,7 +188,9 @@ const CreateMarket = ({ isOpen }: any) => {
                       </FormLabel>
                       <DatePicker
                         selected={new Date(marketLockingTime * 1000)}
-                        onChange={(date: Date) => setMarketLockingTime(date.getTime() / 1000)}
+                        onChange={(date: Date) =>
+                          setMarketLockingTime(date.getTime() / 1000)
+                        }
                         id="marketLockingTime"
                       />
                     </FormControl>
@@ -197,7 +200,9 @@ const CreateMarket = ({ isOpen }: any) => {
                       </FormLabel>
                       <DatePicker
                         selected={new Date(marketResolutionTime * 1000)}
-                        onChange={(date: Date) => setMarketResolutionTime(date.getTime() / 1000)}
+                        onChange={(date: Date) =>
+                          setMarketResolutionTime(date.getTime() / 1000)
+                        }
                         id="marketResolutionTime"
                       />
                     </FormControl>
@@ -208,7 +213,7 @@ const CreateMarket = ({ isOpen }: any) => {
                         Timeout
                       </FormLabel>
                       <Input
-                        borderColor="gray.100"
+                        borderColor="secondary.100"
                         name="timeout"
                         type="number"
                         isRequired
@@ -221,7 +226,7 @@ const CreateMarket = ({ isOpen }: any) => {
                         Outcomes
                       </FormLabel>
                       <Input
-                        borderColor="gray.100"
+                        borderColor="secondary.100"
                         type="text"
                         name="tokens"
                         isRequired
@@ -232,15 +237,15 @@ const CreateMarket = ({ isOpen }: any) => {
                     </FormControl>
                   </Flex>
                   <Button
-                    backgroundColor="black.100"
+                    backgroundColor="dark.100"
                     borderRadius="0.33rem"
-                    color="white.100"
+                    color="light.100"
                     textAlign="center"
                     padding="0.8rem"
                     marginBottom="1rem"
                     width="100%"
                     cursor="pointer"
-                    _hover={{ backgroundColor: "red.100" }}
+                    _hover={{ backgroundColor: "primary.100" }}
                     isLoading={formState.isSubmitting}
                     type="submit"
                   >

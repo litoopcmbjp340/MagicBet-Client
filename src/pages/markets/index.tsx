@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import styled from "@emotion/styled";
 import { Flex, Box, Heading } from "@chakra-ui/core";
 
-import { useContract } from "utils/hooks";
-import Market from "./Market";
+import { useContract } from "hooks/useContract";
+import Market from "./market";
 import BTMarketFactoryContract from "abis/BTMarketFactory.json";
 import addresses, { KOVAN_ID } from "utils/addresses";
 
@@ -58,7 +58,7 @@ const Markets = () => {
 
   const ActiveMarket = ({ children }: any) => (
     <Box
-      backgroundColor="white.100"
+      backgroundColor="light.100"
       boxShadow="rgba(0, 0, 0, 0.04) 0 0 1.5rem 0"
       color="#1e2026"
       flex="1"
@@ -73,7 +73,7 @@ const Markets = () => {
   );
 
   return (
-    <Box backgroundColor="white.100" margin="0" paddingBottom="1rem">
+    <Box backgroundColor="light.100" margin="0" paddingBottom="1rem">
       <Flex
         marginBottom="-1px"
         flexDirection="column"
@@ -88,7 +88,7 @@ const Markets = () => {
           size="lg"
           fontSize="1.5rem"
           font-weight="500"
-          color="black.100"
+          color="dark.100"
         >
           Markets
         </Heading>

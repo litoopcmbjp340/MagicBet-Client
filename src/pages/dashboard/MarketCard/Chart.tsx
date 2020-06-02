@@ -21,6 +21,7 @@ export default function Chart({ marketContract, forceRerender }: IChart) {
 
   useEffect(() => {
     (async () => {
+      let isExpired = false;
       let numberOfOutcomes = await marketContract.numberOfOutcomes();
       let outcomeName: any;
       let newData1 = {
@@ -129,8 +130,13 @@ export default function Chart({ marketContract, forceRerender }: IChart) {
             newData5[outcomeName] = newData5[outcomeName] + item.amount;
           }
         });
+
         setData([newData1, newData2, newData3, newData4, newData5]);
       }
+
+      return () => {
+        isExpired = true;
+      };
     })();
   }, [marketContract, forceRerender]);
 

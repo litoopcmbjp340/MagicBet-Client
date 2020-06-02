@@ -11,7 +11,6 @@ const StyledLink = styled.a<{ active: boolean }>`
   padding: 1rem 0;
   cursor: pointer;
   text-decoration: none;
-
   color: ${(props) => (props.active ? "#f4f5f9" : "#dddfe6")};
   border-bottom-width: 2px;
   border-bottom-color: ${(props) => (props.active ? "#f4f5f9" : "transparent")};
@@ -35,7 +34,7 @@ const NavStrip = () => {
 
   return (
     <Wrapper>
-      <Box width="100%" margin="0 auto" bg="red.100">
+      <Box width="100%" margin="0 auto" bg="primary.100">
         <Flex as="nav" justifyContent="center">
           <Flex marginRight="2rem" fontSize="1.25rem">
             <Link href="/dashboard" passHref>

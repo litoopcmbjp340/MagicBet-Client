@@ -2,19 +2,19 @@ import React, { useState, useLayoutEffect, useEffect } from "react";
 import { NextComponentType } from "next";
 import NextApp from "next/app";
 import Head from "next/head";
-import { ThemeProvider } from "emotion-theming";
-import { ColorModeProvider, CSSReset } from "@chakra-ui/core";
+import { resolve } from "url";
+import { ColorModeProvider, CSSReset, ThemeProvider } from "@chakra-ui/core";
 import { Web3Provider } from "@ethersproject/providers";
 import { Web3ReactProvider, useWeb3React } from "@web3-react/core";
 import { ApolloProvider } from "@apollo/react-hooks";
 import { Global } from "@emotion/core";
 
-import theme, { GlobalStyle } from "theme";
 import Layout from "components/Layout";
-import { client } from "utils";
-import { ContractProvider } from "state/contracts/Context";
 import Error from "components/Error";
 import SwitchChain from "components/SwitchChain";
+import theme, { GlobalStyle } from "theme";
+import { client } from "utils";
+import { ContractProvider } from "state/contracts/Context";
 import { ModalProvider } from "state/modals/Context";
 
 import "../components/Modals/CreateMarket/react-datepicker.css";
@@ -30,18 +30,35 @@ function Application({ Component }: { Component: NextComponentType }) {
   }, []);
 
   const { error, chainId } = useWeb3React();
-  const requiredChainId = 42;
 
   return !painted ? null : (
-    <Layout>
-      {error ? (
-        <Error />
-      ) : chainId !== undefined && chainId !== requiredChainId ? (
-        <SwitchChain requiredChainId={requiredChainId} />
-      ) : (
-        <Component />
-      )}
-    </Layout>
+    <>
+      <Head>
+        <base
+          key="base"
+          href={
+            process.env.IPFS === "true"
+              ? resolve(
+                  window.location.origin,
+                  window.location.pathname.split("/").slice(0, 3).join("/") +
+                    "/"
+                )
+              : window.location.origin
+          }
+        />
+      </Head>
+      <ContractProvider>
+        <Layout>
+          {error ? (
+            <Error />
+          ) : chainId !== undefined && chainId !== 42 ? (
+            <SwitchChain requiredChainId={42} />
+          ) : (
+            <Component />
+          )}
+        </Layout>
+      </ContractProvider>
+    </>
   );
 }
 
@@ -76,19 +93,17 @@ export default class App extends NextApp {
         </Head>
 
         <Web3ReactProvider getLibrary={getLibrary}>
-          <ContractProvider>
-            <ModalProvider>
-              <ApolloProvider client={client}>
-                <ThemeProvider theme={theme}>
-                  {/* <ColorModeProvider> */}
+          <ModalProvider>
+            <ApolloProvider client={client}>
+              <ThemeProvider theme={theme}>
+                <ColorModeProvider>
                   <CSSReset />
                   <Global styles={GlobalStyle} />
                   <Application Component={Component} />
-                  {/* </ColorModeProvider> */}
-                </ThemeProvider>
-              </ApolloProvider>
-            </ModalProvider>
-          </ContractProvider>
+                </ColorModeProvider>
+              </ThemeProvider>
+            </ApolloProvider>
+          </ModalProvider>
         </Web3ReactProvider>
       </>
     );

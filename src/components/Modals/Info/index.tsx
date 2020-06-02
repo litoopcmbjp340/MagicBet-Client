@@ -1,5 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
-import { ContractContext } from "state/contracts/Context";
+import React, { useState, useEffect } from "react";
 import { providers, utils, Contract } from "ethers";
 import { v4 as uuidv4 } from "uuid";
 import {
@@ -16,9 +15,7 @@ import {
 
 import { shortenAddress } from "utils";
 import BTMarketContract from "abis/BTMarket.json";
-import BTMarketFactoryContract from "abis/BTMarketFactory.json";
-import addresses, { KOVAN_ID } from "utils/addresses";
-import { useContract } from "utils/hooks";
+import { useFactoryContract } from "utils/getContract";
 
 interface IOutcomeObject {
   name: string;
@@ -30,14 +27,8 @@ interface ICreateMarketModal {
   onClose: () => void;
 }
 
-const factoryAddress = addresses[KOVAN_ID].marketFactory;
-
 const InfoModal = ({ isOpen, onClose }: ICreateMarketModal) => {
-  const factoryContract = useContract(
-    factoryAddress,
-    BTMarketFactoryContract.abi,
-    true
-  );
+  const factoryContract = useFactoryContract();
 
   const MarketStates = ["SETUP", "WAITING", "OPEN", "LOCKED", "WITHDRAW"];
   const [marketState, setMarketState] = useState<string>("");
@@ -47,15 +38,15 @@ const InfoModal = ({ isOpen, onClose }: ICreateMarketModal) => {
   const [outcomeNamesAndAmounts, setOutcomeNamesAndAmounts] = useState<any>([]);
 
   useEffect(() => {
-    (async () => {
-      if (factoryContract) {
+    let isExpired = false;
+    const fetchData = async () => {
+      if (factoryContract && !isExpired) {
         try {
           const provider = new providers.Web3Provider(
             window.web3.currentProvider
           );
 
           let deployedMarkets = await factoryContract.getMarkets();
-
           let mostRecentlyDeployedAddress =
             deployedMarkets[deployedMarkets.length - 1];
 
@@ -66,33 +57,35 @@ const InfoModal = ({ isOpen, onClose }: ICreateMarketModal) => {
               provider
             );
 
-            const marketState = await marketContract.state();
-            setMarketState(MarketStates[marketState]);
-            const owner = await marketContract.owner();
-            setOwner(owner);
-            const numberOfParticipants = await marketContract.getMarketSize();
-            setNumberOfParticipants(numberOfParticipants.toNumber());
-            const pot = await marketContract.totalBets();
-            setPot(utils.formatUnits(pot.toString(), 18));
+            const [
+              _marketState,
+              _owner,
+              _numberOfParticipants,
+              _pot,
+            ] = await Promise.all([
+              marketContract.state(),
+              marketContract.owner(),
+              marketContract.getMarketSize(),
+              marketContract.totalBets(),
+            ]);
+            setMarketState(MarketStates[_marketState]);
+            setOwner(_owner);
+            setNumberOfParticipants(_numberOfParticipants.toNumber());
+            setPot(utils.formatUnits(_pot.toString(), 18));
 
             let numberOfOutcomes = await marketContract.numberOfOutcomes();
-
             if (numberOfOutcomes !== 0) {
               let newOutcomesArray = [];
               for (let i = 0; i < numberOfOutcomes; i++) {
                 let newOutcome: IOutcomeObject = { name: "", bets: 0 };
 
-                const outcomeName = await marketContract.outcomeNames(i);
-                newOutcome.name = outcomeName;
+                newOutcome.name = await marketContract.outcomeNames(i);
 
-                //outcome bets
-                const numberOfBets = await marketContract.totalBetsPerOutcome(
-                  i
-                );
-                const fortmatted = utils.formatUnits(numberOfBets, 18);
+                const numOfBets = await marketContract.totalBetsPerOutcome(i);
+                const fortmatted = utils.formatUnits(numOfBets, 18);
                 const float = parseFloat(fortmatted);
-                const bet = Math.ceil(float);
-                newOutcome.bets = bet;
+                newOutcome.bets = Math.ceil(float);
+
                 newOutcomesArray.push(newOutcome);
               }
               setOutcomeNamesAndAmounts(newOutcomesArray);
@@ -102,13 +95,19 @@ const InfoModal = ({ isOpen, onClose }: ICreateMarketModal) => {
           console.error(error);
         }
       }
-    })();
+    };
+
+    fetchData();
+
+    return () => {
+      isExpired = true;
+    };
   }, [MarketStates, factoryContract]);
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} isCentered>
       <ModalOverlay />
-      <ModalContent backgroundColor="white.100" borderRadius="0.25rem">
+      <ModalContent backgroundColor="light.100" borderRadius="0.25rem">
         <ModalHeader>Market Stats</ModalHeader>
         <ModalCloseButton />
         <ModalBody>

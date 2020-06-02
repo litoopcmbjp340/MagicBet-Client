@@ -7,8 +7,8 @@ import IERC20 from "abis/IERC20.json";
 import addresses, { KOVAN_ID } from "utils/addresses";
 import DaiMockup from "abis/DaiMockup.json";
 
-const factoryAddress = addresses[KOVAN_ID].marketFactory;
-const daiAddress = addresses[KOVAN_ID].tokens.DAI;
+// const factoryAddress = addresses[KOVAN_ID].marketFactory;
+// const daiAddress = addresses[KOVAN_ID].tokens.DAI;
 
 const initialContractState: any = [];
 

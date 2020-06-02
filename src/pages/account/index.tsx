@@ -37,20 +37,20 @@ const Account = () => {
   }, [active, account]);
 
   return (
-    <ChakraBox backgroundColor="white.100" paddingBottom="1rem">
+    <ChakraBox backgroundColor="light.100" paddingBottom="1rem">
       <ChakraBox>
         <Flex
           justifyContent="space-between"
           alignItems="center"
           padding="1rem 1.5rem"
         >
-          <Heading as="h3" fontSize="1.5rem" fontWeight="500" color="black.100">
+          <Heading as="h3" fontSize="1.5rem" fontWeight="500" color="dark.100">
             Account
           </Heading>
         </Flex>
         {active && (
           <>
-            {false ? (
+            {box ? (
               <Flex
                 flexWrap="wrap"
                 flexDirection="column"
@@ -67,7 +67,7 @@ const Account = () => {
                 >
                   <Heading
                     as="h2"
-                    color="red.100"
+                    color="primary.100"
                     fontSize="1.4rem"
                     fontWeight="800"
                     margin="0"
@@ -75,7 +75,7 @@ const Account = () => {
                     {name}
                   </Heading>
                   <Text
-                    color="gray.100"
+                    color="secondary.100"
                     fontSize="1rem"
                     fontWeight="600"
                     lineHeight="1.2rem"
@@ -85,7 +85,7 @@ const Account = () => {
                     {account}
                   </Text>
                   <Text
-                    color="gray.100"
+                    color="secondary.100"
                     fontSize="1rem"
                     fontWeight="600"
                     lineHeight="1.2rem"

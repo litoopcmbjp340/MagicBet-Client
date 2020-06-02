@@ -16,7 +16,7 @@ export default function SwitchChain({
       flexGrow={1}
       alignItems="center"
       justifyContent="center"
-      backgroundColor="white.100"
+      backgroundColor="light.100"
       paddingBottom="1rem"
     >
       <Stack direction="column" alignItems="center">

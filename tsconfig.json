@@ -16,6 +16,6 @@
     "jsx": "preserve",
     "baseUrl": "./src"
   },
-  "include": ["src"],
+  "include": ["src", "public/stories"],
   "exclude": ["node_modules"]
 }

@@ -1,11 +1,9 @@
 import React from "react";
-import Header from ".";
-// import { action } from "@storybook/addon-actions";
+import Header from "./index";
 
 export default {
   component: Header,
   title: "Header",
-  excludeStories: /.*Data$/,
 };
 
 // export const actionsData = {

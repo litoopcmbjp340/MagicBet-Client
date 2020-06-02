@@ -81,10 +81,10 @@ export default {
   ...theme,
   colors: {
     ...theme.colors,
-    black: { 100: "#252c41" },
-    white: { 100: "#f4f5f9" },
-    gray: { 100: "#dddfe6" },
-    red: { 100: "#f1404b" },
+    dark: { 100: "#252c41" },
+    light: { 100: "#f4f5f9" },
+    primary: { 100: "#f1404b" },
+    secondary: { 100: "#dddfe6" },
   },
   icons: {
     ...theme.icons,

@@ -8,9 +8,7 @@ import {
   Box,
   Flex,
   Heading,
-  Icon,
   IconButton,
-  Switch,
   Input,
   Button,
   Text,
@@ -18,12 +16,14 @@ import {
   useDisclosure,
   useToast,
 } from "@chakra-ui/core";
-import dynamic from "next/dynamic";
+// import dynamic from "next/dynamic";
 import styled from "@emotion/styled";
 
 import Info from "components/Modals/Info";
 import Chart from "./Chart";
 import { shortenAddress } from "utils";
+
+import { useETHBalance } from "hooks/useBalance";
 
 const GraphWrapper = styled.div`
   @media (max-width: 900px) {
@@ -33,15 +33,17 @@ const GraphWrapper = styled.div`
 
 const MarketCard = ({ marketContract, daiContract }: any) => {
   const { active, account, library } = useWeb3React<Web3Provider>();
+  const { data } = useETHBalance(account!, false);
   const toast = useToast();
-  // const Chart = dynamic(() => import("./Chart.txt"));
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  // const Chart = dynamic(() => import("./Chart"));
 
   const [amountToBet, setAmountToBet] = useState<number>(0);
   const [accruedInterest, setAccruedInterest] = useState<number>(0);
   const [marketResolutionTime, setMarketResolutionTime] = useState<number>(0);
   const MarketStates = ["SETUP", "WAITING", "OPEN", "LOCKED", "WITHDRAW"];
   const [marketState, setMarketState] = useState<string>("");
-  const [prompt, setPrompt] = useState<any>("");
+  const [prompt, setPrompt] = useState<string>("");
   const [owner, setOwner] = useState<string>("");
   const [choice, setChoice] = useState<string>("");
   const [outcomes, setOutcomes] = useState<any>([]);
@@ -51,9 +53,6 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
   const [daiBalance, setDaiBalance] = useState<any>();
   const [usingDai, setUsingDai] = useState<boolean>(true);
 
-  const { isOpen, onOpen, onClose } = useDisclosure();
-
-  //!FOR EVENTS
   const [eventState, setEventState] = useState();
   const [eventBet, setEventBet] = useState();
   marketContract.on("StateChanged", (state: any) => setEventState(state));
@@ -64,21 +63,31 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
   useEffect(() => {
     (async () => {
       if (marketContract) {
-        const marketState = await marketContract.state();
-        setMarketState(MarketStates[marketState]);
-        const owner = await marketContract.owner();
-        setOwner(owner);
-        const marketResolutionTime = await marketContract.marketResolutionTime();
-        setMarketResolutionTime(marketResolutionTime);
-        const eventName = await marketContract.eventName();
-        setPrompt(eventName);
-        const accruedInterest = await marketContract.getTotalInterest();
-        const accIntFormatted = utils.formatEther(accruedInterest.toNumber());
-        setAccruedInterest(parseFloat(accIntFormatted));
+        const [
+          _marketState,
+          _owner,
+          _marketResolutionTime,
+          _eventName,
+          _accruedInterest,
+        ] = await Promise.all([
+          marketContract.state(),
+          marketContract.owner(),
+          marketContract.marketResolutionTime(),
+          marketContract.eventName(),
+          marketContract.getTotalInterest(),
+        ]);
+        setMarketState(MarketStates[_marketState]);
+        setOwner(_owner);
+        setMarketResolutionTime(_marketResolutionTime);
+        setPrompt(_eventName);
+        const accIntFormatted = utils.formatEther(_accruedInterest);
+        let val = parseFloat(accIntFormatted);
+        setAccruedInterest(val);
       }
     })();
   }, [MarketStates, account, marketContract, eventState, eventBet]);
 
+  //TODO: CLEAN UP...
   useEffect(() => {
     (async () => {
       if (account && library && daiContract) {
@@ -92,6 +101,7 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
 
         let daiBalance = await daiContract.balanceOf(account);
         let formattedDai = utils.formatUnits(daiBalance, 18);
+
         setDaiBalance(formattedDai);
         const getAllowance = async () => {
           return await daiContract.allowance(account, marketContract.address);
@@ -105,6 +115,7 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
     })();
   }, [account, daiContract, library, marketContract.address]);
 
+  //TODO: CLEAN UP...
   useEffect(() => {
     (async () => {
       let numberOfOutcomes = await marketContract.numberOfOutcomes();
@@ -221,9 +232,13 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
 
   return !prompt ? null : (
     <>
-      <Box backgroundColor="gray.100" borderRadius="0.5rem" margin="0 1.5rem">
+      <Box
+        backgroundColor="secondary.100"
+        borderRadius="0.5rem"
+        margin="0 1.5rem"
+      >
         <Flex
-          borderBottom="1px solid black.100"
+          borderBottom="1px solid dark.100"
           alignItems="center"
           justifyContent="space-between"
           padding="0.5rem 1rem"
@@ -292,7 +307,7 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
                   height="3rem"
                   margin="0"
                   color="#777"
-                  borderColor="gray.100"
+                  borderColor="secondary.100"
                   value={choice}
                   onChange={(e: any) => setChoice(e.target.value)}
                 >
@@ -308,7 +323,7 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
                   textTransform="uppercase"
                   fontWeight="500"
                   color="#777"
-                  backgroundColor="white.100"
+                  backgroundColor="light.100"
                   border="none"
                   box-shadow="0 0.5rem 1rem rgba(0, 0, 0, 0.1)"
                   transition="all 0.3s ease 0s"
@@ -317,9 +332,9 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
                   my="1.25rem"
                   type="button"
                   _hover={{
-                    backgroundColor: "red.100",
+                    backgroundColor: "primary.100",
                     boxShadow: "0px 15px 20px rgba(0, 0, 0, 0.3)",
-                    color: "white.100",
+                    color: "light.100",
                     transform: "translateY(-5px)",
                   }}
                   onClick={() => setUsingDai(!usingDai)}
@@ -335,7 +350,7 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
                     <Flex
                       justifyContent="center"
                       alignItems="center"
-                      color="black.100"
+                      color="dark.100"
                       fontSize="1.25rem"
                     >
                       {daiBalance ? daiBalance : "-"}
@@ -344,17 +359,20 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
                     <Flex
                       justifyContent="center"
                       alignItems="center"
-                      color="black.100"
+                      color="dark.100"
                       fontSize="1.25rem"
                     >
-                      {etherBalance ? etherBalance : "-"}
+                      {data
+                        ? data.toSignificant(4, { groupSeparator: "," })
+                        : "-"}
+                      {/* {etherBalance ? etherBalance : "-"} */}
                     </Flex>
                   )}
 
                   <Input
                     borderStyle="none"
-                    backgroundColor="gray.100"
-                    color="black.100"
+                    backgroundColor="secondary.100"
+                    color="dark.100"
                     fontSize="70px"
                     my="1"
                     py="3rem"
@@ -383,9 +401,9 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
                       cursor="pointer"
                       fontSize="1.33rem"
                       width="8rem"
-                      border="2px solid red.100"
-                      color="white.100"
-                      backgroundColor="red.100"
+                      border="2px solid primary.100"
+                      color="light.100"
+                      backgroundColor="primary.100"
                       type="submit"
                       isDisabled={
                         amountToBet <= 0 ||
@@ -402,10 +420,10 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
                         mt="1rem"
                         width="8rem"
                         border="1px"
-                        borderColor="red.100"
+                        borderColor="primary.100"
                         borderRadius="0.5rem"
-                        color="red.100"
-                        backgroundColor="white.100"
+                        color="primary.100"
+                        backgroundColor="light.100"
                         type="button"
                         onClick={() => withdraw()}
                       >
@@ -422,36 +440,36 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
           <Flex justifyContent="center" flexDirection="column" mt="1rem">
             <Button
               my="0.25rem"
-              backgroundColor="black.100"
-              color="white.100"
+              backgroundColor="dark.100"
+              color="light.100"
               textAlign="center"
               text-decoration="none"
               font-size="1rem"
-              _hover={{ bg: "red.100" }}
+              _hover={{ bg: "primary.100" }}
               onClick={async () => await marketContract.incrementState()}
             >
               Increment Market State
             </Button>
             <Button
               my="0.25rem"
-              backgroundColor="black.100"
-              color="white.100"
+              backgroundColor="dark.100"
+              color="light.100"
               textAlign="center"
               text-decoration="none"
               font-size="1rem"
-              _hover={{ bg: "red.100" }}
+              _hover={{ bg: "primary.100" }}
               onClick={async () => await marketContract.determineWinner()}
             >
               Get Winner from Oracle
             </Button>
             <Button
               my="0.25rem"
-              backgroundColor="black.100"
-              color="white.100"
+              backgroundColor="dark.100"
+              color="light.100"
               textAlign="center"
               text-decoration="none"
               font-size="1rem"
-              _hover={{ bg: "red.100" }}
+              _hover={{ bg: "primary.100" }}
               onClick={async () => await marketContract.disableContract()}
             >
               Pause (Disable) Contract

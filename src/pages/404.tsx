@@ -8,7 +8,7 @@ const NotFound = () => {
       justifyContent="space-evenly"
       textAlign="center"
       height="100%"
-      backgroundColor="white.100"
+      backgroundColor="light.100"
       paddingBottom="1rem"
     >
       <Heading as="h1">Page Not Found</Heading>

@@ -1,5 +1,7 @@
 import ApolloClient from "apollo-boost";
 import { utils, Contract } from "ethers";
+import { useWeb3React } from "@web3-react/core";
+import { Web3Provider } from "@ethersproject/providers";
 import DaiMockup from "abis/DaiMockup.json";
 import addresses, { KOVAN_ID } from "utils/addresses";
 const daiAddress = addresses[KOVAN_ID].tokens.DAI;
@@ -19,8 +21,7 @@ export const mintDai = async (wallet: any) => {
     DaiMockup.abi,
     wallet
   );
-  let daiToMint = 100;
-  let formattedDaiToMint = utils.parseUnits(daiToMint.toString(), 18);
+  let formattedDaiToMint = utils.parseUnits("100", 18);
   try {
     let tx = await daiMockupContract.mint(formattedDaiToMint);
     await tx.wait();

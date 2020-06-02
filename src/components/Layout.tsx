@@ -14,7 +14,7 @@ const Layout = ({ children }: { children: ReactNode }) => {
           <Box
             borderTopRightRadius="1rem"
             borderTopLeftRadius="1rem"
-            backgroundColor="red.100"
+            backgroundColor="primary.100"
             height="0.5rem"
           />
           {children}

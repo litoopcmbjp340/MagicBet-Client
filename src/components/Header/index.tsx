@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { AbstractConnector } from "@web3-react/abstract-connector";
 import { useWeb3React } from "@web3-react/core";
+import { Web3Provider } from "@ethersproject/providers";
 import Box from "3box";
 import {
   Flex,
@@ -11,14 +12,25 @@ import {
   Link,
   Avatar,
   Box as ChakraBox,
+  IconButton,
+  useColorMode,
 } from "@chakra-ui/core";
 
-import { useEagerConnect, useInactiveListener } from "utils/hooks";
-import { injected } from "utils/connectors";
+import { useEagerConnect } from "hooks/useEagerConnect";
+import { useInactiveListener } from "hooks/useInactiveListener";
+import { injected, getNetwork } from "utils/connectors";
 
 const Header = () => {
-  const context = useWeb3React();
-  const { account, active, activate, connector, deactivate, error } = context;
+  const {
+    account,
+    active,
+    activate,
+    connector,
+    deactivate,
+    error,
+  } = useWeb3React<Web3Provider>();
+
+  const { colorMode, toggleColorMode } = useColorMode();
 
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
   const [image, setImage] = useState<any>();
@@ -33,11 +45,15 @@ const Header = () => {
 
   const triedEager = useEagerConnect();
 
+  useEffect(() => {
+    if (triedEager && !active && !error) activate(getNetwork(42));
+  }, [triedEager, active, error, activate]);
+
   useInactiveListener(!triedEager || !!activatingConnector);
 
   const MenuItem = ({ children }: any) => (
     <Text
-      color="black.100"
+      color="dark.100"
       font-weight="500"
       height="3rem"
       padding="0 1rem"
@@ -65,6 +81,8 @@ const Header = () => {
     })();
   }, [active, account]);
 
+  const bgColor = { light: "#252c41", dark: "#00ff00" };
+
   return (
     <>
       <Flex
@@ -72,8 +90,9 @@ const Header = () => {
         align="center"
         justify="space-between"
         padding="0.75rem 1.25rem"
-        color="white.100"
-        backgroundColor="black.100"
+        color="light.100"
+        backgroundColor="dark.100"
+        // backgroundColor={bgColor[colorMode]}
         margin="0 auto"
       >
         <Flex
@@ -94,7 +113,7 @@ const Header = () => {
           </Heading>
         </Flex>
         <Flex alignItems="center" justifyContent="flex-end">
-          {/* <IconButton
+          <IconButton
             aria-label={`Switch to ${
               colorMode === "light" ? "dark" : "light"
             } mode`}
@@ -104,7 +123,8 @@ const Header = () => {
             fontSize="20px"
             onClick={toggleColorMode}
             icon={colorMode === "light" ? "moon" : "sun"}
-          /> */}
+            _hover={{ bg: "Transparent" }}
+          />
           <Link
             background="none"
             marginRight="1rem"
@@ -114,7 +134,7 @@ const Header = () => {
             rel="noreferrer noopener"
             aria-label="Github Link"
           >
-            <Icon name="githubIcon" size="32px" color="white.100" />
+            <Icon name="githubIcon" size="2rem" color="light.100" />
           </Link>
 
           {active && !error ? (
@@ -139,7 +159,7 @@ const Header = () => {
                     </Link>
                   )}
                   <Button
-                    backgroundColor="red.100"
+                    backgroundColor="primary.100"
                     aria-label="LogOut"
                     marginLeft="1rem"
                     size="lg"
@@ -153,11 +173,11 @@ const Header = () => {
             </>
           ) : (
             <Button
-              backgroundColor="red.100"
+              backgroundColor="primary.100"
               border="1px"
               borderRadius="4px"
-              borderColor="red.100"
-              color="white.100"
+              borderColor="primary.100"
+              color="light.100"
               cursor="pointer"
               margin="0"
               position="relative"
@@ -190,7 +210,7 @@ const Header = () => {
           height="auto"
           width="100%"
           position="absolute"
-          backgroundColor="white.100"
+          backgroundColor="light.100"
           display={{ sm: "block", md: "none" }}
         >
           <ChakraBox

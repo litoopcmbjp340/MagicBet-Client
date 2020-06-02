@@ -9,29 +9,27 @@ import {
   Switch,
   Button,
   Icon,
-  Tooltip,
+  FormLabel,
 } from "@chakra-ui/core";
 
 import BTMarketContract from "abis/BTMarket.json";
-import IERC20 from "abis/IERC20.json";
-import BTMarketFactoryContract from "abis/BTMarketFactory.json";
-import MarketCard from "./MarketCard";
+
+import MarketCard from "./marketCard";
 import CreateMarket from "components/Modals/CreateMarket";
-import addresses, { KOVAN_ID } from "utils/addresses";
-import { useContract } from "utils/hooks";
+import { useContract } from "hooks/useContract";
 import { mintDai } from "utils";
 import { ModalContext } from "state/modals/Context";
+import {
+  getMostRecentAddress,
+  useFactoryContract,
+  useDaiContract,
+} from "utils/getContract";
 
 const Dashboard = () => {
-  const daiAddress = addresses[KOVAN_ID].tokens.DAI;
-  const factoryAddress = addresses[KOVAN_ID].marketFactory;
   const { active } = useWeb3React<Web3Provider>();
-  const factoryContract = useContract(
-    factoryAddress,
-    BTMarketFactoryContract.abi,
-    true
-  );
-  const daiContract = useContract(daiAddress, IERC20.abi, true);
+  const factoryContract = useFactoryContract();
+  const daiContract = useDaiContract();
+
   const provider = new providers.Web3Provider(window.web3.currentProvider);
   const wallet = provider.getSigner();
 
@@ -47,13 +45,15 @@ const Dashboard = () => {
     );
 
   useEffect(() => {
+    let isExpired = false;
     (async () => {
       if (factoryContract) {
         try {
           let deployedMarkets = await factoryContract.getMarkets();
           if (deployedMarkets.length !== 0) {
-            let marketContractAddress: string =
-              deployedMarkets[deployedMarkets.length - 1];
+            let marketContractAddress = await getMostRecentAddress(
+              factoryContract
+            );
 
             const marketInstance = new Contract(
               marketContractAddress,
@@ -68,12 +68,15 @@ const Dashboard = () => {
         }
       }
     })();
-    //eslint-disable-next-line
-  }, [factoryContract, marketContract]);
+
+    return () => {
+      isExpired = true;
+    };
+  }, [factoryContract, marketContract, wallet]);
 
   return (
     <>
-      <Box backgroundColor="white.100" paddingBottom="1rem">
+      <Box backgroundColor="light.100" paddingBottom="1rem">
         <Flex
           marginBottom="-1px"
           justifyContent="space-between"
@@ -85,18 +88,14 @@ const Dashboard = () => {
             size="lg"
             fontSize="1.5rem"
             font-weight="500"
-            color="black.100"
+            color="dark.100"
           >
             Dashboard
           </Heading>
 
           <Flex justify="center" align="center">
-            {/* <Tooltip
-              label="Want an Email Alert?"
-              aria-label="send an email alert"
-            > */}
-            <Switch color="red" size="lg" />
-            {/* </Tooltip> */}
+            <FormLabel htmlFor="email-alerts">Enable email alerts?</FormLabel>
+            <Switch id="email-alerts" color="red" />
           </Flex>
         </Flex>
 
@@ -115,16 +114,16 @@ const Dashboard = () => {
             />
           ) : (
             <Button
-              backgroundColor="black.100"
+              backgroundColor="dark.100"
               border="none"
               borderRadius="0.33rem"
-              color="white.100"
+              color="light.100"
               text-Align="center"
               fontSize="1rem"
               padding="0.8rem"
               width="auto"
               cursor="pointer"
-              _hover={{ bg: "red.100" }}
+              _hover={{ bg: "primary.100" }}
               isDisabled={!active}
               onClick={() =>
                 modalDispatch({
@@ -139,12 +138,12 @@ const Dashboard = () => {
 
           {active && (
             <Button
-              backgroundColor="red.100"
+              backgroundColor="primary.100"
               position="fixed"
               bottom="0"
               right="0"
               fontWeight="700"
-              color="white.100"
+              color="light.100"
               margin="2rem"
               cursor="pointer"
               padding="0"
