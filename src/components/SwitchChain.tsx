@@ -1,8 +1,9 @@
 import React from "react";
-import { Flex, Stack, Text } from "@chakra-ui/core";
+import { Flex, Stack, Text, useColorMode } from "@chakra-ui/core";
 // import { useWeb3React } from "@web3-react/core";
 
 // import { getEthNetworkNameById } from "utils";
+import { bgColor } from "theme";
 
 export default function SwitchChain({
   requiredChainId,
@@ -10,13 +11,14 @@ export default function SwitchChain({
   requiredChainId: number;
 }): JSX.Element {
   // const { chainId } = useWeb3React();
+  const { colorMode } = useColorMode();
 
   return (
     <Flex
       flexGrow={1}
       alignItems="center"
       justifyContent="center"
-      backgroundColor="light.100"
+      backgroundColor={bgColor[colorMode]}
       paddingBottom="1rem"
     >
       <Stack direction="column" alignItems="center">

@@ -7,13 +7,13 @@ import { ColorModeProvider, CSSReset, ThemeProvider } from "@chakra-ui/core";
 import { Web3Provider } from "@ethersproject/providers";
 import { Web3ReactProvider, useWeb3React } from "@web3-react/core";
 import { ApolloProvider } from "@apollo/react-hooks";
+import ApolloClient from "apollo-boost";
 import { Global } from "@emotion/core";
 
 import Layout from "components/Layout";
 import Error from "components/Error";
 import SwitchChain from "components/SwitchChain";
 import theme, { GlobalStyle } from "theme";
-import { client } from "utils";
 import { ContractProvider } from "state/contracts/Context";
 import { ModalProvider } from "state/modals/Context";
 import { BetProvider } from "state/bet/Context";
@@ -66,6 +66,10 @@ function Application({ Component }: { Component: NextComponentType }) {
 function getLibrary(provider: any): Web3Provider {
   return new Web3Provider(provider);
 }
+
+const client = new ApolloClient({
+  uri: "https://api.thegraph.com/subgraphs/name/aave/protocol-kovan",
+});
 
 export default class App extends NextApp {
   render() {

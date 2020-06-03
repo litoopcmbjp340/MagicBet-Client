@@ -15,15 +15,18 @@ import {
   Input,
   Flex,
   Spinner,
+  useColorMode,
 } from "@chakra-ui/core";
 
 import { useContract } from "hooks";
 import BTMarketFactoryContract from "abis/BTMarketFactory.json";
 import { ModalContext } from "state/modals/Context";
 import addresses, { KOVAN_ID } from "utils/addresses";
+import { bgColorModal, bgColorOwnerButtons } from "theme";
 
 const CreateMarket = ({ isOpen }: { isOpen: boolean }): JSX.Element => {
   const { modalState, modalDispatch } = useContext(ModalContext);
+  const { colorMode } = useColorMode();
   const factoryAddress = addresses[KOVAN_ID].marketFactory;
 
   const factoryContract = useContract(
@@ -59,8 +62,6 @@ const CreateMarket = ({ isOpen }: { isOpen: boolean }): JSX.Element => {
   const createMarket = async (e: FormEvent) => {
     e.preventDefault();
 
-    setLoading(true);
-
     const MARKET_EVENT_NAME = marketEventName;
     const MARKET_OPENING_TIME = Math.round(marketOpeningTime).toString();
     const MARKET_LOCKING_TIME = Math.round(marketLockingTime).toString();
@@ -70,17 +71,22 @@ const CreateMarket = ({ isOpen }: { isOpen: boolean }): JSX.Element => {
     const REALITIO_QUESTION = realitioQuestion;
     const OUTCOMES = outcomes;
 
-    const tx = await factoryContract!.createMarket(
-      MARKET_EVENT_NAME,
-      MARKET_OPENING_TIME,
-      MARKET_LOCKING_TIME,
-      MARKET_RESOLUTION_TIME,
-      TIMEOUT,
-      ARBITRATOR,
-      REALITIO_QUESTION,
-      OUTCOMES
-    );
-    await tx.wait();
+    try {
+      setLoading(true);
+      const tx = await factoryContract!.createMarket(
+        MARKET_EVENT_NAME,
+        MARKET_OPENING_TIME,
+        MARKET_LOCKING_TIME,
+        MARKET_RESOLUTION_TIME,
+        TIMEOUT,
+        ARBITRATOR,
+        REALITIO_QUESTION,
+        OUTCOMES
+      );
+      await tx.wait();
+    } catch (error) {
+      console.error(error);
+    }
 
     setLoading(false);
 
@@ -93,15 +99,23 @@ const CreateMarket = ({ isOpen }: { isOpen: boolean }): JSX.Element => {
   function validateMarketEventName(value: any) {
     let error;
     if (!value) error = "Market Event Name is required";
-
     return error || true;
   }
 
   return (
-    <Modal isOpen={isOpen} isCentered>
+    <Modal
+      isOpen={isOpen}
+      onClose={() =>
+        modalDispatch({
+          type: "TOGGLE_CREATE_MARKET_MODAL",
+          payload: !modalState.createMarketModalIsOpen,
+        })
+      }
+      isCentered
+    >
       <ModalOverlay />
 
-      <ModalContent backgroundColor="light.100" borderRadius="0.25rem">
+      <ModalContent bg={bgColorModal[colorMode]} borderRadius="0.25rem">
         {loading ? (
           <Flex justifyContent="center" my="1rem" mx="0">
             <Spinner color="primary.100" size="xl" thickness="4px" />
@@ -175,6 +189,7 @@ const CreateMarket = ({ isOpen }: { isOpen: boolean }): JSX.Element => {
                     <FormLabel color="#777" htmlFor="marketOpeningTime">
                       Opening
                     </FormLabel>
+                    {/* //TODO: FIX DARK MODE */}
                     <DatePicker
                       selected={new Date(marketOpeningTime * 1000)}
                       onChange={(date: Date) =>
@@ -187,6 +202,7 @@ const CreateMarket = ({ isOpen }: { isOpen: boolean }): JSX.Element => {
                     <FormLabel color="#777" htmlFor="marketLockingTime">
                       Locking
                     </FormLabel>
+                    {/* //TODO: FIX DARK MODE */}
                     <DatePicker
                       selected={new Date(marketLockingTime * 1000)}
                       onChange={(date: Date) =>
@@ -199,6 +215,7 @@ const CreateMarket = ({ isOpen }: { isOpen: boolean }): JSX.Element => {
                     <FormLabel color="#777" htmlFor="marketResolutionTime">
                       Resolution
                     </FormLabel>
+                    {/* //TODO: FIX DARK MODE */}
                     <DatePicker
                       selected={new Date(marketResolutionTime * 1000)}
                       onChange={(date: Date) =>
@@ -238,7 +255,6 @@ const CreateMarket = ({ isOpen }: { isOpen: boolean }): JSX.Element => {
                   </FormControl>
                 </Flex>
                 <Button
-                  backgroundColor="dark.100"
                   borderRadius="0.33rem"
                   color="light.100"
                   textAlign="center"
@@ -246,7 +262,8 @@ const CreateMarket = ({ isOpen }: { isOpen: boolean }): JSX.Element => {
                   marginBottom="1rem"
                   width="100%"
                   cursor="pointer"
-                  _hover={{ backgroundColor: "primary.100" }}
+                  backgroundColor={bgColorOwnerButtons[colorMode]}
+                  _hover={{ bg: "primary.100" }}
                   isLoading={formState.isSubmitting}
                   type="submit"
                 >

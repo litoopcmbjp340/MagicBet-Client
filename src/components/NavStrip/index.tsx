@@ -1,9 +1,10 @@
 import React from "react";
-
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { Flex, Box, Icon, Text } from "@chakra-ui/core";
+import { Flex, Box, Icon, Text, useColorMode } from "@chakra-ui/core";
 import styled from "@emotion/styled";
+
+import { bgColorNavStrip } from "theme";
 
 const StyledLink = styled.a<{ active: boolean }>`
   display: flex;
@@ -31,10 +32,11 @@ const Wrapper = styled.div`
 
 const NavStrip = (): JSX.Element => {
   const router = useRouter();
+  const { colorMode } = useColorMode();
 
   return (
     <Wrapper>
-      <Box width="100%" margin="0 auto" bg="primary.100">
+      <Box width="100%" margin="0 auto" bg={bgColorNavStrip[colorMode]}>
         <Flex as="nav" justifyContent="center">
           <Flex marginRight="2rem" fontSize="1.25rem">
             <Link href="/dashboard" passHref>

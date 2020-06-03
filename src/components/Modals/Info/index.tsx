@@ -11,20 +11,23 @@ import {
   Flex,
   Text,
   Heading,
+  useColorMode,
 } from "@chakra-ui/core";
-import { ModalContext } from "state/modals/Context";
 
+import { ModalContext } from "state/modals/Context";
 import { shortenAddress } from "utils";
 import { useFactoryContract } from "hooks/useHelperContract";
 import BTMarketContract from "abis/BTMarket.json";
+import { bgColorModal } from "theme";
 
 interface IOutcome {
   name: string;
-  bets: number;
+  bets: string;
 }
 
 const InfoModal = ({ isOpen }: { isOpen: boolean }): JSX.Element => {
   const factoryContract = useFactoryContract();
+  const { colorMode } = useColorMode();
 
   const { modalState, modalDispatch } = useContext(ModalContext);
 
@@ -72,17 +75,21 @@ const InfoModal = ({ isOpen }: { isOpen: boolean }): JSX.Element => {
             setPot(utils.formatUnits(_pot.toString(), 18));
 
             const numberOfOutcomes = await marketContract.numberOfOutcomes();
+
             if (numberOfOutcomes !== 0) {
               let newOutcomesArray = [];
               for (let i = 0; i < numberOfOutcomes; i++) {
-                let newOutcome: IOutcome = { name: "", bets: 0 };
+                let newOutcome: IOutcome = { name: "", bets: "" };
 
                 newOutcome.name = await marketContract.outcomeNames(i);
-
                 const numOfBets = await marketContract.totalBetsPerOutcome(i);
-                const fortmatted = utils.formatUnits(numOfBets, 18);
-                const float = parseFloat(fortmatted);
-                newOutcome.bets = Math.ceil(float);
+
+                const hexString = numOfBets.toString();
+                const removedZeros = hexString.replace(
+                  /^0+(\d)|(\d)0+$/gm,
+                  "$1$2"
+                );
+                newOutcome.bets = removedZeros;
 
                 newOutcomesArray.push(newOutcome);
               }
@@ -100,12 +107,23 @@ const InfoModal = ({ isOpen }: { isOpen: boolean }): JSX.Element => {
     return () => {
       isExpired = true;
     };
-  }, [MarketStates, factoryContract]);
+    //eslint-disable-next-line
+  }, []);
 
   return (
-    <Modal isOpen={isOpen} isCentered>
+    <Modal
+      isOpen={isOpen}
+      onClose={() =>
+        modalDispatch({
+          type: "TOGGLE_INFO_MODAL",
+          payload: !modalState.infoModalIsOpen,
+        })
+      }
+      isCentered
+    >
       <ModalOverlay />
-      <ModalContent backgroundColor="light.100" borderRadius="0.25rem">
+
+      <ModalContent bg={bgColorModal[colorMode]} borderRadius="0.25rem">
         <ModalHeader>Market Stats</ModalHeader>
         <ModalCloseButton
           onClick={() =>
@@ -128,7 +146,6 @@ const InfoModal = ({ isOpen }: { isOpen: boolean }): JSX.Element => {
               {shortenAddress(owner)}
             </Heading>
             <Text
-              color="#555"
               fontSize="0.75rem"
               lineHeight="1.5"
               margin="0 0 10px"
@@ -149,7 +166,6 @@ const InfoModal = ({ isOpen }: { isOpen: boolean }): JSX.Element => {
               {marketState}
             </Heading>
             <Text
-              color="#555"
               fontSize="0.75rem"
               lineHeight="1.5"
               margin="0 0 10px"
@@ -172,7 +188,6 @@ const InfoModal = ({ isOpen }: { isOpen: boolean }): JSX.Element => {
                   {outcome.bets}
                 </Heading>
                 <Text
-                  color="#555"
                   fontSize="0.75rem"
                   lineHeight="1.5"
                   margin="0 0 10px"
@@ -195,7 +210,6 @@ const InfoModal = ({ isOpen }: { isOpen: boolean }): JSX.Element => {
               {numberOfParticipants}
             </Heading>
             <Text
-              color="#555"
               fontSize="0.75rem"
               lineHeight="1.5"
               margin="0 0 10px"
@@ -216,7 +230,6 @@ const InfoModal = ({ isOpen }: { isOpen: boolean }): JSX.Element => {
               {pot}
             </Heading>
             <Text
-              color="#555"
               fontSize="0.75rem"
               lineHeight="1.5"
               margin="0 0 10px"

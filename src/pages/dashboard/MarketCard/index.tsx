@@ -27,9 +27,8 @@ import {
   SliderFilledTrack,
   SliderThumb,
   Stack,
-  Radio,
-  RadioGroup,
   useDisclosure,
+  useColorMode,
 } from "@chakra-ui/core";
 // import dynamic from "next/dynamic";
 
@@ -43,10 +42,12 @@ import { ModalContext } from "state/modals/Context";
 //import { BetContext } from "state/bet/Context";
 import { useEthBalance, useTokenBalance } from "hooks";
 import { useTokens } from "utils/tokens";
+import { bgColorModal, bgColorMc, colorMc } from "theme";
 
 const MarketCard = ({ marketContract, daiContract }: any) => {
   const { active, account, library } = useWeb3React<Web3Provider>();
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { colorMode } = useColorMode();
 
   const toast = useToast();
   // const Chart = dynamic(() => import("./Chart"));
@@ -239,11 +240,7 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
 
   return !prompt ? null : (
     <>
-      <Box
-        backgroundColor="secondary.100"
-        borderRadius="0.5rem"
-        margin="0 1.5rem"
-      >
+      <Box bg={bgColorMc[colorMode]} borderRadius="0.5rem" margin="0 1.5rem">
         <Flex
           borderBottom="1px solid dark.100"
           alignItems="center"
@@ -323,24 +320,6 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
           {active && (
             <form onSubmit={placeBet}>
               <Flex flexDirection="column" justifyContent="center">
-                {/* <RadioGroup
-                  isInline
-                  mt="0.5rem"
-                  spacing={4}
-                  onChange={(e: any) => setChoice(e.target.value)}
-                >
-                  {outcomes.map((outcome: any) => (
-                    <Radio
-                      key={outcome}
-                      value={outcome}
-                      size="lg"
-                      variantColor="red"
-                      color="black"
-                    >
-                      {outcome}
-                    </Radio>
-                  ))}
-                </RadioGroup> */}
                 <Select
                   width="auto"
                   height="3rem"
@@ -361,8 +340,8 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
                 <Flex justifyContent="center">
                   <Input
                     borderStyle="none"
-                    backgroundColor="secondary.100"
-                    color="dark.100"
+                    color={colorMc[colorMode]}
+                    backgroundColor={bgColorMc[colorMode]}
                     fontSize="70px"
                     my="1"
                     py="3rem"
@@ -427,10 +406,10 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
         {checkOwner() && <OwnerFunctionality marketContract={marketContract} />}
       </Box>
       <Info isOpen={modalState.infoModalIsOpen} />
-      //TODO: MOVE MODAL
+      {/* //TODO: MOVE MODAL */}
       <Modal isOpen={isOpen} onClose={onClose} isCentered>
         <ModalOverlay />
-        <ModalContent backgroundColor="light.100" borderRadius="0.25rem">
+        <ModalContent bg={bgColorModal[colorMode]} borderRadius="0.25rem">
           <ModalHeader>Bet Settings</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
@@ -460,21 +439,13 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
                 </Button>
 
                 {usingDai ? (
-                  <Flex
-                    justifyContent="center"
-                    alignItems="center"
-                    color="dark.100"
-                  >
+                  <Flex justifyContent="center" alignItems="center">
                     {tokenData
                       ? tokenData.toSignificant(6, { groupSeparator: "," })
                       : "-"}
                   </Flex>
                 ) : (
-                  <Flex
-                    justifyContent="center"
-                    alignItems="center"
-                    color="dark.100"
-                  >
+                  <Flex justifyContent="center" alignItems="center">
                     <Tag>
                       {data
                         ? data.toSignificant(4, { groupSeparator: "," })
@@ -484,7 +455,7 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
                 )}
               </Stack>
               <Stack direction="row" justify="space-between">
-                <Text color="dark.100">SLIPPAGE</Text>
+                <Text>SLIPPAGE</Text>
                 <Stack
                   direction="column"
                   spacing={0}

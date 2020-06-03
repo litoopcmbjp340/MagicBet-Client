@@ -6,9 +6,12 @@ export const injected = new InjectedConnector({
 });
 
 export function getNetwork(defaultChainId = 42): NetworkConnector {
-  return new NetworkConnector({
+  const network = new NetworkConnector({
     urls: `https://kovan.infura.io/v3/${process.env.INFURA_KEY}`,
     defaultChainId,
     pollingInterval: 15 * 1000,
   });
+
+  console.log("network:", network);
+  return network;
 }

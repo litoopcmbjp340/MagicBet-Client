@@ -10,12 +10,12 @@ import {
   Button,
   Icon,
   FormLabel,
+  useColorMode,
 } from "@chakra-ui/core";
 
 import BTMarketContract from "abis/BTMarket.json";
 import MarketCard from "./marketCard";
 import CreateMarket from "components/Modals/CreateMarket";
-import { useContract } from "hooks";
 import { mintDai } from "utils";
 import { ModalContext } from "state/modals/Context";
 import {
@@ -23,9 +23,11 @@ import {
   useFactoryContract,
   useDaiContract,
 } from "hooks/useHelperContract";
+import { bgColor, color, bgColorOwnerButtons } from "theme";
 
 const Dashboard = (): JSX.Element => {
   const { active } = useWeb3React<Web3Provider>();
+  const { colorMode } = useColorMode();
   const factoryContract = useFactoryContract();
   const daiContract = useDaiContract();
   const provider = new providers.Web3Provider(window.web3.currentProvider);
@@ -33,7 +35,7 @@ const Dashboard = (): JSX.Element => {
 
   const { modalState, modalDispatch } = useContext(ModalContext);
 
-  const [checked, setChecked] = useState<boolean>(false);
+  //const [checked, setChecked] = useState<boolean>(false);
   const [marketContract, setMarketContract] = useState<Contract>();
 
   const [newMarketAddress, setNewMarketAddress] = useState<any>();
@@ -75,7 +77,7 @@ const Dashboard = (): JSX.Element => {
 
   return (
     <>
-      <Box backgroundColor="light.100" paddingBottom="1rem">
+      <Box bg={bgColor[colorMode]} paddingBottom="1rem">
         <Flex
           marginBottom="-1px"
           justifyContent="space-between"
@@ -87,7 +89,7 @@ const Dashboard = (): JSX.Element => {
             size="lg"
             fontSize="1.5rem"
             font-weight="500"
-            color="dark.100"
+            color={color[colorMode]}
           >
             Dashboard
           </Heading>
@@ -113,7 +115,7 @@ const Dashboard = (): JSX.Element => {
             />
           ) : (
             <Button
-              backgroundColor="dark.100"
+              bg={bgColorOwnerButtons[colorMode]}
               border="none"
               borderRadius="0.33rem"
               color="light.100"

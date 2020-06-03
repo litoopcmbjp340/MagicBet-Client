@@ -1,17 +1,12 @@
-import ApolloClient from "apollo-boost";
 import { utils, Contract } from "ethers";
 import DaiMockup from "abis/DaiMockup.json";
 import addresses, { KOVAN_ID } from "utils/addresses";
 const daiAddress = addresses[KOVAN_ID].tokens.DAI;
 
-export const shortenAddress = (address: any) => {
+export const shortenAddress = (address: string): string => {
   address = address.slice(0, 5) + "..." + address.slice(address.length - 4);
   return address;
 };
-
-export const client = new ApolloClient({
-  uri: "https://api.thegraph.com/subgraphs/name/aave/protocol-kovan",
-});
 
 export const mintDai = async (wallet: any) => {
   const daiMockupContract: any = new Contract(

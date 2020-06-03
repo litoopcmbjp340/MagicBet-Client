@@ -3,7 +3,7 @@ module.exports = {
   reactStrictMode: true,
   assetPrefix: ".",
   env: {
-    INFURA_PROJECT_ID: process.env.INFURA_PROJECT_ID,
+    INFURA_KEY: process.env.INFURA_KEY,
     IPFS: process.env.IPFS === "true" ? "true" : "false",
   },
 };

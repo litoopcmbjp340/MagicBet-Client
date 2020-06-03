@@ -85,12 +85,31 @@ export default {
     light: { 100: "#f4f5f9" },
     primary: { 100: "#f1404b" },
     secondary: { 100: "#dddfe6" },
+    dm: {
+      100: "#717171",
+      200: "#595959	",
+      300: "#414141",
+      400: "#2a2a2a",
+      500: "#121212",
+    },
   },
   icons: {
     ...theme.icons,
     ...customIcons,
   },
 };
+
+export const bgColor = { light: "light.100", dark: "dm.400" };
+export const color = { light: "dark.100", dark: "white" };
+export const bgColorOwnerButtons = { light: "dark.100", dark: "primary.100" };
+export const bgColorModal = { light: "light.100", dark: "dm.200" };
+export const bgColorHeader = { light: "dark.100", dark: "dm.400" };
+export const bgColorConnectButton = { light: "primary.100", dark: "dm.500" };
+export const bgColorDropDown = { light: "secondary.100", dark: "dm.100" };
+export const bgColorBackDrop = { light: "secondary.100", dark: "dm.100" };
+export const bgColorNavStrip = { light: "primary.100", dark: "dm.500" };
+export const bgColorMc = { light: "secondary.100", dark: "dm.300" };
+export const colorMc = { light: "#777", dark: "light.100" };
 
 export const GlobalStyle = css`
   @import url("https://rsms.me/inter/inter.css");
@@ -124,7 +143,7 @@ export const GlobalStyle = css`
   }
 
   html {
-    font-size: 16px;
+    font-size: 1rem;
     font-variant: none;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -133,7 +152,7 @@ export const GlobalStyle = css`
   body {
     margin: 0;
     position: relative;
-    background-color: #dddfe6;
+    /* background-color: #dddfe6; */
   }
   a {
     color: inherit;

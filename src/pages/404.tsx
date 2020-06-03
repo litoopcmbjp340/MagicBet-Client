@@ -1,14 +1,17 @@
 import React from "react";
-import { Flex, Heading, Text } from "@chakra-ui/core";
+import { Flex, Heading, Text, useColorMode } from "@chakra-ui/core";
+
+import { bgColor } from "theme";
 
 const NotFound = () => {
+  const { colorMode } = useColorMode();
   return (
     <Flex
       flexDirection="column"
       justifyContent="space-evenly"
       textAlign="center"
       height="100%"
-      backgroundColor="light.100"
+      backgroundColor={bgColor[colorMode]}
       paddingBottom="1rem"
     >
       <Heading as="h1">Page Not Found</Heading>

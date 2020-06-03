@@ -42,7 +42,8 @@ export default function use3Box(account: string | null | undefined) {
 
   useEffect(() => {
     if (account && !profile.fetchedBox) getBox();
-  });
+    //eslint-disable-next-line
+  }, []);
 
   return profile;
 }

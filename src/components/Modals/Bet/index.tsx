@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, Suspense } from "react";
 import { useWeb3React } from "@web3-react/core";
 import { Web3Provider } from "@ethersproject/providers";
 import {
@@ -18,29 +18,33 @@ import {
   Stack,
   Text,
   Button,
+  Spinner,
+  useColorMode,
 } from "@chakra-ui/core";
 
 import { ModalContext } from "state/modals/Context";
 import { useEthBalance, useTokenBalance } from "hooks";
 import { useTokens } from "utils/tokens";
+import { bgColorModal } from "theme";
 
 const BetModal = ({ isOpen }: { isOpen: boolean }): JSX.Element => {
   const [usingDai, setUsingDai] = useState<boolean>(true);
   const [slippage, setSlippage] = useState<number>(30);
+  const { colorMode } = useColorMode();
 
   const { modalState, modalDispatch } = useContext(ModalContext);
 
   const { account } = useWeb3React<Web3Provider>();
 
-  const { data } = useEthBalance(account, false);
+  const { data } = useEthBalance(account!, false);
   const tokens = useTokens();
   const daiToken = tokens[0][5];
-  const { data: tokenData } = useTokenBalance(daiToken, account, false);
+  const { data: tokenData } = useTokenBalance(daiToken, account!, false);
 
   return (
     <Modal isOpen={isOpen} isCentered>
       <ModalOverlay />
-      <ModalContent backgroundColor="light.100" borderRadius="0.25rem">
+      <ModalContent bg={bgColorModal[colorMode]} borderRadius="0.25rem">
         <ModalHeader>Bet Settings</ModalHeader>
         <ModalCloseButton
           onClick={() =>
@@ -52,7 +56,6 @@ const BetModal = ({ isOpen }: { isOpen: boolean }): JSX.Element => {
         />
         <ModalBody>
           <Stack direction="column">
-            {" "}
             <Stack direction="row" justify="space-between">
               <Button
                 textTransform="uppercase"
@@ -83,9 +86,12 @@ const BetModal = ({ isOpen }: { isOpen: boolean }): JSX.Element => {
                   alignItems="center"
                   color="dark.100"
                 >
-                  {tokenData
-                    ? tokenData.toSignificant(6, { groupSeparator: "," })
-                    : "-"}
+                  <Tag>
+                    <Suspense fallback={<Spinner />}>
+                      {tokenData &&
+                        tokenData.toSignificant(6, { groupSeparator: "," })}
+                    </Suspense>
+                  </Tag>
                 </Flex>
               ) : (
                 <Flex
@@ -94,9 +100,9 @@ const BetModal = ({ isOpen }: { isOpen: boolean }): JSX.Element => {
                   color="dark.100"
                 >
                   <Tag>
-                    {data
-                      ? data.toSignificant(4, { groupSeparator: "," })
-                      : "-"}
+                    <Suspense fallback={<Spinner />}>
+                      {data && data.toSignificant(4, { groupSeparator: "," })}
+                    </Suspense>
                   </Tag>
                 </Flex>
               )}

@@ -10,6 +10,7 @@ import {
   Tooltip,
   Legend,
 } from "recharts";
+import { useColorMode } from "@chakra-ui/core";
 
 interface IChart {
   marketContract: any;
@@ -18,6 +19,7 @@ interface IChart {
 
 export default function Chart({ marketContract, rerender }: IChart) {
   const [data, setData] = useState<any>([]);
+  const { colorMode } = useColorMode();
 
   useEffect(() => {
     (async () => {
@@ -142,6 +144,10 @@ export default function Chart({ marketContract, rerender }: IChart) {
 
   return <Graph data={data} />;
 }
+
+//TODO: FILL OUT WITH PROPER DARK COLOR
+// const strokeColor1 = { light: "#0015BC", dark: "#808ade" };
+// const strokeColor2 = {light: "#FF0000", dark: "#ff6666"}
 
 const Graph = ({ data }: any) => {
   return (
