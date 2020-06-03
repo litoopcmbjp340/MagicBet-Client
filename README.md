@@ -10,8 +10,8 @@
     <a href="https://BetTogether.github.io/MagicBet-Client/">
     <img src="https://cdn.jsdelivr.net/gh/storybookjs/brand@master/badge/badge-storybook.svg" alt="Storybook" />
     </a>
-    <a href="https://app.netlify.com/sites/magic-bet/deploys">
-    <img src="https://api.netlify.com/api/v1/badges/93246700-9333-4500-a7ca-fa72263142ed/deploy-status" alt="Netlify" />
+    <a href="https://app.netlify.com/sites/loving-lalande-20d7ce/deploys">
+    <img src="https://api.netlify.com/api/v1/badges/360d259f-5bad-4dca-8c98-47c6adb51e43/deploy-status" alt="Netlify" />
     </a>
 </p>
 
