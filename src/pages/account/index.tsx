@@ -9,31 +9,36 @@ import {
   Text,
   Button,
   Link,
+  Spinner,
 } from "@chakra-ui/core";
+
+import { use3Box } from "hooks";
 
 const Account = () => {
   const { active, account } = useWeb3React<Web3Provider>();
+  const profile = use3Box(account);
 
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [box, setBox] = useState("");
+  // const [profile, setProfile] = useState({
+  //   name: "",
+  //   email: "",
+  //   image: [""],
+  // });
 
-  useEffect(() => {
-    (async () => {
-      if (active) {
-        const profile = await Box.getProfile(account);
-        setName(profile.name);
-        const boxProvider = await Box.get3idConnectProvider();
-        const box = await Box.openBox(account, boxProvider);
-        console.log("box:", box);
-        setBox(box);
-        await box.syncDone;
-        const email = await box.private.get("email");
-        console.log("email:", email);
-        setEmail(email);
-      }
-    })();
-  }, [active, account]);
+  // useEffect(() => {
+  //   (async () => {
+  //     if (active) {
+  //       const profile = await Box.getProfile(account);
+  //       setProfile({ ...profile, name: profile.name });
+
+  //       const boxProvider = await Box.get3idConnectProvider();
+  //       const box = await Box.openBox(account, boxProvider);
+  //       await box.syncDone;
+
+  //       const email = await box.private.get("email");
+  //       setProfile({ ...profile, email: email });
+  //     }
+  //   })();
+  // }, [active, account]);
 
   return (
     <ChakraBox backgroundColor="light.100" paddingBottom="1rem">
@@ -49,52 +54,58 @@ const Account = () => {
         </Flex>
         {active && (
           <>
-            {box ? (
-              <Flex
-                flexWrap="wrap"
-                flexDirection="column"
-                justifyContent="center"
-                margin="0 auto 1rem"
-                maxWidth="100%"
-                padding="0rem 1rem"
-              >
-                <Flex
-                  flexDirection="column"
-                  alignItems="flex-start"
-                  justifyContent="center"
-                  margin="0 0.75rem"
-                >
-                  <Heading
-                    as="h2"
-                    color="primary.100"
-                    fontSize="1.4rem"
-                    fontWeight="800"
-                    margin="0"
+            {profile ? (
+              <>
+                {profile.loading ? (
+                  <Spinner />
+                ) : (
+                  <Flex
+                    flexWrap="wrap"
+                    flexDirection="column"
+                    justifyContent="center"
+                    margin="0 auto 1rem"
+                    maxWidth="100%"
+                    padding="0rem 1rem"
                   >
-                    {name}
-                  </Heading>
-                  <Text
-                    color="secondary.100"
-                    fontSize="1rem"
-                    fontWeight="600"
-                    lineHeight="1.2rem"
-                    margin="0"
-                    textAlign="left"
-                  >
-                    {account}
-                  </Text>
-                  <Text
-                    color="secondary.100"
-                    fontSize="1rem"
-                    fontWeight="600"
-                    lineHeight="1.2rem"
-                    margin="0"
-                    textAlign="left"
-                  >
-                    {email}
-                  </Text>
-                </Flex>
-              </Flex>
+                    <Flex
+                      flexDirection="column"
+                      alignItems="flex-start"
+                      justifyContent="center"
+                      margin="0 0.75rem"
+                    >
+                      <Heading
+                        as="h2"
+                        color="primary.100"
+                        fontSize="1.4rem"
+                        fontWeight="800"
+                        margin="0"
+                      >
+                        {profile.name ? profile.name : "-"}
+                      </Heading>
+                      <Text
+                        color="secondary.100"
+                        fontSize="1rem"
+                        fontWeight="600"
+                        lineHeight="1.2rem"
+                        margin="0"
+                        textAlign="left"
+                      >
+                        {account}
+                      </Text>
+                      <Text
+                        color="secondary.100"
+                        fontSize="1rem"
+                        fontWeight="600"
+                        lineHeight="1.2rem"
+                        margin="0"
+                        textAlign="left"
+                      >
+                        {profile.email ? profile.email : ""}
+                      </Text>
+                    </Flex>
+                  </Flex>
+                )}
+              </>
             ) : (
               <Button ml="2rem">
                 <Link

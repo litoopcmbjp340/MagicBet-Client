@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, FormEvent, ChangeEvent } from "react";
 import { useForm } from "react-hook-form";
 import DatePicker from "react-datepicker";
 import {
@@ -14,19 +14,17 @@ import {
   FormControl,
   Input,
   Flex,
+  Spinner,
 } from "@chakra-ui/core";
 
-import { Spinner } from "@chakra-ui/core";
-
-import { useContract } from "hooks/useContract";
-
+import { useContract } from "hooks";
 import BTMarketFactoryContract from "abis/BTMarketFactory.json";
 import { ModalContext } from "state/modals/Context";
 import addresses, { KOVAN_ID } from "utils/addresses";
-const factoryAddress = addresses[KOVAN_ID].marketFactory;
 
-const CreateMarket = ({ isOpen }: any) => {
+const CreateMarket = ({ isOpen }: { isOpen: boolean }): JSX.Element => {
   const { modalState, modalDispatch } = useContext(ModalContext);
+  const factoryAddress = addresses[KOVAN_ID].marketFactory;
 
   const factoryContract = useContract(
     factoryAddress,
@@ -54,11 +52,11 @@ const CreateMarket = ({ isOpen }: any) => {
   const [realitioQuestion, setRealitioQuestion] = useState<string>(
     'Who will win the 2020 US General Election␟"Donald Trump","Joe Biden"␟news-politics␟en_US'
   );
-  const [outcomes, setOutcomes] = useState<any[]>(["Trump", "Biden"]);
+  const [outcomes, setOutcomes] = useState<string[]>(["Trump", "Biden"]);
 
   const { handleSubmit, errors, register, formState } = useForm();
 
-  const createMarket = async (e: any) => {
+  const createMarket = async (e: FormEvent) => {
     e.preventDefault();
 
     setLoading(true);
@@ -72,7 +70,7 @@ const CreateMarket = ({ isOpen }: any) => {
     const REALITIO_QUESTION = realitioQuestion;
     const OUTCOMES = outcomes;
 
-    let tx = await factoryContract!.createMarket(
+    const tx = await factoryContract!.createMarket(
       MARKET_EVENT_NAME,
       MARKET_OPENING_TIME,
       MARKET_LOCKING_TIME,
@@ -133,7 +131,9 @@ const CreateMarket = ({ isOpen }: any) => {
                     placeholder={marketEventName}
                     value={marketEventName}
                     ref={register({ validate: validateMarketEventName })}
-                    onChange={(e: any) => setMarketEventName(e.target.value)}
+                    onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                      setMarketEventName(e.target.value)
+                    }
                   />
                   <FormErrorMessage>
                     {errors.name && errors.name.message}
@@ -150,7 +150,9 @@ const CreateMarket = ({ isOpen }: any) => {
                     type="text"
                     isRequired
                     value={realitioQuestion}
-                    onChange={(e: any) => setRealitioQuestion(e.target.value)}
+                    onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                      setRealitioQuestion(e.target.value)
+                    }
                   />
                 </FormControl>
                 <FormControl marginBottom="1rem">
@@ -163,7 +165,9 @@ const CreateMarket = ({ isOpen }: any) => {
                     type="text"
                     isRequired
                     value={arbitrator}
-                    onChange={(e: any) => setArbitrator(e.target.value)}
+                    onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                      setArbitrator(e.target.value)
+                    }
                   />
                 </FormControl>
                 <Flex width="100%" marginBottom="1rem">

@@ -8,7 +8,7 @@ export default function SwitchChain({
   requiredChainId,
 }: {
   requiredChainId: number;
-}) {
+}): JSX.Element {
   // const { chainId } = useWeb3React();
 
   return (

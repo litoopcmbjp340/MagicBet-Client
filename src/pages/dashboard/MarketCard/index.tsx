@@ -1,4 +1,4 @@
-import React, { useState, useEffect, FormEvent } from "react";
+import React, { useState, useEffect, FormEvent, useContext } from "react";
 import CountUp from "react-countup";
 import CountDown from "react-countdown";
 import { useWeb3React } from "@web3-react/core";
@@ -13,37 +13,44 @@ import {
   Button,
   Text,
   Select,
-  useDisclosure,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalCloseButton,
+  ModalFooter,
   useToast,
+  Tag,
+  Slider,
+  SliderTrack,
+  SliderFilledTrack,
+  SliderThumb,
+  Stack,
+  Radio,
+  RadioGroup,
+  useDisclosure,
 } from "@chakra-ui/core";
 // import dynamic from "next/dynamic";
-import styled from "@emotion/styled";
 
 import Info from "components/Modals/Info";
+//import Bet from "components/Modals/Bet";
 import Chart from "./Chart";
+import OwnerFunctionality from "./OwnerFunctionality";
 import { shortenAddress } from "utils";
-import {
-  useETHBalance,
-  useTokenBalance,
-  useTokenAllowance,
-} from "hooks/useBalance";
+// useTokenAllowance
+import { ModalContext } from "state/modals/Context";
+//import { BetContext } from "state/bet/Context";
+import { useEthBalance, useTokenBalance } from "hooks";
 import { useTokens } from "utils/tokens";
-
-const GraphWrapper = styled.div`
-  @media (max-width: 900px) {
-    display: none;
-  }
-`;
 
 const MarketCard = ({ marketContract, daiContract }: any) => {
   const { active, account, library } = useWeb3React<Web3Provider>();
-  const { data } = useETHBalance(account!, false);
-  const tokens = useTokens();
-  const daiToken = tokens[0][5];
-  const { data: tokenData } = useTokenBalance(daiToken, account!, false);
-  const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const toast = useToast();
   // const Chart = dynamic(() => import("./Chart"));
+  const { modalState, modalDispatch } = useContext(ModalContext);
 
   const [amountToBet, setAmountToBet] = useState<number>(0);
   const [accruedInterest, setAccruedInterest] = useState<number>(0);
@@ -55,11 +62,18 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
   const [choice, setChoice] = useState<string>("");
   const [outcomes, setOutcomes] = useState<any>([]);
   const [daiApproved, setDaiApproved] = useState<boolean>(false);
-  const [forceRerender, setRerender] = useState<boolean>(false);
+  const [rerender, setRerender] = useState<boolean>(false);
   const [usingDai, setUsingDai] = useState<boolean>(true);
+  const [slippage, setSlippage] = useState<number>(30);
 
-  const [eventState, setEventState] = useState();
-  const [eventBet, setEventBet] = useState();
+  const { data } = useEthBalance(account!, false);
+  const tokens = useTokens();
+  const daiToken = tokens[0][5];
+  const { data: tokenData } = useTokenBalance(daiToken, account!, false);
+
+  //TODO: MOVE TO HOOK
+  const [eventState, setEventState] = useState<any>();
+  const [eventBet, setEventBet] = useState<any>();
   marketContract.on("StateChanged", (state: any) => setEventState(state));
   marketContract.on("ParticipantEntered", (address: any) =>
     setEventBet(address)
@@ -111,14 +125,14 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
   //TODO: CLEAN
   useEffect(() => {
     (async () => {
-      let numberOfOutcomes = await marketContract.numberOfOutcomes();
+      const numberOfOutcomes = await marketContract.numberOfOutcomes();
       if (numberOfOutcomes.toNumber() !== 0) {
-        let numberOfOutcomes = (
+        const numberOfOutcomes = (
           await marketContract.numberOfOutcomes()
         ).toNumber();
         let newOutcomes = [];
         for (let i = 0; i < numberOfOutcomes; i++) {
-          let outcomeName = await marketContract.outcomeNames(i);
+          const outcomeName = await marketContract.outcomeNames(i);
           newOutcomes.push(outcomeName);
         }
         setOutcomes(newOutcomes);
@@ -126,12 +140,12 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
     })();
   }, [marketContract]);
 
-  const placeBet = async (e: FormEvent) => {
+  const placeBet = async (e: FormEvent): Promise<void> => {
     e.preventDefault();
 
-    let amountToBetMultiplied = amountToBet * 1000000000000000000;
+    const amountToBetMultiplied = amountToBet * 1000000000000000000;
 
-    let balance = await daiContract!.balanceOf(account);
+    const balance = await daiContract!.balanceOf(account);
 
     if (balance < amountToBetMultiplied) {
       toast({
@@ -145,7 +159,7 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
       return;
     }
 
-    let indexOfChoice: number = outcomes.indexOf(choice);
+    const indexOfChoice: number = outcomes.indexOf(choice);
 
     /* if (!daiApproved) {
       let balance = await daiContract.balanceOf(account);
@@ -153,7 +167,7 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
       setDaiApproved(true);
     } */
 
-    let formatted = utils.parseUnits(amountToBet.toString(), 18);
+    const formatted = utils.parseUnits(amountToBet.toString(), 18);
 
     const increaseByFactor = (number: utils.BigNumber) =>
       number.mul(utils.bigNumberify(120)).div(utils.bigNumberify(100));
@@ -167,7 +181,7 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
     );
 
     try {
-      let tx = await marketContract.placeBet(indexOfChoice, formatted, {
+      const tx = await marketContract.placeBet(indexOfChoice, formatted, {
         gasLimit: increaseByFactor(estimatedGas),
         value: estimatedWeiWithMargin,
       });
@@ -181,7 +195,7 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
         isClosable: true,
       });
 
-      let result = await tx.wait();
+      const result = await tx.wait();
       toast({
         title: "Transaction Success",
         description: `${shortenAddress(result.transactionHash)}`,
@@ -190,23 +204,23 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
         duration: 5000,
         isClosable: true,
       });
-      setRerender(!forceRerender);
+      setRerender(!rerender);
     } catch (error) {
       console.error(error);
-      // toast({
-      //   title: "Transaction Failed",
-      //   description: "Try increasing gas",
-      //   status: "error",
-      //   position: "bottom",
-      //   duration: 5000,
-      //   isClosable: true,
-      // });
+      toast({
+        title: "Transaction Failed",
+        description: "Try increasing gas",
+        status: "error",
+        position: "bottom",
+        duration: 5000,
+        isClosable: true,
+      });
     }
   };
 
   const withdraw = async () => {
     try {
-      let tx = await marketContract.withdraw();
+      const tx = await marketContract.withdraw();
       console.log(tx.hash);
       await tx.wait();
     } catch (error) {
@@ -214,7 +228,7 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
     }
   };
 
-  const checkOwner = () => {
+  const checkOwner = (): boolean => {
     if (owner !== null && account !== null) {
       if (account === null) return false;
       return account === owner;
@@ -236,7 +250,7 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
           justifyContent="space-between"
           padding="0.5rem 1rem"
         >
-          <span>{shortenAddress(marketContract.address)}</span>
+          <Text>{shortenAddress(marketContract.address)}</Text>
           <Flex flexDirection="column" justifyContent="space-between" ml="2rem">
             <Text
               color="#555"
@@ -257,7 +271,39 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
               />
             </Box>
           </Flex>
-          <Flex alignItems="center" justifyContent="center">
+          <Flex
+            flexDirection="column"
+            alignItems="center"
+            justifyContent="center"
+          >
+            <Flex>
+              <IconButton
+                aria-label="market info"
+                variant="ghost"
+                icon="info"
+                size="lg"
+                pr={0.5}
+                onClick={() =>
+                  modalDispatch({
+                    type: "TOGGLE_INFO_MODAL",
+                    payload: !modalState.infoModalIsOpen,
+                  })
+                }
+              />
+              <IconButton
+                aria-label="purchase settings"
+                variant="ghost"
+                icon="settings"
+                size="lg"
+                onClick={
+                  onOpen
+                  // modalDispatch({
+                  //   type: "TOGGLE_BET_SETTINGS_MODAL",
+                  //   payload: !modalState.betSettingsModalIsOpen,
+                  // })
+                }
+              />
+            </Flex>
             <Text width="5.5rem">
               {marketResolutionTime ? (
                 <CountDown date={Date.now() + marketResolutionTime} />
@@ -265,40 +311,40 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
                 "-"
               )}
             </Text>
-            <IconButton
-              aria-label="market info"
-              icon="info"
-              size="lg"
-              onClick={() => onOpen()}
-            />
           </Flex>
         </Flex>
         <Heading as="h1" textAlign="center" fontSize="3rem">
           {prompt}
         </Heading>
-        <Flex justifyContent="center" margin="0">
-          <GraphWrapper>
-            <Flex flexGrow={3}>
-              <Chart
-                marketContract={marketContract}
-                forceRerender={forceRerender}
-              />
-            </Flex>
-          </GraphWrapper>
+
+        <Flex justifyContent="center" alignItems="center" flexWrap="wrap">
+          <Chart marketContract={marketContract} rerender={rerender} />
+
           {active && (
             <form onSubmit={placeBet}>
-              <Flex
-                flexDirection="column"
-                justifyContent="center"
-                alignItems="center"
-                flexGrow={1}
-                ml="2rem"
-                mt="1rem"
-              >
+              <Flex flexDirection="column" justifyContent="center">
+                {/* <RadioGroup
+                  isInline
+                  mt="0.5rem"
+                  spacing={4}
+                  onChange={(e: any) => setChoice(e.target.value)}
+                >
+                  {outcomes.map((outcome: any) => (
+                    <Radio
+                      key={outcome}
+                      value={outcome}
+                      size="lg"
+                      variantColor="red"
+                      color="black"
+                    >
+                      {outcome}
+                    </Radio>
+                  ))}
+                </RadioGroup> */}
                 <Select
-                  width="50%"
+                  width="auto"
                   height="3rem"
-                  margin="0"
+                  mt="1rem"
                   color="#777"
                   borderColor="secondary.100"
                   value={choice}
@@ -312,57 +358,7 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
                   ))}
                 </Select>
 
-                <Button
-                  textTransform="uppercase"
-                  fontWeight="500"
-                  color="#777"
-                  backgroundColor="light.100"
-                  border="none"
-                  box-shadow="0 0.5rem 1rem rgba(0, 0, 0, 0.1)"
-                  transition="all 0.3s ease 0s"
-                  outline="none"
-                  cursor="pointer"
-                  my="1.25rem"
-                  type="button"
-                  _hover={{
-                    backgroundColor: "primary.100",
-                    boxShadow: "0px 15px 20px rgba(0, 0, 0, 0.3)",
-                    color: "light.100",
-                    transform: "translateY(-5px)",
-                  }}
-                  onClick={() => setUsingDai(!usingDai)}
-                >
-                  {usingDai ? "Dai" : "Ether"}
-                </Button>
-                <Flex
-                  flexDirection="column"
-                  justifyContent="center"
-                  alignItems="center"
-                >
-                  {usingDai ? (
-                    <Flex
-                      justifyContent="center"
-                      alignItems="center"
-                      color="dark.100"
-                      fontSize="1.25rem"
-                    >
-                      {tokenData
-                        ? tokenData.toSignificant(6, { groupSeparator: "," })
-                        : "-"}
-                    </Flex>
-                  ) : (
-                    <Flex
-                      justifyContent="center"
-                      alignItems="center"
-                      color="dark.100"
-                      fontSize="1.25rem"
-                    >
-                      {data
-                        ? data.toSignificant(4, { groupSeparator: "," })
-                        : "-"}
-                    </Flex>
-                  )}
-
+                <Flex justifyContent="center">
                   <Input
                     borderStyle="none"
                     backgroundColor="secondary.100"
@@ -386,12 +382,9 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
                 </Flex>
 
                 {!!(library && account) && (
-                  <>
+                  <Flex justifyContent="center">
                     <Button
-                      borderBottomRightRadius="0.5rem"
-                      borderTopRightRadius="0.5rem"
-                      borderBottomLeftRadius="0.5rem"
-                      borderTopLeftRadius="0.5rem"
+                      borderRadius="0.5rem"
                       cursor="pointer"
                       fontSize="1.33rem"
                       width="8rem"
@@ -399,6 +392,7 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
                       color="light.100"
                       backgroundColor="primary.100"
                       type="submit"
+                      _hover={{ bg: "dark.100" }}
                       isDisabled={
                         amountToBet <= 0 ||
                         marketState !== "OPEN" ||
@@ -424,54 +418,106 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
                         Withdraw
                       </Button>
                     )}
-                  </>
+                  </Flex>
                 )}
               </Flex>
             </form>
           )}
         </Flex>
-        {checkOwner() && (
-          <Flex justifyContent="center" flexDirection="column" mt="1rem">
-            <Button
-              my="0.25rem"
-              backgroundColor="dark.100"
-              color="light.100"
-              textAlign="center"
-              text-decoration="none"
-              font-size="1rem"
-              _hover={{ bg: "primary.100" }}
-              onClick={async () => await marketContract.incrementState()}
-            >
-              Increment Market State
-            </Button>
-            <Button
-              my="0.25rem"
-              backgroundColor="dark.100"
-              color="light.100"
-              textAlign="center"
-              text-decoration="none"
-              font-size="1rem"
-              _hover={{ bg: "primary.100" }}
-              onClick={async () => await marketContract.determineWinner()}
-            >
-              Get Winner from Oracle
-            </Button>
-            <Button
-              my="0.25rem"
-              backgroundColor="dark.100"
-              color="light.100"
-              textAlign="center"
-              text-decoration="none"
-              font-size="1rem"
-              _hover={{ bg: "primary.100" }}
-              onClick={async () => await marketContract.disableContract()}
-            >
-              Pause (Disable) Contract
-            </Button>
-          </Flex>
-        )}
+        {checkOwner() && <OwnerFunctionality marketContract={marketContract} />}
       </Box>
-      <Info isOpen={isOpen} onClose={onClose} />
+      <Info isOpen={modalState.infoModalIsOpen} />
+      //TODO: MOVE MODAL
+      <Modal isOpen={isOpen} onClose={onClose} isCentered>
+        <ModalOverlay />
+        <ModalContent backgroundColor="light.100" borderRadius="0.25rem">
+          <ModalHeader>Bet Settings</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <Stack direction="column">
+              <Stack direction="row" justify="space-between">
+                <Button
+                  textTransform="uppercase"
+                  fontWeight="500"
+                  color="dark.100"
+                  backgroundColor="light.100"
+                  border="none"
+                  box-shadow="0 0.5rem 1rem rgba(0, 0, 0, 0.1)"
+                  transition="all 0.3s ease 0s"
+                  outline="none"
+                  cursor="pointer"
+                  my="1.25rem"
+                  type="button"
+                  _hover={{
+                    backgroundColor: "primary.100",
+                    boxShadow: "0px 15px 20px rgba(0, 0, 0, 0.3)",
+                    color: "light.100",
+                    transform: "translateY(-5px)",
+                  }}
+                  onClick={() => setUsingDai(!usingDai)}
+                >
+                  {usingDai ? "Dai" : "Ether"}
+                </Button>
+
+                {usingDai ? (
+                  <Flex
+                    justifyContent="center"
+                    alignItems="center"
+                    color="dark.100"
+                  >
+                    {tokenData
+                      ? tokenData.toSignificant(6, { groupSeparator: "," })
+                      : "-"}
+                  </Flex>
+                ) : (
+                  <Flex
+                    justifyContent="center"
+                    alignItems="center"
+                    color="dark.100"
+                  >
+                    <Tag>
+                      {data
+                        ? data.toSignificant(4, { groupSeparator: "," })
+                        : "-"}
+                    </Tag>
+                  </Flex>
+                )}
+              </Stack>
+              <Stack direction="row" justify="space-between">
+                <Text color="dark.100">SLIPPAGE</Text>
+                <Stack
+                  direction="column"
+                  spacing={0}
+                  alignItems="flex-end"
+                  w="50%"
+                  flexShrink={0}
+                >
+                  <Slider
+                    min={0}
+                    max={100 * 4}
+                    step={10}
+                    color="red"
+                    value={slippage}
+                    onChange={setSlippage}
+                  >
+                    <SliderTrack />
+                    <SliderFilledTrack />
+                    <SliderThumb />
+                  </Slider>
+                  <Stack direction="row" minHeight="1.5rem">
+                    <Text>
+                      {(slippage / 100).toFixed(slippage === 0 ? 0 : 1)}%
+                    </Text>
+                  </Stack>
+                </Stack>
+              </Stack>
+            </Stack>
+          </ModalBody>
+          <ModalFooter>
+            <Button onClick={onClose}>Okay</Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </>
   );
 };

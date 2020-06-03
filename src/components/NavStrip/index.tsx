@@ -29,7 +29,7 @@ const Wrapper = styled.div`
   }
 `;
 
-const NavStrip = () => {
+const NavStrip = (): JSX.Element => {
   const router = useRouter();
 
   return (

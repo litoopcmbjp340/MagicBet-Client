@@ -12,16 +12,15 @@ import {
   Link,
   Avatar,
   Box as ChakraBox,
-  IconButton,
-  useColorMode,
+  // IconButton,
+  // useColorMode,
 } from "@chakra-ui/core";
 
-import { useEagerConnect } from "hooks/useEagerConnect";
-import { useInactiveListener } from "hooks/useInactiveListener";
-import { useThreeBox } from "hooks/useThreeBox";
+import { useEagerConnect, useInactiveListener } from "hooks";
 import { injected, getNetwork } from "utils/connectors";
 
-const Header = () => {
+const Header = (): JSX.Element => {
+  //const { colorMode, toggleColorMode } = useColorMode();
   const {
     account,
     active,
@@ -31,14 +30,12 @@ const Header = () => {
     error,
   } = useWeb3React<Web3Provider>();
 
-  const { colorMode, toggleColorMode } = useColorMode();
-
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
-  const [image, setImage] = useState<any>();
-
+  const [imageHash, setImageHash] = useState<string>();
   const [activatingConnector, setActivatingConnector] = useState<
     AbstractConnector
   >();
+
   useEffect(() => {
     if (activatingConnector && activatingConnector === connector)
       setActivatingConnector(undefined);
@@ -52,21 +49,26 @@ const Header = () => {
 
   useInactiveListener(!triedEager || !!activatingConnector);
 
-  const threeBox = useThreeBox(account);
-
-  const MenuItem = ({ children }: any) => (
-    <Text
-      color="dark.100"
-      font-weight="500"
-      height="3rem"
-      padding="0 1rem"
-      mt={{ base: 4, md: 0 }}
-      mr={6}
-      display="block"
-    >
-      {children}
-    </Text>
-  );
+  useEffect(() => {
+    (async () => {
+      if (active) {
+        const imageHash = localStorage.getItem("imageHash");
+        if (imageHash) setImageHash(imageHash);
+        else {
+          try {
+            const profile = await Box.getProfile(account);
+            if (profile.image) {
+              const imageHash = profile.image[0]["contentUrl"]["/"];
+              localStorage.setItem("imageHash", imageHash);
+              setImageHash(`https://ipfs.infura.io/ipfs/${imageHash}`);
+            }
+          } catch (error) {
+            console.error(error);
+          }
+        }
+      }
+    })();
+  }, [active, account]);
 
   // const bgColor = { light: "#252c41", dark: "#00ff00" };
 
@@ -128,13 +130,18 @@ const Header = () => {
             <>
               {account !== null && (
                 <>
-                  {image ? (
+                  {imageHash ? (
                     <Link
                       href="https://3box.io/hub"
                       isExternal
                       rel="noopener noreferrer"
                     >
-                      <Avatar size="md" name="Profile" showBorder src={image} />
+                      <Avatar
+                        size="md"
+                        name="Profile"
+                        showBorder
+                        src={imageHash}
+                      />
                     </Link>
                   ) : (
                     <Link
@@ -205,7 +212,15 @@ const Header = () => {
             padding="0"
             borderBottom="1px solid rgba(0, 0, 0, 0.8)"
           >
-            <MenuItem>
+            <Text
+              color="dark.100"
+              font-weight="500"
+              height="3rem"
+              padding="0 1rem"
+              mt={{ base: 4, md: 0 }}
+              mr={6}
+              display="block"
+            >
               <Link
                 textTransform="uppercase"
                 fontWeight="bold"
@@ -215,8 +230,16 @@ const Header = () => {
               >
                 Dashboard
               </Link>
-            </MenuItem>
-            <MenuItem>
+            </Text>
+            <Text
+              color="dark.100"
+              font-weight="500"
+              height="3rem"
+              padding="0 1rem"
+              mt={{ base: 4, md: 0 }}
+              mr={6}
+              display="block"
+            >
               <Link
                 textTransform="uppercase"
                 fontWeight="bold"
@@ -226,8 +249,16 @@ const Header = () => {
               >
                 Markets
               </Link>
-            </MenuItem>
-            <MenuItem>
+            </Text>
+            <Text
+              color="dark.100"
+              font-weight="500"
+              height="3rem"
+              padding="0 1rem"
+              mt={{ base: 4, md: 0 }}
+              mr={6}
+              display="block"
+            >
               <Link
                 textTransform="uppercase"
                 fontWeight="bold"
@@ -237,7 +268,7 @@ const Header = () => {
               >
                 Account
               </Link>
-            </MenuItem>
+            </Text>
           </ChakraBox>
         </ChakraBox>
       )}

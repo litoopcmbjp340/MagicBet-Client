@@ -27,8 +27,8 @@ export function useFactoryContract(): Contract | undefined {
 }
 
 export function useDaiContract(): Contract | undefined {
-  const context = useWeb3React<Web3Provider>();
-  const { library, account } = context;
+  const { library, account } = useWeb3React<Web3Provider>();
+
   return useMemo(
     () =>
       !!library

@@ -3,8 +3,9 @@ import { Box } from "@chakra-ui/core";
 
 import Header from "./Header";
 import NavStrip from "./NavStrip";
+import { useBodyKeyDown } from "../hooks";
 
-const Layout = ({ children }: { children: ReactNode }) => {
+const Layout = ({ children }: { children: ReactNode }): JSX.Element => {
   return (
     <>
       <Header />

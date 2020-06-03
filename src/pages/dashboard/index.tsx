@@ -13,32 +13,30 @@ import {
 } from "@chakra-ui/core";
 
 import BTMarketContract from "abis/BTMarket.json";
-
 import MarketCard from "./marketCard";
 import CreateMarket from "components/Modals/CreateMarket";
-import { useContract } from "hooks/useContract";
+import { useContract } from "hooks";
 import { mintDai } from "utils";
 import { ModalContext } from "state/modals/Context";
 import {
   getMostRecentAddress,
   useFactoryContract,
   useDaiContract,
-} from "utils/getContract";
+} from "hooks/useHelperContract";
 
-const Dashboard = () => {
+const Dashboard = (): JSX.Element => {
   const { active } = useWeb3React<Web3Provider>();
   const factoryContract = useFactoryContract();
   const daiContract = useDaiContract();
-
   const provider = new providers.Web3Provider(window.web3.currentProvider);
   const wallet = provider.getSigner();
 
   const { modalState, modalDispatch } = useContext(ModalContext);
 
-  const [checked, setChecked] = useState(false);
+  const [checked, setChecked] = useState<boolean>(false);
   const [marketContract, setMarketContract] = useState<Contract>();
-  const [newMarketAddress, setNewMarketAddress] = useState();
 
+  const [newMarketAddress, setNewMarketAddress] = useState<any>();
   if (factoryContract)
     factoryContract.on("MarketCreated", (address: any) =>
       setNewMarketAddress(address)
@@ -49,9 +47,9 @@ const Dashboard = () => {
     (async () => {
       if (factoryContract) {
         try {
-          let deployedMarkets = await factoryContract.getMarkets();
+          const deployedMarkets = await factoryContract.getMarkets();
           if (deployedMarkets.length !== 0) {
-            let marketContractAddress = await getMostRecentAddress(
+            const marketContractAddress = await getMostRecentAddress(
               factoryContract
             );
 
@@ -72,7 +70,8 @@ const Dashboard = () => {
     return () => {
       isExpired = true;
     };
-  }, [factoryContract, marketContract, wallet]);
+    //eslint-disable-next-line
+  }, [factoryContract]);
 
   return (
     <>

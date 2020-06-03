@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import styled from "@emotion/styled";
 import { Flex, Box, Heading } from "@chakra-ui/core";
 
-import { useContract } from "hooks/useContract";
+import { useContract } from "hooks";
 import Market from "./market";
 import BTMarketFactoryContract from "abis/BTMarketFactory.json";
 import addresses, { KOVAN_ID } from "utils/addresses";
@@ -34,7 +34,7 @@ const TableRow = styled.tr`
   }
 `;
 
-const Markets = () => {
+const Markets = (): JSX.Element => {
   const [markets, setMarkets] = useState([]);
   const factoryAddress = addresses[KOVAN_ID].marketFactory;
   const factoryContract = useContract(
@@ -55,22 +55,6 @@ const Markets = () => {
   };
 
   fetchMarkets();
-
-  const ActiveMarket = ({ children }: any) => (
-    <Box
-      backgroundColor="light.100"
-      boxShadow="rgba(0, 0, 0, 0.04) 0 0 1.5rem 0"
-      color="#1e2026"
-      flex="1"
-      fontSize="0.8rem"
-      marginRight="1rem"
-      padding="1rem"
-      position="relative"
-      textDecoration="none"
-    >
-      {children}
-    </Box>
-  );
 
   return (
     <Box backgroundColor="light.100" margin="0" paddingBottom="1rem">

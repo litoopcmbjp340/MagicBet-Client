@@ -1,7 +1,5 @@
 import ApolloClient from "apollo-boost";
 import { utils, Contract } from "ethers";
-import { useWeb3React } from "@web3-react/core";
-import { Web3Provider } from "@ethersproject/providers";
 import DaiMockup from "abis/DaiMockup.json";
 import addresses, { KOVAN_ID } from "utils/addresses";
 const daiAddress = addresses[KOVAN_ID].tokens.DAI;

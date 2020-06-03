@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { useWeb3React } from "@web3-react/core";
 import { Contract } from "@ethersproject/contracts";
 
-export function useContract(
+export default function useContract(
   address?: string,
   ABI?: any,
   withSigner = false

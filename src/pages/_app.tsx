@@ -16,6 +16,7 @@ import theme, { GlobalStyle } from "theme";
 import { client } from "utils";
 import { ContractProvider } from "state/contracts/Context";
 import { ModalProvider } from "state/modals/Context";
+import { BetProvider } from "state/bet/Context";
 
 import "../components/Modals/CreateMarket/react-datepicker.css";
 import "../components/Modals/CreateMarket/customReactDatePickerStyles.css";
@@ -94,15 +95,17 @@ export default class App extends NextApp {
 
         <Web3ReactProvider getLibrary={getLibrary}>
           <ModalProvider>
-            <ApolloProvider client={client}>
-              <ThemeProvider theme={theme}>
-                <ColorModeProvider>
-                  <CSSReset />
-                  <Global styles={GlobalStyle} />
-                  <Application Component={Component} />
-                </ColorModeProvider>
-              </ThemeProvider>
-            </ApolloProvider>
+            <BetProvider>
+              <ApolloProvider client={client}>
+                <ThemeProvider theme={theme}>
+                  <ColorModeProvider>
+                    <CSSReset />
+                    <Global styles={GlobalStyle} />
+                    <Application Component={Component} />
+                  </ColorModeProvider>
+                </ThemeProvider>
+              </ApolloProvider>
+            </BetProvider>
           </ModalProvider>
         </Web3ReactProvider>
       </>

@@ -4,6 +4,8 @@ import { ModalReducer } from "./Reducers";
 
 const initialModalState: any = {
   createMarketModalIsOpen: false,
+  infoModalIsOpen: false,
+  betSettingsModalIsOpen: false,
 };
 
 export const ModalContext = createContext<{

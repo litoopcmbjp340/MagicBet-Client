@@ -13,10 +13,10 @@ import {
 
 interface IChart {
   marketContract: any;
-  forceRerender: boolean;
+  rerender: boolean;
 }
 
-export default function Chart({ marketContract, forceRerender }: IChart) {
+export default function Chart({ marketContract, rerender }: IChart) {
   const [data, setData] = useState<any>([]);
 
   useEffect(() => {
@@ -138,7 +138,7 @@ export default function Chart({ marketContract, forceRerender }: IChart) {
         isExpired = true;
       };
     })();
-  }, [marketContract, forceRerender]);
+  }, [marketContract, rerender]);
 
   return <Graph data={data} />;
 }

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { providers, utils, Contract } from "ethers";
 import { v4 as uuidv4 } from "uuid";
 import {
@@ -12,23 +12,21 @@ import {
   Text,
   Heading,
 } from "@chakra-ui/core";
+import { ModalContext } from "state/modals/Context";
 
 import { shortenAddress } from "utils";
-import { useFactoryContract } from "utils/getContract";
+import { useFactoryContract } from "hooks/useHelperContract";
 import BTMarketContract from "abis/BTMarket.json";
 
-interface IOutcomeObject {
+interface IOutcome {
   name: string;
   bets: number;
 }
 
-interface ICreateMarketModal {
-  isOpen: boolean;
-  onClose: () => void;
-}
-
-const InfoModal = ({ isOpen, onClose }: ICreateMarketModal) => {
+const InfoModal = ({ isOpen }: { isOpen: boolean }): JSX.Element => {
   const factoryContract = useFactoryContract();
+
+  const { modalState, modalDispatch } = useContext(ModalContext);
 
   const MarketStates = ["SETUP", "WAITING", "OPEN", "LOCKED", "WITHDRAW"];
   const [marketState, setMarketState] = useState<string>("");
@@ -46,8 +44,8 @@ const InfoModal = ({ isOpen, onClose }: ICreateMarketModal) => {
             window.web3.currentProvider
           );
 
-          let deployedMarkets = await factoryContract.getMarkets();
-          let mostRecentlyDeployedAddress =
+          const deployedMarkets = await factoryContract.getMarkets();
+          const mostRecentlyDeployedAddress =
             deployedMarkets[deployedMarkets.length - 1];
 
           if (deployedMarkets.length !== 0) {
@@ -73,11 +71,11 @@ const InfoModal = ({ isOpen, onClose }: ICreateMarketModal) => {
             setNumberOfParticipants(_numberOfParticipants.toNumber());
             setPot(utils.formatUnits(_pot.toString(), 18));
 
-            let numberOfOutcomes = await marketContract.numberOfOutcomes();
+            const numberOfOutcomes = await marketContract.numberOfOutcomes();
             if (numberOfOutcomes !== 0) {
               let newOutcomesArray = [];
               for (let i = 0; i < numberOfOutcomes; i++) {
-                let newOutcome: IOutcomeObject = { name: "", bets: 0 };
+                let newOutcome: IOutcome = { name: "", bets: 0 };
 
                 newOutcome.name = await marketContract.outcomeNames(i);
 
@@ -105,11 +103,18 @@ const InfoModal = ({ isOpen, onClose }: ICreateMarketModal) => {
   }, [MarketStates, factoryContract]);
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} isCentered>
+    <Modal isOpen={isOpen} isCentered>
       <ModalOverlay />
       <ModalContent backgroundColor="light.100" borderRadius="0.25rem">
         <ModalHeader>Market Stats</ModalHeader>
-        <ModalCloseButton />
+        <ModalCloseButton
+          onClick={() =>
+            modalDispatch({
+              type: "TOGGLE_INFO_MODAL",
+              payload: !modalState.infoModalIsOpen,
+            })
+          }
+        />
         <ModalBody>
           <Flex flexDirection="column" alignItems="center">
             <Heading
@@ -154,7 +159,7 @@ const InfoModal = ({ isOpen, onClose }: ICreateMarketModal) => {
             </Text>
           </Flex>
           {outcomeNamesAndAmounts &&
-            outcomeNamesAndAmounts.map((outcome: any) => (
+            outcomeNamesAndAmounts.map((outcome: IOutcome) => (
               <Flex key={uuidv4()} flexDirection="column" alignItems="center">
                 <Heading
                   as="h3"
