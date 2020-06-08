@@ -6,15 +6,6 @@
 </h1>
 <h2 align="center">Lossless Ethereum Betting</h2>
 
-<p align="center">
-    <a href="https://BetTogether.github.io/MagicBet-Client/">
-    <img src="https://cdn.jsdelivr.net/gh/storybookjs/brand@master/badge/badge-storybook.svg" alt="Storybook" />
-    </a>
-    <a href="https://app.netlify.com/sites/loving-lalande-20d7ce/deploys">
-    <img src="https://api.netlify.com/api/v1/badges/360d259f-5bad-4dca-8c98-47c6adb51e43/deploy-status" alt="Netlify" />
-    </a>
-</p>
-
 <br/>
 
 MagicBet is a no loss betting platform, built on the Ethereum ecosystem. It allows users to bet on real life future events and outcomes without risking their stake.

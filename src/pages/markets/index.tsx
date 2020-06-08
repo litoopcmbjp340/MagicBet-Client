@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "@emotion/styled";
 import { Flex, Box, Heading, useColorMode } from "@chakra-ui/core";
 
@@ -46,18 +46,24 @@ const Markets = (): JSX.Element => {
     true
   );
 
-  const fetchMarkets = async () => {
-    if (factoryContract) {
-      try {
-        const markets = await factoryContract.getMarkets();
-        setMarkets(markets);
-      } catch (error) {
-        console.error(error);
+  useEffect(() => {
+    (async () => {
+      let stale = false;
+      if (factoryContract && !stale) {
+        try {
+          factoryContract
+            .getMarkets()
+            .then((markets: any) => setMarkets(markets))
+            .catch((error: any) => console.error(error));
+        } catch (error) {
+          console.error(error);
+        }
       }
-    }
-  };
-
-  fetchMarkets();
+      return (): void => {
+        stale = true;
+      };
+    })();
+  }, [factoryContract]);
 
   return (
     <Box bg={bgColor[colorMode]} margin="0" paddingBottom="1rem">

@@ -6,8 +6,6 @@ import { resolve } from "url";
 import { ColorModeProvider, CSSReset, ThemeProvider } from "@chakra-ui/core";
 import { Web3Provider } from "@ethersproject/providers";
 import { Web3ReactProvider, useWeb3React } from "@web3-react/core";
-import { ApolloProvider } from "@apollo/react-hooks";
-import ApolloClient from "apollo-boost";
 import { Global } from "@emotion/core";
 
 import Layout from "components/Layout";
@@ -41,8 +39,10 @@ function Application({ Component }: { Component: NextComponentType }) {
             process.env.IPFS === "true"
               ? resolve(
                   window.location.origin,
-                  window.location.pathname.split("/").slice(0, 3).join("/") +
-                    "/"
+                  window.location.pathname
+                    .split("/")
+                    .slice(0, 3)
+                    .join("/") + "/"
                 )
               : window.location.origin
           }
@@ -66,10 +66,6 @@ function Application({ Component }: { Component: NextComponentType }) {
 function getLibrary(provider: any): Web3Provider {
   return new Web3Provider(provider);
 }
-
-const client = new ApolloClient({
-  uri: "https://api.thegraph.com/subgraphs/name/aave/protocol-kovan",
-});
 
 export default class App extends NextApp {
   render() {
@@ -100,15 +96,13 @@ export default class App extends NextApp {
         <Web3ReactProvider getLibrary={getLibrary}>
           <ModalProvider>
             <BetProvider>
-              <ApolloProvider client={client}>
-                <ThemeProvider theme={theme}>
-                  <ColorModeProvider>
-                    <CSSReset />
-                    <Global styles={GlobalStyle} />
-                    <Application Component={Component} />
-                  </ColorModeProvider>
-                </ThemeProvider>
-              </ApolloProvider>
+              <ThemeProvider theme={theme}>
+                <ColorModeProvider>
+                  <CSSReset />
+                  <Global styles={GlobalStyle} />
+                  <Application Component={Component} />
+                </ColorModeProvider>
+              </ThemeProvider>
             </BetProvider>
           </ModalProvider>
         </Web3ReactProvider>

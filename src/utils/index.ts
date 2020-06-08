@@ -48,3 +48,17 @@ export function getEthNetworkNameById(networkId: number | undefined): string {
   }
   return networkName;
 }
+
+export const getFormattedNumber = (floatBalance: number, decimals: number) => {
+  if (floatBalance === 0) {
+    return 0;
+  } else if (floatBalance < 1) {
+    const decimalDigits = floatBalance.toFixed(decimals).slice(2);
+    const leadingZeros = decimalDigits.search(/[1-9]/);
+    const firstTwoDigits = decimalDigits.slice(leadingZeros, leadingZeros + 2);
+
+    return `0.${"0".repeat(leadingZeros)}${firstTwoDigits}`;
+  } else if (floatBalance < 10) return Math.round(floatBalance * 10) / 10;
+
+  return Math.round(floatBalance);
+};
