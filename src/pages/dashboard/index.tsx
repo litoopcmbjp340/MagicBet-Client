@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useContext } from "react";
-import { useWeb3React } from "@web3-react/core";
-import { Web3Provider } from "@ethersproject/providers";
-import { providers, Contract } from "ethers";
+import React, { useState, useEffect, useContext } from 'react';
+import { useWeb3React } from '@web3-react/core';
+import { Web3Provider } from '@ethersproject/providers';
+import { Contract } from '@ethersproject/contracts';
 import {
   Box,
   Flex,
@@ -11,26 +11,26 @@ import {
   Icon,
   FormLabel,
   useColorMode,
-} from "@chakra-ui/core";
+} from '@chakra-ui/core';
 
-import BTMarketContract from "abis/BTMarket.json";
-import MarketCard from "./marketCard";
-import CreateMarket from "components/Modals/CreateMarket";
-import { mintDai } from "utils";
-import { ModalContext } from "state/modals/Context";
+import BTMarketContract from 'abis/BTMarket.json';
+import MarketCard from './MarketCard';
+import CreateMarket from 'components/Modals/CreateMarket';
+import { mintDai } from 'utils';
+import { ModalContext } from 'state/modals/Context';
 import {
   getMostRecentAddress,
   useFactoryContract,
   useDaiContract,
-} from "hooks/useHelperContract";
-import { bgColor, color, bgColorOwnerButtons } from "theme";
+} from 'hooks/useHelperContract';
+import { bgColor, color, bgColorOwnerButtons } from 'theme';
 
 const Dashboard = (): JSX.Element => {
   const { active } = useWeb3React<Web3Provider>();
   const { colorMode } = useColorMode();
   const factoryContract = useFactoryContract();
   const daiContract = useDaiContract();
-  const provider = new providers.Web3Provider(window.web3.currentProvider);
+  const provider = new Web3Provider(window.web3.currentProvider);
   const wallet = provider.getSigner();
 
   const { modalState, modalDispatch } = useContext(ModalContext);
@@ -40,7 +40,7 @@ const Dashboard = (): JSX.Element => {
 
   const [newMarketAddress, setNewMarketAddress] = useState<any>();
   if (factoryContract)
-    factoryContract.on("MarketCreated", (address: any) =>
+    factoryContract.on('MarketCreated', (address: any) =>
       setNewMarketAddress(address)
     );
 
@@ -95,7 +95,7 @@ const Dashboard = (): JSX.Element => {
           </Heading>
 
           <Flex justify="center" align="center">
-            <FormLabel htmlFor="email-alerts">Enable email alerts?</FormLabel>
+            <FormLabel htmlFor="email-alerts">Enable alerts?</FormLabel>
             <Switch id="email-alerts" color="red" />
           </Flex>
         </Flex>
@@ -124,11 +124,11 @@ const Dashboard = (): JSX.Element => {
               padding="0.8rem"
               width="auto"
               cursor="pointer"
-              _hover={{ bg: "primary.100" }}
+              _hover={{ bg: 'primary.100' }}
               isDisabled={!active}
               onClick={() =>
                 modalDispatch({
-                  type: "TOGGLE_CREATE_MARKET_MODAL",
+                  type: 'TOGGLE_CREATE_MARKET_MODAL',
                   payload: !modalState.createMarketModalIsOpen,
                 })
               }

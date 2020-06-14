@@ -1,9 +1,10 @@
-import React, { useState, useEffect, FormEvent, useContext } from "react";
-import CountUp from "react-countup";
-import CountDown from "react-countdown";
-import { useWeb3React } from "@web3-react/core";
-import { Web3Provider } from "@ethersproject/providers";
-import { utils } from "ethers";
+import React, { useState, useEffect, FormEvent, useContext } from 'react';
+import CountUp from 'react-countup';
+import CountDown from 'react-countdown';
+import { useWeb3React } from '@web3-react/core';
+import { Web3Provider } from '@ethersproject/providers';
+import { formatEther, parseUnits } from '@ethersproject/units';
+import { BigNumber } from '@ethersproject/bignumber';
 import {
   Box,
   Flex,
@@ -29,20 +30,18 @@ import {
   Stack,
   useDisclosure,
   useColorMode,
-} from "@chakra-ui/core";
-// import dynamic from "next/dynamic";
+} from '@chakra-ui/core';
+import dynamic from 'next/dynamic';
 
-import Info from "components/Modals/Info";
+import Info from 'components/Modals/Info';
 //import Bet from "components/Modals/Bet";
-import Chart from "./Chart";
-import OwnerFunctionality from "./OwnerFunctionality";
-import { shortenAddress } from "utils";
-// useTokenAllowance
-import { ModalContext } from "state/modals/Context";
 //import { BetContext } from "state/bet/Context";
-import { useEthBalance, useTokenBalance } from "hooks";
-import { useTokens } from "utils/tokens";
-import { bgColorModal, bgColorMc, colorMc } from "theme";
+import OwnerFunctionality from './OwnerFunctionality';
+import { shortenAddress } from 'utils';
+import { ModalContext } from 'state/modals/Context';
+import { useEthBalance, useTokenBalance } from 'hooks';
+import { useTokens } from 'utils/tokens';
+import { bgColorModal, bgColorMc, colorMc } from 'theme';
 
 const MarketCard = ({ marketContract, daiContract }: any) => {
   const { active, account, library } = useWeb3React<Web3Provider>();
@@ -50,17 +49,17 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
   const { colorMode } = useColorMode();
 
   const toast = useToast();
-  // const Chart = dynamic(() => import("./Chart"));
+  const Chart = dynamic(() => import('./Chart'));
   const { modalState, modalDispatch } = useContext(ModalContext);
 
   const [amountToBet, setAmountToBet] = useState<number>(0);
   const [accruedInterest, setAccruedInterest] = useState<number>(0);
   const [marketResolutionTime, setMarketResolutionTime] = useState<number>(0);
-  const MarketStates = ["SETUP", "WAITING", "OPEN", "LOCKED", "WITHDRAW"];
-  const [marketState, setMarketState] = useState<string>("");
-  const [prompt, setPrompt] = useState<string>("");
-  const [owner, setOwner] = useState<string>("");
-  const [choice, setChoice] = useState<string>("");
+  const MarketStates = ['SETUP', 'WAITING', 'OPEN', 'LOCKED', 'WITHDRAW'];
+  const [marketState, setMarketState] = useState<string>('');
+  const [prompt, setPrompt] = useState<string>('');
+  const [owner, setOwner] = useState<string>('');
+  const [choice, setChoice] = useState<string>('');
   const [outcomes, setOutcomes] = useState<any>([]);
   const [daiApproved, setDaiApproved] = useState<boolean>(false);
   const [rerender, setRerender] = useState<boolean>(false);
@@ -75,8 +74,8 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
   //TODO: MOVE TO HOOK
   const [eventState, setEventState] = useState<any>();
   const [eventBet, setEventBet] = useState<any>();
-  marketContract.on("StateChanged", (state: any) => setEventState(state));
-  marketContract.on("ParticipantEntered", (address: any) =>
+  marketContract.on('StateChanged', (state: any) => setEventState(state));
+  marketContract.on('ParticipantEntered', (address: any) =>
     setEventBet(address)
   );
 
@@ -100,7 +99,7 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
         setOwner(_owner);
         setMarketResolutionTime(_marketResolutionTime);
         setPrompt(_eventName);
-        const accIntFormatted = utils.formatEther(_accruedInterest);
+        const accIntFormatted = formatEther(_accruedInterest);
         const val = parseFloat(accIntFormatted);
         setAccruedInterest(val);
       }
@@ -116,7 +115,7 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
         // const { data: _allowance } = useTokenAllowance(daiToken, account, marketContract.address)
         if (account) {
           getAllowance().then((allowance) => {
-            if (allowance.toString() !== "0") setDaiApproved(true);
+            if (allowance.toString() !== '0') setDaiApproved(true);
           });
         }
       }
@@ -150,10 +149,10 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
 
     if (balance < amountToBetMultiplied) {
       toast({
-        title: "Insufficient Funds",
-        description: "Add more Dai to wallet",
-        status: "warning",
-        position: "bottom",
+        title: 'Insufficient Funds',
+        description: 'Add more Dai to wallet',
+        status: 'warning',
+        position: 'bottom',
         duration: 5000,
         isClosable: true,
       });
@@ -168,10 +167,10 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
       setDaiApproved(true);
     } */
 
-    const formatted = utils.parseUnits(amountToBet.toString(), 18);
+    const formatted = parseUnits(amountToBet.toString(), 18);
 
-    const increaseByFactor = (number: utils.BigNumber) =>
-      number.mul(utils.bigNumberify(120)).div(utils.bigNumberify(100));
+    const increaseByFactor = (number: any) =>
+      number.mul(BigNumber.from(120)).div(BigNumber.from(100));
 
     const estimatedWei = await marketContract.getEstimatedETHforDAI(formatted);
     const estimatedWeiWithMargin = increaseByFactor(estimatedWei[0]);
@@ -188,20 +187,20 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
       });
 
       toast({
-        title: "Transaction Confirmed",
+        title: 'Transaction Confirmed',
         description: `${shortenAddress(tx.hash)}`,
-        status: "info",
-        position: "bottom",
+        status: 'info',
+        position: 'bottom',
         duration: 5000,
         isClosable: true,
       });
 
       const result = await tx.wait();
       toast({
-        title: "Transaction Success",
+        title: 'Transaction Success',
         description: `${shortenAddress(result.transactionHash)}`,
-        status: "success",
-        position: "bottom",
+        status: 'success',
+        position: 'bottom',
         duration: 5000,
         isClosable: true,
       });
@@ -209,10 +208,10 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
     } catch (error) {
       console.error(error);
       toast({
-        title: "Transaction Failed",
-        description: "Try increasing gas",
-        status: "error",
-        position: "bottom",
+        title: 'Transaction Failed',
+        description: 'Try increasing gas',
+        status: 'error',
+        position: 'bottom',
         duration: 5000,
         isClosable: true,
       });
@@ -282,7 +281,7 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
                 pr={0.5}
                 onClick={() =>
                   modalDispatch({
-                    type: "TOGGLE_INFO_MODAL",
+                    type: 'TOGGLE_INFO_MODAL',
                     payload: !modalState.infoModalIsOpen,
                   })
                 }
@@ -305,7 +304,7 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
               {marketResolutionTime ? (
                 <CountDown date={Date.now() + marketResolutionTime} />
               ) : (
-                "-"
+                '-'
               )}
             </Text>
           </Flex>
@@ -353,9 +352,9 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
                     max={100}
                     onChange={(e: any) => setAmountToBet(e.target.value)}
                     onKeyDown={(e: any) =>
-                      (e.key === "e" && e.preventDefault()) ||
-                      (e.key === "+" && e.preventDefault()) ||
-                      (e.key === "-" && e.preventDefault())
+                      (e.key === 'e' && e.preventDefault()) ||
+                      (e.key === '+' && e.preventDefault()) ||
+                      (e.key === '-' && e.preventDefault())
                     }
                   />
                 </Flex>
@@ -371,16 +370,16 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
                       color="light.100"
                       backgroundColor="primary.100"
                       type="submit"
-                      _hover={{ bg: "dark.100" }}
+                      _hover={{ bg: 'dark.100' }}
                       isDisabled={
                         amountToBet <= 0 ||
-                        marketState !== "OPEN" ||
-                        choice === ""
+                        marketState !== 'OPEN' ||
+                        choice === ''
                       }
                     >
                       Enter
                     </Button>
-                    {marketState === "WITHDRAW" && (
+                    {marketState === 'WITHDRAW' && (
                       <Button
                         cursor="pointer"
                         fontSize="1.33rem"
@@ -428,28 +427,28 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
                   my="1.25rem"
                   type="button"
                   _hover={{
-                    backgroundColor: "primary.100",
-                    boxShadow: "0px 15px 20px rgba(0, 0, 0, 0.3)",
-                    color: "light.100",
-                    transform: "translateY(-5px)",
+                    backgroundColor: 'primary.100',
+                    boxShadow: '0px 15px 20px rgba(0, 0, 0, 0.3)',
+                    color: 'light.100',
+                    transform: 'translateY(-5px)',
                   }}
                   onClick={() => setUsingDai(!usingDai)}
                 >
-                  {usingDai ? "Dai" : "Ether"}
+                  {usingDai ? 'Dai' : 'Ether'}
                 </Button>
 
                 {usingDai ? (
                   <Flex justifyContent="center" alignItems="center">
                     {tokenData
-                      ? tokenData.toSignificant(6, { groupSeparator: "," })
-                      : "-"}
+                      ? tokenData.toSignificant(6, { groupSeparator: ',' })
+                      : '-'}
                   </Flex>
                 ) : (
                   <Flex justifyContent="center" alignItems="center">
                     <Tag>
                       {data
-                        ? data.toSignificant(4, { groupSeparator: "," })
-                        : "-"}
+                        ? data.toSignificant(4, { groupSeparator: ',' })
+                        : '-'}
                     </Tag>
                   </Flex>
                 )}

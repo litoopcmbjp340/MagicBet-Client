@@ -1,15 +1,16 @@
-import React, { createContext, useReducer, useMemo, Dispatch } from "react";
-import { providers, Contract } from "ethers";
+import React, { createContext, useReducer, Dispatch } from 'react';
+import { Web3Provider } from '@ethersproject/providers';
+import { Contract } from '@ethersproject/contracts';
 
-import { ContractReducer } from "./Reducers";
-import BTMarketFactoryContract from "abis/BTMarketFactory.json";
-import addresses, { KOVAN_ID } from "utils/addresses";
+import { ContractReducer } from './Reducers';
+import BTMarketFactoryContract from 'abis/BTMarketFactory.json';
+import addresses, { KOVAN_ID } from 'utils/addresses';
 
 const factoryAddress = addresses[KOVAN_ID].marketFactory;
 
 const initialContractState: any = [];
 
-const provider = new providers.Web3Provider(window.web3.currentProvider);
+const provider = new Web3Provider(window.web3.currentProvider);
 const wallet = provider.getSigner();
 const FactoryContract = new Contract(
   factoryAddress,

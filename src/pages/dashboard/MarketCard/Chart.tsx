@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
-import { utils } from "ethers";
-import { Box, Flex } from "@chakra-ui/core";
+import React, { useState, useEffect } from 'react';
+import { formatEther } from '@ethersproject/units';
+import { Box, Flex } from '@chakra-ui/core';
 import {
   LineChart,
   Line,
@@ -9,8 +9,8 @@ import {
   CartesianGrid,
   Tooltip,
   Legend,
-} from "recharts";
-import { useColorMode } from "@chakra-ui/core";
+} from 'recharts';
+import { useColorMode } from '@chakra-ui/core';
 
 interface IChart {
   marketContract: any;
@@ -27,23 +27,23 @@ export default function Chart({ marketContract, rerender }: IChart) {
       let numberOfOutcomes = await marketContract.numberOfOutcomes();
       let outcomeName: any;
       let newData1 = {
-        name: "0 min",
+        name: '0 min',
       };
 
       let newData2 = {
-        name: "1 min",
+        name: '1 min',
       };
 
       let newData3 = {
-        name: "2 min",
+        name: '2 min',
       };
 
       let newData4 = {
-        name: "3 min",
+        name: '3 min',
       };
 
       let newData5 = {
-        name: "4 min+",
+        name: '4 min+',
       };
 
       for (let i = 0; i < numberOfOutcomes; i++) {
@@ -61,7 +61,7 @@ export default function Chart({ marketContract, rerender }: IChart) {
             i
           );
           amountOfBetsForOutcome.forEach((bet: any) => {
-            let formattedBets = utils.formatEther(bet.toString());
+            let formattedBets = formatEther(bet.toString());
             betsForOutcome.push(formattedBets);
           });
           let timestampsForOutcome: string[] = [];

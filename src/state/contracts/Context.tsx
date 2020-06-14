@@ -1,11 +1,12 @@
-import React, { createContext, useReducer, Dispatch } from "react";
-import { providers, Contract } from "ethers";
+import React, { createContext, useReducer, Dispatch } from 'react';
+import { Web3Provider } from '@ethersproject/providers';
+import { Contract } from '@ethersproject/contracts';
 
-import { ContractReducer } from "./Reducers";
-import BTMarketFactoryContract from "abis/BTMarketFactory.json";
-import IERC20 from "abis/IERC20.json";
-import addresses, { KOVAN_ID } from "utils/addresses";
-import DaiMockup from "abis/DaiMockup.json";
+import { ContractReducer } from './Reducers';
+import BTMarketFactoryContract from 'abis/BTMarketFactory.json';
+import IERC20 from 'abis/IERC20.json';
+import addresses, { KOVAN_ID } from 'utils/addresses';
+import DaiMockup from 'abis/DaiMockup.json';
 
 // const factoryAddress = addresses[KOVAN_ID].marketFactory;
 // const daiAddress = addresses[KOVAN_ID].tokens.DAI;

@@ -1,7 +1,7 @@
-import React from "react";
-import { Flex, Button, useColorMode } from "@chakra-ui/core";
+import React from 'react';
+import { Flex, Button, useColorMode } from '@chakra-ui/core';
 
-import { bgColorOwnerButtons } from "theme";
+import { bgColorOwnerButtons } from 'theme';
 
 const OwnerFunctionality = ({ marketContract }: any) => {
   const { colorMode } = useColorMode();
@@ -15,7 +15,7 @@ const OwnerFunctionality = ({ marketContract }: any) => {
         textAlign="center"
         text-decoration="none"
         backgroundColor={bgColorOwnerButtons[colorMode]}
-        _hover={{ bg: "primary.100" }}
+        _hover={{ bg: 'primary.100' }}
         onClick={async () => await marketContract.incrementState()}
       >
         Increment Market State
@@ -26,7 +26,7 @@ const OwnerFunctionality = ({ marketContract }: any) => {
         textAlign="center"
         text-decoration="none"
         backgroundColor={bgColorOwnerButtons[colorMode]}
-        _hover={{ bg: "primary.100" }}
+        _hover={{ bg: 'primary.100' }}
         onClick={async () => await marketContract.determineWinner()}
       >
         Get Winner from Oracle
@@ -37,7 +37,7 @@ const OwnerFunctionality = ({ marketContract }: any) => {
         textAlign="center"
         text-decoration="none"
         backgroundColor={bgColorOwnerButtons[colorMode]}
-        _hover={{ bg: "primary.100" }}
+        _hover={{ bg: 'primary.100' }}
         onClick={async () => await marketContract.disableContract()}
       >
         Pause (Disable) Contract

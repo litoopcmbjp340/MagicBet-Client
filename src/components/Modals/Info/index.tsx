@@ -1,6 +1,9 @@
-import React, { useState, useEffect, useContext } from "react";
-import { providers, utils, Contract } from "ethers";
-import { v4 as uuidv4 } from "uuid";
+import React, { useState, useEffect, useContext } from 'react';
+import { Web3Provider } from '@ethersproject/providers';
+import { Contract } from '@ethersproject/contracts';
+
+import { formatUnits } from '@ethersproject/units';
+import { v4 as uuidv4 } from 'uuid';
 import {
   Modal,
   ModalOverlay,
@@ -12,13 +15,13 @@ import {
   Text,
   Heading,
   useColorMode,
-} from "@chakra-ui/core";
+} from '@chakra-ui/core';
 
-import { ModalContext } from "state/modals/Context";
-import { shortenAddress } from "utils";
-import { useFactoryContract } from "hooks/useHelperContract";
-import BTMarketContract from "abis/BTMarket.json";
-import { bgColorModal } from "theme";
+import { ModalContext } from 'state/modals/Context';
+import { shortenAddress } from 'utils';
+import { useFactoryContract } from 'hooks/useHelperContract';
+import BTMarketContract from 'abis/BTMarket.json';
+import { bgColorModal } from 'theme';
 
 interface IOutcome {
   name: string;
@@ -31,10 +34,10 @@ const InfoModal = ({ isOpen }: { isOpen: boolean }): JSX.Element => {
 
   const { modalState, modalDispatch } = useContext(ModalContext);
 
-  const MarketStates = ["SETUP", "WAITING", "OPEN", "LOCKED", "WITHDRAW"];
-  const [marketState, setMarketState] = useState<string>("");
-  const [pot, setPot] = useState<string>("");
-  const [owner, setOwner] = useState<string>("");
+  const MarketStates = ['SETUP', 'WAITING', 'OPEN', 'LOCKED', 'WITHDRAW'];
+  const [marketState, setMarketState] = useState<string>('');
+  const [pot, setPot] = useState<string>('');
+  const [owner, setOwner] = useState<string>('');
   const [numberOfParticipants, setNumberOfParticipants] = useState<number>(0);
   const [outcomeNamesAndAmounts, setOutcomeNamesAndAmounts] = useState<any>([]);
 
@@ -43,9 +46,7 @@ const InfoModal = ({ isOpen }: { isOpen: boolean }): JSX.Element => {
     const fetchData = async () => {
       if (factoryContract && !isExpired) {
         try {
-          const provider = new providers.Web3Provider(
-            window.web3.currentProvider
-          );
+          const provider = new Web3Provider(window.web3.currentProvider);
 
           const deployedMarkets = await factoryContract.getMarkets();
           const mostRecentlyDeployedAddress =
@@ -72,14 +73,14 @@ const InfoModal = ({ isOpen }: { isOpen: boolean }): JSX.Element => {
             setMarketState(MarketStates[_marketState]);
             setOwner(_owner);
             setNumberOfParticipants(_numberOfParticipants.toNumber());
-            setPot(utils.formatUnits(_pot.toString(), 18));
+            setPot(formatUnits(_pot.toString(), 18));
 
             const numberOfOutcomes = await marketContract.numberOfOutcomes();
 
             if (numberOfOutcomes !== 0) {
               let newOutcomesArray = [];
               for (let i = 0; i < numberOfOutcomes; i++) {
-                let newOutcome: IOutcome = { name: "", bets: "" };
+                let newOutcome: IOutcome = { name: '', bets: '' };
 
                 newOutcome.name = await marketContract.outcomeNames(i);
                 const numOfBets = await marketContract.totalBetsPerOutcome(i);
@@ -87,7 +88,7 @@ const InfoModal = ({ isOpen }: { isOpen: boolean }): JSX.Element => {
                 const hexString = numOfBets.toString();
                 const removedZeros = hexString.replace(
                   /^0+(\d)|(\d)0+$/gm,
-                  "$1$2"
+                  '$1$2'
                 );
                 newOutcome.bets = removedZeros;
 
@@ -115,7 +116,7 @@ const InfoModal = ({ isOpen }: { isOpen: boolean }): JSX.Element => {
       isOpen={isOpen}
       onClose={() =>
         modalDispatch({
-          type: "TOGGLE_INFO_MODAL",
+          type: 'TOGGLE_INFO_MODAL',
           payload: !modalState.infoModalIsOpen,
         })
       }
@@ -128,7 +129,7 @@ const InfoModal = ({ isOpen }: { isOpen: boolean }): JSX.Element => {
         <ModalCloseButton
           onClick={() =>
             modalDispatch({
-              type: "TOGGLE_INFO_MODAL",
+              type: 'TOGGLE_INFO_MODAL',
               payload: !modalState.infoModalIsOpen,
             })
           }

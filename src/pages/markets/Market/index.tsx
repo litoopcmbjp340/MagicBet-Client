@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from "react";
-import { providers, Contract } from "ethers";
-import styled from "@emotion/styled";
-import { Link } from "@chakra-ui/core";
+import React, { useEffect, useState } from 'react';
+import { Web3Provider } from '@ethersproject/providers';
+import { Contract } from '@ethersproject/contracts';
+import styled from '@emotion/styled';
+import { Link } from '@chakra-ui/core';
 
-import { shortenAddress } from "utils";
-import BTMarketContract from "abis/BTMarket.json";
-import { getFormattedNumber } from "utils";
+import { shortenAddress } from 'utils';
+import BTMarketContract from 'abis/BTMarket.json';
+import { getFormattedNumber } from 'utils';
 
 const TableHead = styled.th``;
 
@@ -20,36 +21,34 @@ function Market({ market }: { market: string }) {
     let isStale = false;
     (async () => {
       let marketContract: any;
-      if (!isStale) {
-        const provider = new providers.Web3Provider(
-          window.web3.currentProvider
-        );
-        const wallet = provider.getSigner();
-        marketContract = new Contract(market, BTMarketContract.abi, wallet);
-      }
+
+      const provider = new Web3Provider(window.web3.currentProvider);
+      const wallet = provider.getSigner();
+      marketContract = new Contract(market, BTMarketContract.abi, wallet);
 
       try {
-        const [
-          _question,
-          _questionId,
-          _maxInterests,
-          _marketResolutionTime,
-          _winningOutcomeId,
-        ] = await Promise.all([
-          marketContract.eventName(),
-          marketContract.questionId(),
-          marketContract.getMaxTotalInterest(),
-          marketContract.marketResolutionTime(),
-          marketContract.winningOutcome(),
-        ]);
-
-        let _winningOutcome;
-        if (_winningOutcomeId.toString() !== "69") {
-          _winningOutcome = await marketContract.outcomeNames(
-            _winningOutcomeId
-          );
-        }
         if (!isStale) {
+          const [
+            _question,
+            _questionId,
+            _maxInterests,
+            _marketResolutionTime,
+            _winningOutcomeId,
+          ] = await Promise.all([
+            marketContract.eventName(),
+            marketContract.questionId(),
+            marketContract.getMaxTotalInterest(),
+            marketContract.marketResolutionTime(),
+            marketContract.winningOutcome(),
+          ]);
+
+          let _winningOutcome;
+          if (_winningOutcomeId.toString() !== '69') {
+            _winningOutcome = await marketContract.outcomeNames(
+              _winningOutcomeId
+            );
+          }
+
           setQuestion(_question);
           setQuestionId(_questionId);
           setMaxInterest(_maxInterests);
@@ -57,9 +56,7 @@ function Market({ market }: { market: string }) {
           setWinningOutcome(_winningOutcome);
         }
       } catch (error) {
-        if (!isStale) {
-          console.error(error);
-        }
+        console.error(error);
       }
     })();
 
@@ -83,7 +80,7 @@ function Market({ market }: { market: string }) {
             </Link>
           </TableHead>
           <TableHead>
-            {winningOutcome ? winningOutcome.toString() : "Not yet resolved"}
+            {winningOutcome ? winningOutcome.toString() : 'Not yet resolved'}
           </TableHead>
           <TableHead>{`${getFormattedNumber(
             maxInterests / 1e18,
