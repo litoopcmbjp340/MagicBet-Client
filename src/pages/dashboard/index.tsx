@@ -39,15 +39,16 @@ const Dashboard = (): JSX.Element => {
   const [marketContract, setMarketContract] = useState<Contract>();
 
   const [newMarketAddress, setNewMarketAddress] = useState<any>();
+
   if (factoryContract)
     factoryContract.on('MarketCreated', (address: any) =>
       setNewMarketAddress(address)
     );
 
   useEffect(() => {
-    let isExpired = false;
+    let isStale = false;
     (async () => {
-      if (factoryContract) {
+      if (factoryContract && !isStale) {
         try {
           const deployedMarkets = await factoryContract.getMarkets();
           if (deployedMarkets.length !== 0) {
@@ -70,7 +71,7 @@ const Dashboard = (): JSX.Element => {
     })();
 
     return () => {
-      isExpired = true;
+      isStale = true;
     };
     //eslint-disable-next-line
   }, [factoryContract]);

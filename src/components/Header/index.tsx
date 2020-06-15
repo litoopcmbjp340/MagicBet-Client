@@ -15,7 +15,7 @@ import {
 } from '@chakra-ui/core';
 
 import { useEagerConnect, useInactiveListener } from 'hooks';
-import { injected } from 'utils/connectors';
+import { injected, getNetwork } from 'utils/connectors';
 import { shortenAddress } from 'utils';
 import { bgColorHeader, bgColorConnectButton, bgColorDropDown } from 'theme';
 
@@ -43,6 +43,10 @@ const Header = (): JSX.Element => {
   const triedEager = useEagerConnect();
 
   useInactiveListener(!triedEager || !!activatingConnector);
+
+  // useEffect(() => {
+  //   if (triedEager && !active && !error) activate(getNetwork(42));
+  // }, [triedEager, active, error, activate]);
 
   return (
     <>
