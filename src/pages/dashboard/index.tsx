@@ -48,8 +48,8 @@ const Dashboard = (): JSX.Element => {
   useEffect(() => {
     let isStale = false;
     (async () => {
-      if (factoryContract && !isStale) {
-        try {
+      try {
+        if (factoryContract && !isStale) {
           const deployedMarkets = await factoryContract.getMarkets();
           if (deployedMarkets.length !== 0) {
             const marketContractAddress = await getMostRecentAddress(
@@ -64,9 +64,9 @@ const Dashboard = (): JSX.Element => {
 
             setMarketContract(marketInstance);
           }
-        } catch (error) {
-          console.error(error);
         }
+      } catch (error) {
+        console.error(error);
       }
     })();
 

@@ -42,9 +42,9 @@ const InfoModal = ({ isOpen }: { isOpen: boolean }): JSX.Element => {
   const [outcomeNamesAndAmounts, setOutcomeNamesAndAmounts] = useState<any>([]);
 
   useEffect(() => {
-    let isExpired = false;
+    let isStale = false;
     const fetchData = async () => {
-      if (factoryContract && !isExpired) {
+      if (factoryContract && !isStale) {
         try {
           const provider = new Web3Provider(window.web3.currentProvider);
 
@@ -106,7 +106,7 @@ const InfoModal = ({ isOpen }: { isOpen: boolean }): JSX.Element => {
     fetchData();
 
     return () => {
-      isExpired = true;
+      isStale = true;
     };
     //eslint-disable-next-line
   }, []);

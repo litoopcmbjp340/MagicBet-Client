@@ -81,7 +81,8 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
 
   useEffect(() => {
     (async () => {
-      if (marketContract) {
+      let isStale = false;
+      if (marketContract && !isStale) {
         const [
           _marketState,
           _owner,
@@ -103,12 +104,16 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
         const val = parseFloat(accIntFormatted);
         setAccruedInterest(val);
       }
+      return () => {
+        isStale = true;
+      };
     })();
   }, [MarketStates, account, marketContract, eventState, eventBet]);
 
   useEffect(() => {
     (async () => {
-      if (account && library && daiContract) {
+      let isStale = false;
+      if (account && library && daiContract && !isStale) {
         const getAllowance = async () => {
           return await daiContract.allowance(account, marketContract.address);
         };
@@ -119,14 +124,17 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
           });
         }
       }
+      return () => {
+        isStale = true;
+      };
     })();
   }, [account, daiContract, library, marketContract.address]);
 
-  //TODO: CLEAN
   useEffect(() => {
     (async () => {
+      let isStale = false;
       const numberOfOutcomes = await marketContract.numberOfOutcomes();
-      if (numberOfOutcomes.toNumber() !== 0) {
+      if (numberOfOutcomes.toNumber() !== 0 && !isStale) {
         const numberOfOutcomes = (
           await marketContract.numberOfOutcomes()
         ).toNumber();
@@ -137,6 +145,9 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
         }
         setOutcomes(newOutcomes);
       }
+      return () => {
+        isStale = true;
+      };
     })();
   }, [marketContract]);
 
