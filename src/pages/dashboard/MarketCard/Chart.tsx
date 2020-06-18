@@ -19,7 +19,6 @@ interface IChart {
 
 export default function Chart({ marketContract, rerender }: IChart) {
   const [data, setData] = useState<any>([]);
-  const { colorMode } = useColorMode();
 
   useEffect(() => {
     (async () => {

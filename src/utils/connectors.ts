@@ -1,17 +1,19 @@
-import { InjectedConnector } from "@web3-react/injected-connector";
-import { NetworkConnector } from "@web3-react/network-connector";
+import { InjectedConnector } from '@web3-react/injected-connector';
+import { NetworkConnector } from '@web3-react/network-connector';
 
-export const injected = new InjectedConnector({
-  supportedChainIds: [42],
-});
+const RPC_URLS: { [chainId: number]: string } = {
+  1: `https://mainnet.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_KEY}`,
+  42: `https://kovan.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_KEY}`,
+};
 
-export function getNetwork(defaultChainId = 42): NetworkConnector {
+export function getNetwork(defaultChainId = 1): NetworkConnector {
   const network = new NetworkConnector({
-    urls: `https://kovan.infura.io/v3/${process.env.INFURA_KEY}`,
+    urls: { 1: RPC_URLS[1], 42: RPC_URLS[42] },
     defaultChainId,
-    pollingInterval: 15 * 1000,
   });
-
-  console.log("network:", network);
   return network;
 }
+
+export const injected = new InjectedConnector({
+  supportedChainIds: [1, 42],
+});

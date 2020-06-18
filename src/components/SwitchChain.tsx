@@ -1,13 +1,9 @@
 import React from 'react';
 import { Flex, Stack, Text, useColorMode } from '@chakra-ui/core';
 
-import { bgColor } from 'theme';
+import { bgColor1 } from '../utils/theme';
 
-export default function SwitchChain({
-  requiredChainId,
-}: {
-  requiredChainId: number;
-}): JSX.Element {
+export default function SwitchChain(): JSX.Element {
   const { colorMode } = useColorMode();
 
   return (
@@ -15,13 +11,13 @@ export default function SwitchChain({
       flexGrow={1}
       alignItems="center"
       justifyContent="center"
-      backgroundColor={bgColor[colorMode]}
-      paddingBottom="1rem"
+      bg={bgColor1[colorMode]}
+      pb="1rem"
     >
       <Stack direction="column" alignItems="center">
-        <Text fontSize="1.5rem">Wrong Network</Text>
-        <Text fontSize="1.5rem">
-          Please connect to {requiredChainId === 42 && 'Kovan'}
+        <Text fontSize="1.5rem" textAlign="center">
+          Wrong Network. <br />
+          Please connect to Kovan.
         </Text>
       </Stack>
     </Flex>

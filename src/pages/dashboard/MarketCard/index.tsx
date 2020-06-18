@@ -33,15 +33,14 @@ import {
 } from '@chakra-ui/core';
 import dynamic from 'next/dynamic';
 
-import Info from 'components/Modals/Info';
+import Info from '../../../components/Modals/Info';
 //import Bet from "components/Modals/Bet";
-//import { BetContext } from "state/bet/Context";
 import OwnerFunctionality from './OwnerFunctionality';
-import { shortenAddress } from 'utils';
-import { ModalContext } from 'state/modals/Context';
-import { useEthBalance, useTokenBalance } from 'hooks';
-import { useTokens } from 'utils/tokens';
-import { bgColorModal, bgColorMc, colorMc } from 'theme';
+import { shortenAddress } from '../../../utils';
+import { ModalContext } from '../../../state/modals/Context';
+import { useEthBalance, useTokenBalance } from '../../../hooks';
+import { useTokens } from '../../../utils/tokens';
+import { bgColor7, bgColor8, color2 } from '../../../utils/theme';
 
 const MarketCard = ({ marketContract, daiContract }: any) => {
   const { active, account, library } = useWeb3React<Web3Provider>();
@@ -250,29 +249,42 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
 
   return !prompt ? null : (
     <>
-      <Box bg={bgColorMc[colorMode]} borderRadius="0.5rem" margin="0 1.5rem">
+      <Box bg={bgColor8[colorMode]} borderRadius="0.5rem" m="0 1.5rem">
         <Flex
           borderBottom="1px solid dark.100"
           alignItems="center"
           justifyContent="space-between"
-          padding="0.5rem 1rem"
+          p="0.5rem 1rem"
         >
-          <Text>{shortenAddress(marketContract.address)}</Text>
+          <Flex flexDirection="column" justifyContent="space-between">
+            <Text
+              color="#555"
+              font-size="12px"
+              line-height="1.5"
+              m="0 0 10px"
+              p="0"
+              textAlign="center"
+            >
+              Address
+            </Text>
+            <Text>{shortenAddress(marketContract.address)}</Text>
+          </Flex>
           <Flex flexDirection="column" justifyContent="space-between" ml="2rem">
             <Text
               color="#555"
               font-size="12px"
               line-height="1.5"
-              margin="0 0 10px"
-              padding="0"
+              m="0 0 10px"
+              p="0"
+              textAlign="center"
             >
-              Current, Potential Winnings (in Dai)
+              Potential Winnings
             </Text>
             <Box textAlign="center">
               <CountUp
                 start={0}
                 end={accruedInterest}
-                decimals={18}
+                decimals={10}
                 preserveValue={true}
                 duration={10}
               />
@@ -283,12 +295,12 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
             alignItems="center"
             justifyContent="center"
           >
-            <Flex>
+            <Flex mt={0}>
               <IconButton
                 aria-label="market info"
                 variant="ghost"
                 icon="info"
-                size="lg"
+                size="md"
                 pr={0.5}
                 onClick={() =>
                   modalDispatch({
@@ -301,7 +313,7 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
                 aria-label="purchase settings"
                 variant="ghost"
                 icon="settings"
-                size="lg"
+                size="md"
                 onClick={
                   onOpen
                   // modalDispatch({
@@ -311,7 +323,7 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
                 }
               />
             </Flex>
-            <Text width="5.5rem">
+            <Text width="5.5rem" mt="-5px">
               {marketResolutionTime ? (
                 <CountDown date={Date.now() + marketResolutionTime} />
               ) : (
@@ -325,14 +337,17 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
         </Heading>
 
         <Flex justifyContent="center" alignItems="center" flexWrap="wrap">
-          <Chart marketContract={marketContract} rerender={rerender} />
+          {/* NOTE: FORCE RE-RENDER CAUSES A MEMORY LEAK */}
+          <Box display={{ sm: 'none', md: 'block' }}>
+            <Chart marketContract={marketContract} rerender={rerender} />
+          </Box>
 
           {active && (
             <form onSubmit={placeBet}>
               <Flex flexDirection="column" justifyContent="center">
                 <Select
-                  width="auto"
-                  height="3rem"
+                  w="auto"
+                  h="3rem"
                   mt="1rem"
                   color="#777"
                   borderColor="secondary.100"
@@ -350,13 +365,13 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
                 <Flex justifyContent="center">
                   <Input
                     borderStyle="none"
-                    color={colorMc[colorMode]}
-                    backgroundColor={bgColorMc[colorMode]}
+                    color={color2[colorMode]}
+                    backgroundColor={bgColor8[colorMode]}
                     fontSize="70px"
                     my="1"
                     py="3rem"
                     textAlign="center"
-                    width="50%"
+                    w="50%"
                     type="number"
                     placeholder="0"
                     min={0}
@@ -376,7 +391,7 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
                       borderRadius="0.5rem"
                       cursor="pointer"
                       fontSize="1.33rem"
-                      width="8rem"
+                      w="8rem"
                       border="2px solid primary.100"
                       color="light.100"
                       backgroundColor="primary.100"
@@ -395,7 +410,7 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
                         cursor="pointer"
                         fontSize="1.33rem"
                         mt="1rem"
-                        width="8rem"
+                        w="8rem"
                         border="1px"
                         borderColor="primary.100"
                         borderRadius="0.5rem"
@@ -419,7 +434,7 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
       {/* //TODO: MOVE MODAL */}
       <Modal isOpen={isOpen} onClose={onClose} isCentered>
         <ModalOverlay />
-        <ModalContent bg={bgColorModal[colorMode]} borderRadius="0.25rem">
+        <ModalContent bg={bgColor7[colorMode]} borderRadius="0.25rem">
           <ModalHeader>Bet Settings</ModalHeader>
           <ModalCloseButton />
           <ModalBody>

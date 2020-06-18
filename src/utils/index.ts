@@ -1,13 +1,13 @@
 import { Contract } from '@ethersproject/contracts';
 import { parseUnits } from '@ethersproject/units';
 
-import DaiMockup from 'abis/DaiMockup.json';
-import addresses, { KOVAN_ID } from 'utils/addresses';
+import DaiMockup from '../abis/DaiMockup.json';
+import addresses, { KOVAN_ID } from '../utils/addresses';
+
 const daiAddress = addresses[KOVAN_ID].tokens.DAI;
 
 export const shortenAddress = (address: string): string => {
-  address = address.slice(0, 5) + '...' + address.slice(address.length - 4);
-  return address;
+  return address.slice(0, 5) + '...' + address.slice(address.length - 4);
 };
 
 export const mintDai = async (wallet: any) => {
@@ -16,9 +16,9 @@ export const mintDai = async (wallet: any) => {
     DaiMockup.abi,
     wallet
   );
-  let formattedDaiToMint = parseUnits('100', 18);
+  const formattedDaiToMint = parseUnits('100', 18);
   try {
-    let tx = await daiMockupContract.mint(formattedDaiToMint);
+    const tx = await daiMockupContract.mint(formattedDaiToMint);
     await tx.wait();
   } catch (error) {
     console.error(error);

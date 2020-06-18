@@ -21,7 +21,7 @@ import { ModalContext } from 'state/modals/Context';
 import { shortenAddress } from 'utils';
 import { useFactoryContract } from 'hooks/useHelperContract';
 import BTMarketContract from 'abis/BTMarket.json';
-import { bgColorModal } from 'theme';
+import { bgColor7 } from 'utils/theme';
 
 interface IOutcome {
   name: string;
@@ -124,7 +124,7 @@ const InfoModal = ({ isOpen }: { isOpen: boolean }): JSX.Element => {
     >
       <ModalOverlay />
 
-      <ModalContent bg={bgColorModal[colorMode]} borderRadius="0.25rem">
+      <ModalContent bg={bgColor7[colorMode]} borderRadius="0.25rem">
         <ModalHeader>Market Stats</ModalHeader>
         <ModalCloseButton
           onClick={() =>

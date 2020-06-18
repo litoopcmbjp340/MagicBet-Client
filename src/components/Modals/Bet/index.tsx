@@ -1,6 +1,6 @@
-import React, { useState, useContext, Suspense } from "react";
-import { useWeb3React } from "@web3-react/core";
-import { Web3Provider } from "@ethersproject/providers";
+import React, { useState, useContext, Suspense } from 'react';
+import { useWeb3React } from '@web3-react/core';
+import { Web3Provider } from '@ethersproject/providers';
 import {
   Modal,
   ModalOverlay,
@@ -20,12 +20,12 @@ import {
   Button,
   Spinner,
   useColorMode,
-} from "@chakra-ui/core";
+} from '@chakra-ui/core';
 
-import { ModalContext } from "state/modals/Context";
-import { useEthBalance, useTokenBalance } from "hooks";
-import { useTokens } from "utils/tokens";
-import { bgColorModal } from "theme";
+import { ModalContext } from 'state/modals/Context';
+import { useEthBalance, useTokenBalance } from 'hooks';
+import { useTokens } from 'utils/tokens';
+import { bgColor7 } from 'utils/theme';
 
 const BetModal = ({ isOpen }: { isOpen: boolean }): JSX.Element => {
   const [usingDai, setUsingDai] = useState<boolean>(true);
@@ -44,12 +44,12 @@ const BetModal = ({ isOpen }: { isOpen: boolean }): JSX.Element => {
   return (
     <Modal isOpen={isOpen} isCentered>
       <ModalOverlay />
-      <ModalContent bg={bgColorModal[colorMode]} borderRadius="0.25rem">
+      <ModalContent bg={bgColor7[colorMode]} borderRadius="0.25rem">
         <ModalHeader>Bet Settings</ModalHeader>
         <ModalCloseButton
           onClick={() =>
             modalDispatch({
-              type: "TOGGLE_BET_SETTINGS_MODAL",
+              type: 'TOGGLE_BET_SETTINGS_MODAL',
               payload: !modalState.betSettingsModalIsOpen,
             })
           }
@@ -70,14 +70,14 @@ const BetModal = ({ isOpen }: { isOpen: boolean }): JSX.Element => {
                 my="1.25rem"
                 type="button"
                 _hover={{
-                  backgroundColor: "primary.100",
-                  boxShadow: "0px 15px 20px rgba(0, 0, 0, 0.3)",
-                  color: "light.100",
-                  transform: "translateY(-5px)",
+                  backgroundColor: 'primary.100',
+                  boxShadow: '0px 15px 20px rgba(0, 0, 0, 0.3)',
+                  color: 'light.100',
+                  transform: 'translateY(-5px)',
                 }}
                 onClick={() => setUsingDai(!usingDai)}
               >
-                {usingDai ? "Dai" : "Ether"}
+                {usingDai ? 'Dai' : 'Ether'}
               </Button>
 
               {usingDai ? (
@@ -89,7 +89,7 @@ const BetModal = ({ isOpen }: { isOpen: boolean }): JSX.Element => {
                   <Tag>
                     <Suspense fallback={<Spinner />}>
                       {tokenData &&
-                        tokenData.toSignificant(6, { groupSeparator: "," })}
+                        tokenData.toSignificant(6, { groupSeparator: ',' })}
                     </Suspense>
                   </Tag>
                 </Flex>
@@ -101,7 +101,7 @@ const BetModal = ({ isOpen }: { isOpen: boolean }): JSX.Element => {
                 >
                   <Tag>
                     <Suspense fallback={<Spinner />}>
-                      {data && data.toSignificant(4, { groupSeparator: "," })}
+                      {data && data.toSignificant(4, { groupSeparator: ',' })}
                     </Suspense>
                   </Tag>
                 </Flex>
@@ -141,7 +141,7 @@ const BetModal = ({ isOpen }: { isOpen: boolean }): JSX.Element => {
           <Button
             onClick={() =>
               modalDispatch({
-                type: "TOGGLE_BET_SETTINGS_MODAL",
+                type: 'TOGGLE_BET_SETTINGS_MODAL',
                 payload: !modalState.betSettingsModalIsOpen,
               })
             }

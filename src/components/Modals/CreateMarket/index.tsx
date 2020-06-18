@@ -1,6 +1,6 @@
-import React, { useState, useContext, FormEvent, ChangeEvent } from "react";
-import { useForm } from "react-hook-form";
-import DatePicker from "react-datepicker";
+import React, { useState, useContext, FormEvent, ChangeEvent } from 'react';
+import { useForm } from 'react-hook-form';
+import DatePicker from 'react-datepicker';
 import {
   Modal,
   ModalOverlay,
@@ -16,13 +16,13 @@ import {
   Flex,
   Spinner,
   useColorMode,
-} from "@chakra-ui/core";
+} from '@chakra-ui/core';
 
-import { useContract } from "hooks";
-import BTMarketFactoryContract from "abis/BTMarketFactory.json";
-import { ModalContext } from "state/modals/Context";
-import addresses, { KOVAN_ID } from "utils/addresses";
-import { bgColorModal, bgColorOwnerButtons } from "theme";
+import { useContract } from 'hooks';
+import BTMarketFactoryContract from 'abis/BTMarketFactory.json';
+import { ModalContext } from 'state/modals/Context';
+import addresses, { KOVAN_ID } from 'utils/addresses';
+import { bgColor7, bgColor6 } from 'utils/theme';
 
 const CreateMarket = ({ isOpen }: { isOpen: boolean }): JSX.Element => {
   const { modalState, modalDispatch } = useContext(ModalContext);
@@ -37,7 +37,7 @@ const CreateMarket = ({ isOpen }: { isOpen: boolean }): JSX.Element => {
 
   const [loading, setLoading] = useState<boolean>(false);
   const [marketEventName, setMarketEventName] = useState<string>(
-    "Who will win the 2020 US General Election?"
+    'Who will win the 2020 US General Election?'
   );
   const [marketOpeningTime, setMarketOpeningTime] = useState<number>(
     Date.now() / 1000
@@ -50,12 +50,12 @@ const CreateMarket = ({ isOpen }: { isOpen: boolean }): JSX.Element => {
   );
   const [timeout, setTimeout] = useState<number>(10);
   const [arbitrator, setArbitrator] = useState<string>(
-    "0xd47f72a2d1d0E91b0Ec5e5f5d02B2dc26d00A14D"
+    '0xd47f72a2d1d0E91b0Ec5e5f5d02B2dc26d00A14D'
   );
   const [realitioQuestion, setRealitioQuestion] = useState<string>(
     'Who will win the 2020 US General Election␟"Donald Trump","Joe Biden"␟news-politics␟en_US'
   );
-  const [outcomes, setOutcomes] = useState<string[]>(["Trump", "Biden"]);
+  const [outcomes, setOutcomes] = useState<string[]>(['Trump', 'Biden']);
 
   const { handleSubmit, errors, register, formState } = useForm();
 
@@ -91,14 +91,14 @@ const CreateMarket = ({ isOpen }: { isOpen: boolean }): JSX.Element => {
     setLoading(false);
 
     modalDispatch({
-      type: "TOGGLE_CREATE_MARKET_MODAL",
+      type: 'TOGGLE_CREATE_MARKET_MODAL',
       payload: !modalState.createMarketModalIsOpen,
     });
   };
 
   function validateMarketEventName(value: any) {
     let error;
-    if (!value) error = "Market Event Name is required";
+    if (!value) error = 'Market Event Name is required';
     return error || true;
   }
 
@@ -107,7 +107,7 @@ const CreateMarket = ({ isOpen }: { isOpen: boolean }): JSX.Element => {
       isOpen={isOpen}
       onClose={() =>
         modalDispatch({
-          type: "TOGGLE_CREATE_MARKET_MODAL",
+          type: 'TOGGLE_CREATE_MARKET_MODAL',
           payload: !modalState.createMarketModalIsOpen,
         })
       }
@@ -115,7 +115,7 @@ const CreateMarket = ({ isOpen }: { isOpen: boolean }): JSX.Element => {
     >
       <ModalOverlay />
 
-      <ModalContent bg={bgColorModal[colorMode]} borderRadius="0.25rem">
+      <ModalContent bg={bgColor7[colorMode]} borderRadius="0.25rem">
         {loading ? (
           <Flex justifyContent="center" my="1rem" mx="0">
             <Spinner color="primary.100" size="xl" thickness="4px" />
@@ -126,7 +126,7 @@ const CreateMarket = ({ isOpen }: { isOpen: boolean }): JSX.Element => {
             <ModalCloseButton
               onClick={() =>
                 modalDispatch({
-                  type: "TOGGLE_CREATE_MARKET_MODAL",
+                  type: 'TOGGLE_CREATE_MARKET_MODAL',
                   payload: !modalState.createMarketModalIsOpen,
                 })
               }
@@ -262,8 +262,8 @@ const CreateMarket = ({ isOpen }: { isOpen: boolean }): JSX.Element => {
                   marginBottom="1rem"
                   width="100%"
                   cursor="pointer"
-                  backgroundColor={bgColorOwnerButtons[colorMode]}
-                  _hover={{ bg: "primary.100" }}
+                  backgroundColor={bgColor6[colorMode]}
+                  _hover={{ bg: 'primary.100' }}
                   isLoading={formState.isSubmitting}
                   type="submit"
                 >

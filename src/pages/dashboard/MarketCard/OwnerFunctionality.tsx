@@ -1,11 +1,10 @@
 import React from 'react';
 import { Flex, Button, useColorMode } from '@chakra-ui/core';
 
-import { bgColorOwnerButtons } from 'theme';
+import { bgColor6 } from '../../../utils/theme';
 
 const OwnerFunctionality = ({ marketContract }: any) => {
   const { colorMode } = useColorMode();
-  // const bgColor = { light: "dark.100", dark: "primary.100" };
 
   return (
     <Flex justifyContent="center" flexDirection="column" mt="1rem">
@@ -14,7 +13,7 @@ const OwnerFunctionality = ({ marketContract }: any) => {
         color="light.100"
         textAlign="center"
         text-decoration="none"
-        backgroundColor={bgColorOwnerButtons[colorMode]}
+        bg={bgColor6[colorMode]}
         _hover={{ bg: 'primary.100' }}
         onClick={async () => await marketContract.incrementState()}
       >
@@ -25,7 +24,7 @@ const OwnerFunctionality = ({ marketContract }: any) => {
         color="light.100"
         textAlign="center"
         text-decoration="none"
-        backgroundColor={bgColorOwnerButtons[colorMode]}
+        bg={bgColor6[colorMode]}
         _hover={{ bg: 'primary.100' }}
         onClick={async () => await marketContract.determineWinner()}
       >
@@ -36,7 +35,7 @@ const OwnerFunctionality = ({ marketContract }: any) => {
         color="light.100"
         textAlign="center"
         text-decoration="none"
-        backgroundColor={bgColorOwnerButtons[colorMode]}
+        bg={bgColor6[colorMode]}
         _hover={{ bg: 'primary.100' }}
         onClick={async () => await marketContract.disableContract()}
       >

@@ -1,7 +1,7 @@
-import React from "react";
-import { Flex, Stack, Text, Button, useColorMode } from "@chakra-ui/core";
+import React from 'react';
+import { Flex, Stack, Text, Button, useColorMode } from '@chakra-ui/core';
 
-import { bgColor } from "theme";
+import { bgColor1 } from 'utils/theme';
 
 export default function Error(): JSX.Element {
   const { colorMode } = useColorMode();
@@ -10,7 +10,7 @@ export default function Error(): JSX.Element {
       flexGrow={1}
       alignItems="center"
       justifyContent="center"
-      backgroundColor={bgColor[colorMode]}
+      backgroundColor={bgColor1[colorMode]}
       paddingBottom="1rem"
     >
       <Stack direction="column" alignItems="center">

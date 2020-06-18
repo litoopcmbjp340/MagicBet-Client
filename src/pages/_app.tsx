@@ -1,26 +1,21 @@
-import React, { useState, useLayoutEffect, useEffect } from "react";
-import { NextComponentType } from "next";
-import NextApp from "next/app";
-import Head from "next/head";
-import { resolve } from "url";
-import { ColorModeProvider, CSSReset, ThemeProvider } from "@chakra-ui/core";
-import { Web3Provider } from "@ethersproject/providers";
-import { Web3ReactProvider, useWeb3React } from "@web3-react/core";
-import { Global } from "@emotion/core";
+import React, { useState, useLayoutEffect, useEffect } from 'react';
+import { NextComponentType } from 'next';
+import NextApp from 'next/app';
+import Head from 'next/head';
+import { ColorModeProvider, CSSReset, ThemeProvider } from '@chakra-ui/core';
+import { Web3Provider } from '@ethersproject/providers';
+import { Web3ReactProvider, useWeb3React } from '@web3-react/core';
+import { Global } from '@emotion/core';
 
-import Layout from "components/Layout";
-import Error from "components/Error";
-import SwitchChain from "components/SwitchChain";
-import theme, { GlobalStyle } from "theme";
-import { ContractProvider } from "state/contracts/Context";
-import { ModalProvider } from "state/modals/Context";
-import { BetProvider } from "state/bet/Context";
-
-import "../components/Modals/CreateMarket/react-datepicker.css";
-import "../components/Modals/CreateMarket/customReactDatePickerStyles.css";
+import Layout from '../components/Layout';
+import Error from '../components/Error';
+import SwitchChain from '../components/SwitchChain';
+import theme, { GlobalStyle } from '../utils/theme';
+import { ContractProvider } from '../state/contracts/Context';
+import { ModalProvider } from '../state/modals/Context';
 
 const useIsomorphicLayoutEffect =
-  typeof window !== "undefined" ? useLayoutEffect : useEffect;
+  typeof window !== 'undefined' ? useLayoutEffect : useEffect;
 
 function Application({ Component }: { Component: NextComponentType }) {
   const [painted, setPainted] = useState(false);
@@ -31,45 +26,26 @@ function Application({ Component }: { Component: NextComponentType }) {
   const { error, chainId } = useWeb3React();
 
   return !painted ? null : (
-    <>
-      <Head>
-        <base
-          key="base"
-          href={
-            process.env.IPFS === "true"
-              ? resolve(
-                  window.location.origin,
-                  window.location.pathname
-                    .split("/")
-                    .slice(0, 3)
-                    .join("/") + "/"
-                )
-              : window.location.origin
-          }
-        />
-      </Head>
-      <ContractProvider>
-        <Layout>
-          {error ? (
-            <Error />
-          ) : chainId !== undefined && chainId !== 42 ? (
-            <SwitchChain requiredChainId={42} />
-          ) : (
-            <Component />
-          )}
-        </Layout>
-      </ContractProvider>
-    </>
+    <Layout>
+      {error ? (
+        <Error />
+      ) : typeof chainId !== 'number' ? null : chainId !== undefined &&
+        chainId !== 42 ? (
+        <SwitchChain />
+      ) : (
+        <Component />
+      )}
+    </Layout>
   );
-}
-
-function getLibrary(provider: any): Web3Provider {
-  return new Web3Provider(provider);
 }
 
 export default class App extends NextApp {
   render() {
     const { Component } = this.props;
+
+    function getLibrary(provider: any): Web3Provider {
+      return new Web3Provider(provider);
+    }
 
     return (
       <>
@@ -92,10 +68,9 @@ export default class App extends NextApp {
             href="/favicon.ico"
           />
         </Head>
-
         <Web3ReactProvider getLibrary={getLibrary}>
           <ModalProvider>
-            <BetProvider>
+            <ContractProvider>
               <ThemeProvider theme={theme}>
                 <ColorModeProvider>
                   <CSSReset />
@@ -103,7 +78,7 @@ export default class App extends NextApp {
                   <Application Component={Component} />
                 </ColorModeProvider>
               </ThemeProvider>
-            </BetProvider>
+            </ContractProvider>
           </ModalProvider>
         </Web3ReactProvider>
       </>

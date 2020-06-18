@@ -13,23 +13,24 @@ import {
   useColorMode,
 } from '@chakra-ui/core';
 
-import BTMarketContract from 'abis/BTMarket.json';
+import BTMarketContract from '../../abis/BTMarket.json';
 import MarketCard from './MarketCard';
-import CreateMarket from 'components/Modals/CreateMarket';
-import { mintDai } from 'utils';
-import { ModalContext } from 'state/modals/Context';
+import CreateMarket from '../../components/Modals/CreateMarket';
+import { mintDai } from '../../utils';
+import { ModalContext } from '../../state/modals/Context';
 import {
   getMostRecentAddress,
   useFactoryContract,
   useDaiContract,
-} from 'hooks/useHelperContract';
-import { bgColor, color, bgColorOwnerButtons } from 'theme';
+} from '../../hooks/useHelperContract';
+import { bgColor1, color1, bgColor6 } from '../../utils/theme';
 
 const Dashboard = (): JSX.Element => {
   const { active } = useWeb3React<Web3Provider>();
   const { colorMode } = useColorMode();
   const factoryContract = useFactoryContract();
   const daiContract = useDaiContract();
+  //@ts-ignore
   const provider = new Web3Provider(window.web3.currentProvider);
   const wallet = provider.getSigner();
 
@@ -46,8 +47,8 @@ const Dashboard = (): JSX.Element => {
     );
 
   useEffect(() => {
-    let isStale = false;
     (async () => {
+      let isStale = false;
       try {
         if (factoryContract && !isStale) {
           const deployedMarkets = await factoryContract.getMarkets();
@@ -68,29 +69,35 @@ const Dashboard = (): JSX.Element => {
       } catch (error) {
         console.error(error);
       }
+      return () => {
+        isStale = true;
+      };
     })();
 
-    return () => {
-      isStale = true;
-    };
     //eslint-disable-next-line
   }, [factoryContract]);
 
   return (
     <>
-      <Box bg={bgColor[colorMode]} paddingBottom="1rem">
+      <Box
+        borderTopRightRadius="1rem"
+        borderTopLeftRadius="1rem"
+        bg="primary.100"
+        h="0.5rem"
+      />
+      <Box bg={bgColor1[colorMode]} paddingBottom="1rem">
         <Flex
-          marginBottom="-1px"
+          mb="-1px"
           justifyContent="space-between"
           alignItems="center"
-          padding="1rem 1.5rem"
+          p="1rem 1.5rem"
         >
           <Heading
             as="h3"
             size="lg"
             fontSize="1.5rem"
             font-weight="500"
-            color={color[colorMode]}
+            color={color1[colorMode]}
           >
             Dashboard
           </Heading>
@@ -105,9 +112,9 @@ const Dashboard = (): JSX.Element => {
           flexWrap="wrap"
           flexDirection="column"
           justifyContent="center"
-          margin="0 auto 1rem"
+          m="0 auto 1rem"
           maxWidth="100%"
-          padding="0rem 1rem"
+          p="0rem 1rem"
         >
           {marketContract ? (
             <MarketCard
@@ -116,14 +123,14 @@ const Dashboard = (): JSX.Element => {
             />
           ) : (
             <Button
-              bg={bgColorOwnerButtons[colorMode]}
+              bg={bgColor6[colorMode]}
               border="none"
               borderRadius="0.33rem"
               color="light.100"
               text-Align="center"
               fontSize="1rem"
-              padding="0.8rem"
-              width="auto"
+              p="0.8rem"
+              w="auto"
               cursor="pointer"
               _hover={{ bg: 'primary.100' }}
               isDisabled={!active}
@@ -146,9 +153,9 @@ const Dashboard = (): JSX.Element => {
               right="0"
               fontWeight="700"
               color="light.100"
-              margin="2rem"
+              m="2rem"
               cursor="pointer"
-              padding="0"
+              p="0"
               onClick={() => mintDai(wallet)}
             >
               <Icon name="daiIcon" color="white.200" size="1.5rem" />
