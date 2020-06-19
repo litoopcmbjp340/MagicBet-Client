@@ -6,6 +6,7 @@ import { Web3Provider } from '@ethersproject/providers';
 import { Web3ReactProvider, useWeb3React } from '@web3-react/core';
 import { Global } from '@emotion/core';
 import { ColorModeProvider, CSSReset, ThemeProvider } from '@chakra-ui/core';
+import 'react-datepicker/dist/react-datepicker.css';
 
 import { ContractProvider } from '../state/contracts/Context';
 import Layout from '../components/Layout';
