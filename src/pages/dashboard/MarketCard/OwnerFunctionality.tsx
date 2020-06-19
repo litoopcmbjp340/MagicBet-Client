@@ -11,8 +11,6 @@ const OwnerFunctionality = ({ marketContract }: any) => {
       <Button
         my="0.25rem"
         color="light.100"
-        textAlign="center"
-        text-decoration="none"
         bg={bgColor6[colorMode]}
         _hover={{ bg: 'primary.100' }}
         onClick={async () => await marketContract.incrementState()}
@@ -22,8 +20,6 @@ const OwnerFunctionality = ({ marketContract }: any) => {
       <Button
         my="0.25rem"
         color="light.100"
-        textAlign="center"
-        text-decoration="none"
         bg={bgColor6[colorMode]}
         _hover={{ bg: 'primary.100' }}
         onClick={async () => await marketContract.determineWinner()}
@@ -33,13 +29,11 @@ const OwnerFunctionality = ({ marketContract }: any) => {
       <Button
         my="0.25rem"
         color="light.100"
-        textAlign="center"
-        text-decoration="none"
         bg={bgColor6[colorMode]}
         _hover={{ bg: 'primary.100' }}
         onClick={async () => await marketContract.disableContract()}
       >
-        Pause (Disable) Contract
+        Disable Contract
       </Button>
     </Flex>
   );

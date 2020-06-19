@@ -56,7 +56,9 @@ const Dashboard = (): JSX.Element => {
               wallet
             );
 
-            setMarketContract(marketInstance);
+            const isPaused = await marketInstance.paused();
+            if (isPaused) return;
+            else setMarketContract(marketInstance);
           }
 
           factoryContract.on('MarketCreated', (address: any) => {
@@ -79,13 +81,13 @@ const Dashboard = (): JSX.Element => {
 
   return (
     <>
-      <Box
-        borderTopRightRadius="1rem"
-        borderTopLeftRadius="1rem"
-        bg="primary.100"
-        h="0.5rem"
-      />
-      <Box bg={bgColor1[colorMode]} pb="1rem">
+      <Box bg={bgColor1[colorMode]} pb="1rem" rounded="md">
+        <Box
+          borderTopRightRadius="0.25rem"
+          borderTopLeftRadius="0.25rem"
+          bg="primary.100"
+          h="0.5rem"
+        />
         <Flex
           mb="-1px"
           justifyContent="space-between"

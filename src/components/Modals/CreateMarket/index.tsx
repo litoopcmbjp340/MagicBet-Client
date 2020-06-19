@@ -22,7 +22,6 @@ import { useContract } from 'hooks';
 import MBMarketFactoryContract from 'abis/MBMarketFactory.json';
 import addresses, { KOVAN_ID } from 'utils/addresses';
 import { bgColor7, bgColor6 } from 'utils/theme';
-import CustomInput from './CustomInput';
 
 const CreateMarket = ({ createMarketModalToggle }: any): JSX.Element => {
   const { colorMode } = useColorMode();
@@ -97,6 +96,18 @@ const CreateMarket = ({ createMarketModalToggle }: any): JSX.Element => {
     if (!value) error = 'Market Event Name is required';
     return error || true;
   }
+
+  //@ts-ignore
+  const CustomInput = ({ value, label, onClick, id }) => (
+    <Input
+      borderColor="secondary.100"
+      id={id}
+      placeholder={label}
+      isReadOnly
+      value={value}
+      onFocus={onClick}
+    />
+  );
 
   return (
     <Modal
@@ -179,7 +190,10 @@ const CreateMarket = ({ createMarketModalToggle }: any): JSX.Element => {
                         setMarketOpeningTime(date.getTime() / 1000)
                       }
                       customInput={
-                        <CustomInput id="from" label="marketOpeningTime" />
+                        <Input
+                          borderColor="secondary.100"
+                          value={marketOpeningTime}
+                        />
                       }
                       id="marketOpeningTime"
                     />
@@ -195,7 +209,10 @@ const CreateMarket = ({ createMarketModalToggle }: any): JSX.Element => {
                       }
                       id="marketLockingTime"
                       customInput={
-                        <CustomInput id="from" label="marketLockingTime" />
+                        <Input
+                          borderColor="secondary.100"
+                          value={marketLockingTime}
+                        />
                       }
                     />
                   </FormControl>
@@ -206,11 +223,14 @@ const CreateMarket = ({ createMarketModalToggle }: any): JSX.Element => {
                     <DatePicker
                       selected={new Date(marketResolutionTime * 1000)}
                       onChange={(date: Date) =>
-                        setMarketLockingTime(date.getTime() / 1000)
+                        setMarketResolutionTime(date.getTime() / 1000)
                       }
                       id="marketResolutionTime"
                       customInput={
-                        <CustomInput id="from" label="marketResolutionTime" />
+                        <Input
+                          borderColor="secondary.100"
+                          value={marketResolutionTime}
+                        />
                       }
                     />
                   </FormControl>

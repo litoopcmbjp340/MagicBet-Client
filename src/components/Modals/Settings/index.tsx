@@ -23,7 +23,7 @@ import { useTokens } from 'utils/tokens';
 import { bgColor7 } from 'utils/theme';
 import { mintDai } from 'utils';
 
-const BetModal = ({ settingsModalToggle }: any): JSX.Element => {
+const SettingsModal = ({ settingsModalToggle }: any): JSX.Element => {
   const [usingDai, setUsingDai] = useState<boolean>(true);
   const { colorMode } = useColorMode();
 
@@ -54,7 +54,7 @@ const BetModal = ({ settingsModalToggle }: any): JSX.Element => {
                 textTransform="uppercase"
                 fontWeight="500"
                 color="dark.100"
-                backgroundColor="light.100"
+                bg="light.100"
                 border="none"
                 box-shadow="0 0.5rem 1rem rgba(0, 0, 0, 0.1)"
                 transition="all 0.3s ease 0s"
@@ -100,14 +100,12 @@ const BetModal = ({ settingsModalToggle }: any): JSX.Element => {
                 </Flex>
               )}
             </Stack>
-          </Stack>
-          <Stack>
             <Button
-              backgroundColor="primary.100"
+              bg="primary.100"
               fontWeight="700"
               color="light.100"
               cursor="pointer"
-              m="2rem"
+              mx="4rem"
               p="0"
               onClick={() => mintDai(wallet)}
             >
@@ -123,4 +121,4 @@ const BetModal = ({ settingsModalToggle }: any): JSX.Element => {
   );
 };
 
-export default BetModal;
+export default SettingsModal;

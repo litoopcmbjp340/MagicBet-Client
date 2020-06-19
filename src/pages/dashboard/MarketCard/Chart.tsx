@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { formatEther } from '@ethersproject/units';
+import { Contract } from '@ethersproject/contracts';
 import { Box, Flex } from '@chakra-ui/core';
 import {
   LineChart,
@@ -9,50 +10,76 @@ import {
   CartesianGrid,
   Tooltip,
   Legend,
+  ResponsiveContainer,
 } from 'recharts';
-import { useColorMode } from '@chakra-ui/core';
 
-interface IChart {
-  marketContract: any;
-}
-
-export default function Chart({ marketContract }: IChart) {
+export default function Chart({
+  marketContract,
+}: {
+  marketContract: Contract;
+}) {
   const [data, setData] = useState<any>([]);
+
+  const [numOfOutcomes, setNumOfOutcomes] = useState();
 
   useEffect(() => {
     (async () => {
       let isStale = false;
       if (!isStale) {
-        let numberOfOutcomes = await marketContract.numberOfOutcomes();
-        let outcomeName: any;
+        let openingTime: any;
+        let closingTime: any;
+        let timeFrame: any;
+        let numberOfOutcomes: any;
+        console.log('numberOfOutcomes:', numberOfOutcomes);
+        let interval: any;
+
+        marketContract
+          .marketOpeningTime()
+          .then((res: any) => (openingTime = res.toString()));
+
+        marketContract
+          .marketLockingTime()
+          .then((res: any) => (closingTime = res.toString()));
+
+        if (!!openingTime && !!closingTime) {
+          timeFrame = (closingTime - openingTime) / 14400;
+          interval = Math.ceil(timeFrame);
+        }
+
+        marketContract
+          .numberOfOutcomes()
+          .then((res: any) => setNumOfOutcomes(res.toNumber()));
+
+        let newData0 = {
+          time: interval * 0,
+        };
+
         let newData1 = {
-          name: '0 min',
+          time: interval * 1,
         };
 
         let newData2 = {
-          name: '1 min',
+          time: interval * 2,
         };
 
         let newData3 = {
-          name: '2 min',
+          time: interval * 3,
         };
 
         let newData4 = {
-          name: '3 min',
+          time: interval * 4,
         };
 
-        let newData5 = {
-          name: '4 min+',
-        };
+        let outcomeName: any;
 
         for (let i = 0; i < numberOfOutcomes; i++) {
           outcomeName = await marketContract.outcomeNames(i);
           let pair = { [outcomeName]: 0 };
+          newData0 = { ...newData0, ...pair };
           newData1 = { ...newData1, ...pair };
           newData2 = { ...newData2, ...pair };
           newData3 = { ...newData3, ...pair };
           newData4 = { ...newData4, ...pair };
-          newData5 = { ...newData5, ...pair };
 
           async function getBetsAndTimestamps() {
             let betsForOutcome: string[] = [];
@@ -79,12 +106,13 @@ export default function Chart({ marketContract }: IChart) {
               timestamp: number;
             }
             let outcomeBetsAndTimestamp: IBetsAndTimestamps[] = [];
-            for (let i = 0; i < 5; i++) {
-              let id = i;
+            for (let i = 0; i <= 4; i++) {
               let amount = betsForOutcome[i];
+              console.log('amount:', amount);
               let timestamp = timestampsForOutcome[i];
+              console.log('timestamp:', timestamp);
               let newBetAndTimestamp = {
-                id: id,
+                id: i,
                 amount: parseInt(amount),
                 timestamp: parseInt(timestamp),
               };
@@ -97,42 +125,28 @@ export default function Chart({ marketContract }: IChart) {
           let outcomeBetsAndTimestamp = await getBetsAndTimestamps();
 
           //!CHART
-          const start = await marketContract.marketOpeningTimeActual();
-          const startPeriod = start.toNumber();
-
-          // eslint-disable-next-line no-loop-func
           outcomeBetsAndTimestamp.forEach((item: any) => {
-            if (
-              startPeriod < item.timestamp &&
-              item.timestamp < startPeriod + 60
-            ) {
+            let point = item.timestamp;
+            console.log('item.timestamp:', item.timestamp);
+            console.log('point:', point);
+            if (openingTime < point && point < openingTime + 60) {
+              newData0[outcomeName] = newData0[outcomeName] + item.amount;
+            } else if (openingTime + 60 < point && point < openingTime + 120) {
               //@ts-ignore
               newData1[outcomeName] = newData1[outcomeName] + item.amount;
-            } else if (
-              startPeriod + 60 < item.timestamp &&
-              item.timestamp < startPeriod + 120
-            ) {
+            } else if (openingTime + 120 < point && point < openingTime + 180) {
               //@ts-ignore
               newData2[outcomeName] = newData2[outcomeName] + item.amount;
-            } else if (
-              startPeriod + 120 < item.timestamp &&
-              item.timestamp < startPeriod + 180
-            ) {
+            } else if (openingTime + 180 < point && point < openingTime + 240) {
               //@ts-ignore
               newData3[outcomeName] = newData3[outcomeName] + item.amount;
-            } else if (
-              startPeriod + 180 < item.timestamp &&
-              item.timestamp < startPeriod + 240
-            ) {
+            } else if (openingTime + 240 < point) {
               //@ts-ignore
               newData4[outcomeName] = newData4[outcomeName] + item.amount;
-            } else if (startPeriod + 240 < item.timestamp) {
-              //@ts-ignore
-              newData5[outcomeName] = newData5[outcomeName] + item.amount;
             }
           });
 
-          setData([newData1, newData2, newData3, newData4, newData5]);
+          setData([newData0, newData1, newData2, newData3, newData4]);
         }
       }
 
@@ -140,17 +154,13 @@ export default function Chart({ marketContract }: IChart) {
         isStale = true;
       };
     })();
-  }, [marketContract]);
+  }, []);
 
   return <Graph data={data} />;
 }
 
-//TODO: FILL OUT WITH PROPER DARK COLOR
-// const strokeColor1 = { light: "#0015BC", dark: "#808ade" };
-// const strokeColor2 = {light: "#FF0000", dark: "#ff6666"}
-
 const Graph = ({ data }: any) => {
-  return (
+  return !data ? null : (
     <Box mt="3rem">
       <Flex justifyContent="center">
         <LineChart
@@ -165,7 +175,7 @@ const Graph = ({ data }: any) => {
           }}
         >
           <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="name" />
+          <XAxis dataKey="time" />
           <YAxis />
           <Tooltip />
           <Legend />

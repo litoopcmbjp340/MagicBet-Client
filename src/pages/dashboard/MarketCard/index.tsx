@@ -21,7 +21,7 @@ import {
 import dynamic from 'next/dynamic';
 
 import Info from '../../../components/Modals/Info';
-import Bet from 'components/Modals/Bet';
+import SettingsModal from 'components/Modals/Settings';
 import OwnerFunctionality from './OwnerFunctionality';
 import { shortenAddress } from '../../../utils';
 import { useEthBalance, useTokenBalance } from '../../../hooks';
@@ -308,9 +308,9 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
         </Heading>
 
         <Flex justifyContent="center" alignItems="center" flexWrap="wrap">
-          <Box display={{ sm: 'none', md: 'block' }}>
+          {/* <Box display={{ sm: 'none', md: 'block' }}>
             <Chart marketContract={marketContract} />
-          </Box>
+          </Box> */}
 
           {active && (
             <form onSubmit={placeBet}>
@@ -401,7 +401,7 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
         {checkOwner() && <OwnerFunctionality marketContract={marketContract} />}
       </Box>
       <Info infoModalToggle={infoModalToggle} />
-      <Bet settingsModalToggle={settingsModalToggle} />
+      <SettingsModal settingsModalToggle={settingsModalToggle} />
     </>
   );
 };
