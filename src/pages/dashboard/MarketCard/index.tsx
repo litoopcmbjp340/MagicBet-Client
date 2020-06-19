@@ -14,42 +14,28 @@ import {
   Button,
   Text,
   Select,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalCloseButton,
-  ModalFooter,
   useToast,
-  Tag,
-  Slider,
-  SliderTrack,
-  SliderFilledTrack,
-  SliderThumb,
-  Stack,
   useDisclosure,
   useColorMode,
 } from '@chakra-ui/core';
 import dynamic from 'next/dynamic';
 
 import Info from '../../../components/Modals/Info';
-//import Bet from "components/Modals/Bet";
+import Bet from 'components/Modals/Bet';
 import OwnerFunctionality from './OwnerFunctionality';
 import { shortenAddress } from '../../../utils';
-import { ModalContext } from '../../../state/modals/Context';
 import { useEthBalance, useTokenBalance } from '../../../hooks';
 import { useTokens } from '../../../utils/tokens';
 import { bgColor7, bgColor8, color2 } from '../../../utils/theme';
 
 const MarketCard = ({ marketContract, daiContract }: any) => {
   const { active, account, library } = useWeb3React<Web3Provider>();
-  const { isOpen, onOpen, onClose } = useDisclosure();
   const { colorMode } = useColorMode();
+  const infoModalToggle = useDisclosure();
+  const settingsModalToggle = useDisclosure();
 
   const toast = useToast();
   const Chart = dynamic(() => import('./Chart'));
-  const { modalState, modalDispatch } = useContext(ModalContext);
 
   const [amountToBet, setAmountToBet] = useState<number>(0);
   const [accruedInterest, setAccruedInterest] = useState<number>(0);
@@ -63,7 +49,6 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
   const [daiApproved, setDaiApproved] = useState<boolean>(false);
   const [rerender, setRerender] = useState<boolean>(false);
   const [usingDai, setUsingDai] = useState<boolean>(true);
-  const [slippage, setSlippage] = useState<number>(30);
 
   const { data } = useEthBalance(account!, false);
   const tokens = useTokens();
@@ -302,25 +287,14 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
                 icon="info"
                 size="md"
                 pr={0.5}
-                onClick={() =>
-                  modalDispatch({
-                    type: 'TOGGLE_INFO_MODAL',
-                    payload: !modalState.infoModalIsOpen,
-                  })
-                }
+                onClick={infoModalToggle.onOpen}
               />
               <IconButton
                 aria-label="purchase settings"
                 variant="ghost"
                 icon="settings"
                 size="md"
-                onClick={
-                  onOpen
-                  // modalDispatch({
-                  //   type: "TOGGLE_BET_SETTINGS_MODAL",
-                  //   payload: !modalState.betSettingsModalIsOpen,
-                  // })
-                }
+                onClick={settingsModalToggle.onOpen}
               />
             </Flex>
             <Text width="5.5rem" mt="-5px">
@@ -430,90 +404,8 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
         </Flex>
         {checkOwner() && <OwnerFunctionality marketContract={marketContract} />}
       </Box>
-      <Info isOpen={modalState.infoModalIsOpen} />
-      {/* //TODO: MOVE MODAL */}
-      <Modal isOpen={isOpen} onClose={onClose} isCentered>
-        <ModalOverlay />
-        <ModalContent bg={bgColor7[colorMode]} borderRadius="0.25rem">
-          <ModalHeader>Bet Settings</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <Stack direction="column">
-              <Stack direction="row" justify="space-between">
-                <Button
-                  textTransform="uppercase"
-                  fontWeight="500"
-                  color="dark.100"
-                  backgroundColor="light.100"
-                  border="none"
-                  box-shadow="0 0.5rem 1rem rgba(0, 0, 0, 0.1)"
-                  transition="all 0.3s ease 0s"
-                  outline="none"
-                  cursor="pointer"
-                  my="1.25rem"
-                  type="button"
-                  _hover={{
-                    backgroundColor: 'primary.100',
-                    boxShadow: '0px 15px 20px rgba(0, 0, 0, 0.3)',
-                    color: 'light.100',
-                    transform: 'translateY(-5px)',
-                  }}
-                  onClick={() => setUsingDai(!usingDai)}
-                >
-                  {usingDai ? 'Dai' : 'Ether'}
-                </Button>
-
-                {usingDai ? (
-                  <Flex justifyContent="center" alignItems="center">
-                    {tokenData
-                      ? tokenData.toSignificant(6, { groupSeparator: ',' })
-                      : '-'}
-                  </Flex>
-                ) : (
-                  <Flex justifyContent="center" alignItems="center">
-                    <Tag>
-                      {data
-                        ? data.toSignificant(4, { groupSeparator: ',' })
-                        : '-'}
-                    </Tag>
-                  </Flex>
-                )}
-              </Stack>
-              <Stack direction="row" justify="space-between">
-                <Text>SLIPPAGE</Text>
-                <Stack
-                  direction="column"
-                  spacing={0}
-                  alignItems="flex-end"
-                  w="50%"
-                  flexShrink={0}
-                >
-                  <Slider
-                    min={0}
-                    max={100 * 4}
-                    step={10}
-                    color="red"
-                    value={slippage}
-                    onChange={setSlippage}
-                  >
-                    <SliderTrack />
-                    <SliderFilledTrack />
-                    <SliderThumb />
-                  </Slider>
-                  <Stack direction="row" minHeight="1.5rem">
-                    <Text>
-                      {(slippage / 100).toFixed(slippage === 0 ? 0 : 1)}%
-                    </Text>
-                  </Stack>
-                </Stack>
-              </Stack>
-            </Stack>
-          </ModalBody>
-          <ModalFooter>
-            <Button onClick={onClose}>Okay</Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+      <Info infoModalToggle={infoModalToggle} />
+      <Bet settingsModalToggle={settingsModalToggle} />
     </>
   );
 };

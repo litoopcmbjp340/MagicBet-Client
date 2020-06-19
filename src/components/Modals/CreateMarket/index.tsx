@@ -1,4 +1,4 @@
-import React, { useState, useContext, FormEvent, ChangeEvent } from 'react';
+import React, { useState, FormEvent, ChangeEvent } from 'react';
 import { useForm } from 'react-hook-form';
 import DatePicker from 'react-datepicker';
 import {
@@ -20,12 +20,10 @@ import {
 
 import { useContract } from 'hooks';
 import BTMarketFactoryContract from 'abis/BTMarketFactory.json';
-import { ModalContext } from 'state/modals/Context';
 import addresses, { KOVAN_ID } from 'utils/addresses';
 import { bgColor7, bgColor6 } from 'utils/theme';
 
-const CreateMarket = ({ isOpen }: { isOpen: boolean }): JSX.Element => {
-  const { modalState, modalDispatch } = useContext(ModalContext);
+const CreateMarket = ({ createMarketModalToggle }: any): JSX.Element => {
   const { colorMode } = useColorMode();
   const factoryAddress = addresses[KOVAN_ID].marketFactory;
 
@@ -90,10 +88,7 @@ const CreateMarket = ({ isOpen }: { isOpen: boolean }): JSX.Element => {
 
     setLoading(false);
 
-    modalDispatch({
-      type: 'TOGGLE_CREATE_MARKET_MODAL',
-      payload: !modalState.createMarketModalIsOpen,
-    });
+    createMarketModalToggle.onClose();
   };
 
   function validateMarketEventName(value: any) {
@@ -104,13 +99,8 @@ const CreateMarket = ({ isOpen }: { isOpen: boolean }): JSX.Element => {
 
   return (
     <Modal
-      isOpen={isOpen}
-      onClose={() =>
-        modalDispatch({
-          type: 'TOGGLE_CREATE_MARKET_MODAL',
-          payload: !modalState.createMarketModalIsOpen,
-        })
-      }
+      isOpen={createMarketModalToggle.isOpen}
+      onClose={createMarketModalToggle.onClose}
       isCentered
     >
       <ModalOverlay />
@@ -123,14 +113,7 @@ const CreateMarket = ({ isOpen }: { isOpen: boolean }): JSX.Element => {
         ) : (
           <>
             <ModalHeader>Create a Market</ModalHeader>
-            <ModalCloseButton
-              onClick={() =>
-                modalDispatch({
-                  type: 'TOGGLE_CREATE_MARKET_MODAL',
-                  payload: !modalState.createMarketModalIsOpen,
-                })
-              }
-            />
+            <ModalCloseButton onClick={createMarketModalToggle.onClose} />
             <ModalBody>
               <form onSubmit={createMarket}>
                 <FormControl marginBottom="1rem" isInvalid={errors.name}>

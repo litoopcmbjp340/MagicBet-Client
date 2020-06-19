@@ -18,11 +18,11 @@ import {
 import { useEagerConnect, useInactiveListener } from '../../hooks';
 import { injected, getNetwork } from '../../utils/connectors';
 import { shortenAddress } from '../../utils';
-import { bgColor1, bgColor3, bgColor4, bgColor5 } from '../../utils/theme';
+import { bgColor1, bgColor3, bgColor4 } from '../../utils/theme';
 
 const Header = () => {
   const { colorMode, toggleColorMode } = useColorMode();
-  const { account, active, activate, connector, error } = useWeb3React<
+  const { account, active, activate, chainId, connector, error } = useWeb3React<
     Web3Provider
   >();
 
@@ -60,6 +60,7 @@ const Header = () => {
           bg={bgColor3[colorMode]}
           m="0 auto"
         >
+          {console.log(chainId, connector)}
           <Flex
             flexDirection="row"
             alignItems="center"

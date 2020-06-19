@@ -1,4 +1,4 @@
-import React, { useState, useContext, Suspense } from 'react';
+import React, { useState, Suspense } from 'react';
 import { useWeb3React } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers';
 import {
@@ -11,49 +11,42 @@ import {
   ModalFooter,
   Flex,
   Tag,
-  Slider,
-  SliderTrack,
-  SliderFilledTrack,
-  SliderThumb,
   Stack,
-  Text,
   Button,
+  Icon,
   Spinner,
   useColorMode,
 } from '@chakra-ui/core';
 
-import { ModalContext } from 'state/modals/Context';
 import { useEthBalance, useTokenBalance } from 'hooks';
 import { useTokens } from 'utils/tokens';
 import { bgColor7 } from 'utils/theme';
+import { mintDai } from 'utils';
 
-const BetModal = ({ isOpen }: { isOpen: boolean }): JSX.Element => {
+const BetModal = ({ settingsModalToggle }: any): JSX.Element => {
   const [usingDai, setUsingDai] = useState<boolean>(true);
-  const [slippage, setSlippage] = useState<number>(30);
   const { colorMode } = useColorMode();
 
-  const { modalState, modalDispatch } = useContext(ModalContext);
-
-  const { account } = useWeb3React<Web3Provider>();
+  const { account, library } = useWeb3React<Web3Provider>();
 
   const { data } = useEthBalance(account!, false);
   const tokens = useTokens();
   const daiToken = tokens[0][5];
   const { data: tokenData } = useTokenBalance(daiToken, account!, false);
 
+  let wallet: any;
+  if (!!library && !!account) wallet = library.getSigner(account);
+
   return (
-    <Modal isOpen={isOpen} isCentered>
+    <Modal
+      isOpen={settingsModalToggle.isOpen}
+      onClose={settingsModalToggle.onClose}
+      isCentered
+    >
       <ModalOverlay />
       <ModalContent bg={bgColor7[colorMode]} borderRadius="0.25rem">
-        <ModalHeader>Bet Settings</ModalHeader>
-        <ModalCloseButton
-          onClick={() =>
-            modalDispatch({
-              type: 'TOGGLE_BET_SETTINGS_MODAL',
-              payload: !modalState.betSettingsModalIsOpen,
-            })
-          }
-        />
+        <ModalHeader>Settings</ModalHeader>
+        <ModalCloseButton onClick={settingsModalToggle.onClose} />
         <ModalBody>
           <Stack direction="column">
             <Stack direction="row" justify="space-between">
@@ -107,47 +100,23 @@ const BetModal = ({ isOpen }: { isOpen: boolean }): JSX.Element => {
                 </Flex>
               )}
             </Stack>
-            <Stack direction="row" justify="space-between">
-              <Text color="dark.100">SLIPPAGE</Text>
-              <Stack
-                direction="column"
-                spacing={0}
-                alignItems="flex-end"
-                w="50%"
-                flexShrink={0}
-              >
-                <Slider
-                  min={0}
-                  max={100 * 4}
-                  step={10}
-                  color="red"
-                  value={slippage}
-                  onChange={setSlippage}
-                >
-                  <SliderTrack />
-                  <SliderFilledTrack />
-                  <SliderThumb />
-                </Slider>
-                <Stack direction="row" minHeight="1.5rem">
-                  <Text>
-                    {(slippage / 100).toFixed(slippage === 0 ? 0 : 1)}%
-                  </Text>
-                </Stack>
-              </Stack>
-            </Stack>
+          </Stack>
+          <Stack>
+            <Button
+              backgroundColor="primary.100"
+              fontWeight="700"
+              color="light.100"
+              cursor="pointer"
+              m="2rem"
+              p="0"
+              onClick={() => mintDai(wallet)}
+            >
+              <Icon name="daiIcon" color="white.200" size="1.5rem" />
+            </Button>
           </Stack>
         </ModalBody>
         <ModalFooter>
-          <Button
-            onClick={() =>
-              modalDispatch({
-                type: 'TOGGLE_BET_SETTINGS_MODAL',
-                payload: !modalState.betSettingsModalIsOpen,
-              })
-            }
-          >
-            Okay
-          </Button>
+          <Button onClick={settingsModalToggle.onClose}>Okay</Button>
         </ModalFooter>
       </ModalContent>
     </Modal>

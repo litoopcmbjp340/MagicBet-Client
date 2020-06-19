@@ -2,17 +2,16 @@ import React, { useState, useLayoutEffect, useEffect } from 'react';
 import { NextComponentType } from 'next';
 import NextApp from 'next/app';
 import Head from 'next/head';
-import { ColorModeProvider, CSSReset, ThemeProvider } from '@chakra-ui/core';
 import { Web3Provider } from '@ethersproject/providers';
 import { Web3ReactProvider, useWeb3React } from '@web3-react/core';
 import { Global } from '@emotion/core';
+import { ColorModeProvider, CSSReset, ThemeProvider } from '@chakra-ui/core';
 
+import { ContractProvider } from '../state/contracts/Context';
 import Layout from '../components/Layout';
 import Error from '../components/Error';
 import SwitchChain from '../components/SwitchChain';
 import theme, { GlobalStyle } from '../utils/theme';
-import { ContractProvider } from '../state/contracts/Context';
-import { ModalProvider } from '../state/modals/Context';
 
 const useIsomorphicLayoutEffect =
   typeof window !== 'undefined' ? useLayoutEffect : useEffect;
@@ -69,17 +68,15 @@ export default class App extends NextApp {
           />
         </Head>
         <Web3ReactProvider getLibrary={getLibrary}>
-          <ModalProvider>
-            <ContractProvider>
-              <ThemeProvider theme={theme}>
-                <ColorModeProvider>
-                  <CSSReset />
-                  <Global styles={GlobalStyle} />
-                  <Application Component={Component} />
-                </ColorModeProvider>
-              </ThemeProvider>
-            </ContractProvider>
-          </ModalProvider>
+          <ContractProvider>
+            <ThemeProvider theme={theme}>
+              <ColorModeProvider>
+                <CSSReset />
+                <Global styles={GlobalStyle} />
+                <Application Component={Component} />
+              </ColorModeProvider>
+            </ThemeProvider>
+          </ContractProvider>
         </Web3ReactProvider>
       </>
     );

@@ -28,7 +28,7 @@ interface IOutcome {
   bets: string;
 }
 
-const InfoModal = ({ isOpen }: { isOpen: boolean }): JSX.Element => {
+const InfoModal = ({ infoModalToggle }: any): JSX.Element => {
   const factoryContract = useFactoryContract();
   const { colorMode } = useColorMode();
 
@@ -113,27 +113,15 @@ const InfoModal = ({ isOpen }: { isOpen: boolean }): JSX.Element => {
 
   return (
     <Modal
-      isOpen={isOpen}
-      onClose={() =>
-        modalDispatch({
-          type: 'TOGGLE_INFO_MODAL',
-          payload: !modalState.infoModalIsOpen,
-        })
-      }
+      isOpen={infoModalToggle.isOpen}
+      onClose={infoModalToggle.onClose}
       isCentered
     >
       <ModalOverlay />
 
       <ModalContent bg={bgColor7[colorMode]} borderRadius="0.25rem">
         <ModalHeader>Market Stats</ModalHeader>
-        <ModalCloseButton
-          onClick={() =>
-            modalDispatch({
-              type: 'TOGGLE_INFO_MODAL',
-              payload: !modalState.infoModalIsOpen,
-            })
-          }
-        />
+        <ModalCloseButton onClick={infoModalToggle.onClose} />
         <ModalBody>
           <Flex flexDirection="column" alignItems="center">
             <Heading
