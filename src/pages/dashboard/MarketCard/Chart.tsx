@@ -14,10 +14,9 @@ import { useColorMode } from '@chakra-ui/core';
 
 interface IChart {
   marketContract: any;
-  rerender: boolean;
 }
 
-export default function Chart({ marketContract, rerender }: IChart) {
+export default function Chart({ marketContract }: IChart) {
   const [data, setData] = useState<any>([]);
 
   useEffect(() => {
@@ -141,7 +140,7 @@ export default function Chart({ marketContract, rerender }: IChart) {
         isStale = true;
       };
     })();
-  }, [marketContract, rerender]);
+  }, [marketContract]);
 
   return <Graph data={data} />;
 }

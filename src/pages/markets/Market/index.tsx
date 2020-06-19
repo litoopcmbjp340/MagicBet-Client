@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from '@chakra-ui/core';
 
 import { shortenAddress, getFormattedNumber } from 'utils';
-import BTMarketContract from 'abis/BTMarket.json';
+import MBMarketContract from 'abis/MBMarket.json';
 import { useContract } from 'hooks';
 
 function Market({ market }: { market: string }) {
@@ -11,7 +11,7 @@ function Market({ market }: { market: string }) {
   const [maxInterests, setMaxInterest] = useState<number>(0);
   const [marketResolutionTime, setMarketResolutionTime] = useState<number>(0);
   const [winningOutcome, setWinningOutcome] = useState<number>(0);
-  const marketContract: any = useContract(market, BTMarketContract.abi);
+  const marketContract: any = useContract(market, MBMarketContract.abi);
 
   useEffect(() => {
     let isStale = false;

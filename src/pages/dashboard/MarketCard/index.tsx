@@ -1,4 +1,4 @@
-import React, { useState, useEffect, FormEvent, useContext } from 'react';
+import React, { useState, useEffect, FormEvent } from 'react';
 import CountUp from 'react-countup';
 import CountDown from 'react-countdown';
 import { useWeb3React } from '@web3-react/core';
@@ -26,7 +26,7 @@ import OwnerFunctionality from './OwnerFunctionality';
 import { shortenAddress } from '../../../utils';
 import { useEthBalance, useTokenBalance } from '../../../hooks';
 import { useTokens } from '../../../utils/tokens';
-import { bgColor7, bgColor8, color2 } from '../../../utils/theme';
+import { bgColor8, color2 } from '../../../utils/theme';
 
 const MarketCard = ({ marketContract, daiContract }: any) => {
   const { active, account, library } = useWeb3React<Web3Provider>();
@@ -47,7 +47,6 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
   const [choice, setChoice] = useState<string>('');
   const [outcomes, setOutcomes] = useState<any>([]);
   const [daiApproved, setDaiApproved] = useState<boolean>(false);
-  const [rerender, setRerender] = useState<boolean>(false);
   const [usingDai, setUsingDai] = useState<boolean>(true);
 
   const { data } = useEthBalance(account!, false);
@@ -55,12 +54,11 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
   const daiToken = tokens[0][5];
   const { data: tokenData } = useTokenBalance(daiToken, account!, false);
 
-  //TODO: MOVE TO HOOK
-  const [eventState, setEventState] = useState<any>();
-  const [eventBet, setEventBet] = useState<any>();
-  marketContract.on('StateChanged', (state: any) => setEventState(state));
+  marketContract.on('StateChanged', (state: any) =>
+    console.log('State: ', state)
+  );
   marketContract.on('ParticipantEntered', (address: any) =>
-    setEventBet(address)
+    console.log('Address: ', address)
   );
 
   useEffect(() => {
@@ -92,7 +90,7 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
         isStale = true;
       };
     })();
-  }, [MarketStates, account, marketContract, eventState, eventBet]);
+  }, [MarketStates, account, marketContract]);
 
   useEffect(() => {
     (async () => {
@@ -169,15 +167,15 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
 
     const estimatedWei = await marketContract.getEstimatedETHforDAI(formatted);
     const estimatedWeiWithMargin = increaseByFactor(estimatedWei[0]);
-    const estimatedGas = await marketContract.estimate.placeBet(
-      indexOfChoice,
-      formatted,
-      { value: estimatedWeiWithMargin }
-    );
+    // const estimatedGas = await marketContract.estimate.placeBet(
+    //   indexOfChoice,
+    //   formatted,
+    //   { value: estimatedWeiWithMargin }
+    // );
 
     try {
       const tx = await marketContract.placeBet(indexOfChoice, formatted, {
-        gasLimit: increaseByFactor(estimatedGas),
+        // gasLimit: increaseByFactor(estimatedGas),
         value: estimatedWeiWithMargin,
       });
 
@@ -199,7 +197,6 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
         duration: 5000,
         isClosable: true,
       });
-      setRerender(!rerender);
     } catch (error) {
       console.error(error);
       toast({
@@ -311,9 +308,8 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
         </Heading>
 
         <Flex justifyContent="center" alignItems="center" flexWrap="wrap">
-          {/* NOTE: FORCE RE-RENDER CAUSES A MEMORY LEAK */}
           <Box display={{ sm: 'none', md: 'block' }}>
-            <Chart marketContract={marketContract} rerender={rerender} />
+            <Chart marketContract={marketContract} />
           </Box>
 
           {active && (

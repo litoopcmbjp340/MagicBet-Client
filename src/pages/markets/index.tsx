@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Flex, Box, Heading, useColorMode } from '@chakra-ui/core';
 
 import Market from './Market';
-import BTMarketFactoryContract from 'abis/BTMarketFactory.json';
+import MBMarketFactoryContract from 'abis/MBMarketFactory.json';
 import addresses, { KOVAN_ID } from 'utils/addresses';
 import { bgColor1, color1 } from 'utils/theme';
 import { useContract } from 'hooks';
@@ -20,7 +20,7 @@ const Markets = (): JSX.Element => {
   const factoryAddress = addresses[KOVAN_ID].marketFactory;
   const factoryContract = useContract(
     factoryAddress,
-    BTMarketFactoryContract.abi,
+    MBMarketFactoryContract.abi,
     true
   );
 

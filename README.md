@@ -22,7 +22,7 @@ This repo contains the front end client, the smart contracts code can be found u
 
 Given that [NodeJS](https://nodejs.org/) and [npm](https://www.npmjs.com/) are installed, clone the repo and then run `npm install` inside the root directory to install the dependencies.
 
-Now follow the Setup instructions in the Contracts repo (link above), including copying the application binary interface files in the `abis/` folder, and take a note of the address of the deployed `BTMarketFactory.sol`, and update the relevant variable in `src/utils/addresses.ts` (line 6 for kovan).
+Now follow the Setup instructions in the Contracts repo (link above), including copying the application binary interface files in the `abis/` folder, and take a note of the address of the deployed `MBMarketFactory.sol`, and update the relevant variable in `src/utils/addresses.ts` (line 6 for kovan).
 
 ## Start local server
 

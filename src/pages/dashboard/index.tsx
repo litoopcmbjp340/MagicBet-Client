@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useWeb3React } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers';
 import { Contract } from '@ethersproject/contracts';
@@ -13,7 +13,7 @@ import {
   useDisclosure,
 } from '@chakra-ui/core';
 
-import BTMarketContract from '../../abis/BTMarket.json';
+import MBMarketContract from '../../abis/MBMarket.json';
 import MarketCard from './MarketCard';
 import CreateMarket from '../../components/Modals/CreateMarket';
 import {
@@ -52,7 +52,7 @@ const Dashboard = (): JSX.Element => {
 
             const marketInstance = new Contract(
               marketContractAddress,
-              BTMarketContract.abi,
+              MBMarketContract.abi,
               wallet
             );
 
@@ -62,7 +62,7 @@ const Dashboard = (): JSX.Element => {
           factoryContract.on('MarketCreated', (address: any) => {
             const marketInstance = new Contract(
               address,
-              BTMarketContract.abi,
+              MBMarketContract.abi,
               wallet
             );
             setMarketContract(marketInstance);

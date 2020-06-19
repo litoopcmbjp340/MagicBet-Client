@@ -3,7 +3,7 @@ import { Web3Provider } from '@ethersproject/providers';
 import { Contract } from '@ethersproject/contracts';
 
 import { ContractReducer } from './Reducers';
-import BTMarketFactoryContract from 'abis/BTMarketFactory.json';
+import MBMarketFactoryContract from 'abis/MBMarketFactory.json';
 import addresses, { KOVAN_ID } from 'utils/addresses';
 
 const factoryAddress = addresses[KOVAN_ID].marketFactory;
@@ -14,7 +14,7 @@ const provider = new Web3Provider(window.web3.currentProvider);
 const wallet = provider.getSigner();
 const FactoryContract = new Contract(
   factoryAddress,
-  BTMarketFactoryContract.abi,
+  MBMarketFactoryContract.abi,
   wallet
 );
 

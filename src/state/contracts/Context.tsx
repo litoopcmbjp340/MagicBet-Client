@@ -3,7 +3,7 @@ import { Web3Provider } from '@ethersproject/providers';
 import { Contract } from '@ethersproject/contracts';
 
 import { ContractReducer } from './Reducers';
-import BTMarketFactoryContract from 'abis/BTMarketFactory.json';
+import MBMarketFactoryContract from 'abis/MBMarketFactory.json';
 import IERC20 from 'abis/IERC20.json';
 import addresses, { KOVAN_ID } from 'utils/addresses';
 import DaiMockup from 'abis/DaiMockup.json';
@@ -17,7 +17,7 @@ const initialContractState: any = [];
 // const wallet = provider.getSigner();
 // const FactoryContract = new Contract(
 //   factoryAddress,
-//   BTMarketFactoryContract.abi,
+//   MBMarketFactoryContract.abi,
 //   wallet
 // );
 

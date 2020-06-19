@@ -19,7 +19,7 @@ import {
 } from '@chakra-ui/core';
 
 import { useContract } from 'hooks';
-import BTMarketFactoryContract from 'abis/BTMarketFactory.json';
+import MBMarketFactoryContract from 'abis/MBMarketFactory.json';
 import addresses, { KOVAN_ID } from 'utils/addresses';
 import { bgColor7, bgColor6 } from 'utils/theme';
 
@@ -29,7 +29,7 @@ const CreateMarket = ({ createMarketModalToggle }: any): JSX.Element => {
 
   const factoryContract = useContract(
     factoryAddress,
-    BTMarketFactoryContract.abi,
+    MBMarketFactoryContract.abi,
     true
   );
 

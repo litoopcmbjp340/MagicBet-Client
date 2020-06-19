@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Web3Provider } from '@ethersproject/providers';
 import { Contract } from '@ethersproject/contracts';
 
@@ -17,10 +17,9 @@ import {
   useColorMode,
 } from '@chakra-ui/core';
 
-import { ModalContext } from 'state/modals/Context';
 import { shortenAddress } from 'utils';
 import { useFactoryContract } from 'hooks/useHelperContract';
-import BTMarketContract from 'abis/BTMarket.json';
+import MBMarketContract from 'abis/MBMarket.json';
 import { bgColor7 } from 'utils/theme';
 
 interface IOutcome {
@@ -31,8 +30,6 @@ interface IOutcome {
 const InfoModal = ({ infoModalToggle }: any): JSX.Element => {
   const factoryContract = useFactoryContract();
   const { colorMode } = useColorMode();
-
-  const { modalState, modalDispatch } = useContext(ModalContext);
 
   const MarketStates = ['SETUP', 'WAITING', 'OPEN', 'LOCKED', 'WITHDRAW'];
   const [marketState, setMarketState] = useState<string>('');
@@ -55,7 +52,7 @@ const InfoModal = ({ infoModalToggle }: any): JSX.Element => {
           if (deployedMarkets.length !== 0) {
             const marketContract = new Contract(
               mostRecentlyDeployedAddress,
-              BTMarketContract.abi,
+              MBMarketContract.abi,
               provider
             );
 

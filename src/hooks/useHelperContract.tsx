@@ -1,11 +1,11 @@
-import { useMemo } from "react";
-import { Contract } from "@ethersproject/contracts";
-import { useWeb3React } from "@web3-react/core";
-import { Web3Provider } from "@ethersproject/providers";
+import { useMemo } from 'react';
+import { Contract } from '@ethersproject/contracts';
+import { useWeb3React } from '@web3-react/core';
+import { Web3Provider } from '@ethersproject/providers';
 
-import BTMarketFactoryContract from "abis/BTMarketFactory.json";
-import addresses, { KOVAN_ID } from "utils/addresses";
-import IERC20 from "abis/IERC20.json";
+import MBMarketFactoryContract from 'abis/MBMarketFactory.json';
+import addresses, { KOVAN_ID } from 'utils/addresses';
+import IERC20 from 'abis/IERC20.json';
 
 const factoryAddress = addresses[KOVAN_ID].marketFactory;
 const daiAddress = addresses[KOVAN_ID].tokens.DAI;
@@ -18,7 +18,7 @@ export function useFactoryContract(): Contract | undefined {
       !!library
         ? new Contract(
             factoryAddress,
-            BTMarketFactoryContract.abi,
+            MBMarketFactoryContract.abi,
             library.getSigner(account!).connectUnchecked()
           )
         : undefined,
