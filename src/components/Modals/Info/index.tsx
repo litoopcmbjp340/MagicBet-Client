@@ -1,7 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Web3Provider } from '@ethersproject/providers';
-import { Contract } from '@ethersproject/contracts';
-
 import { formatUnits } from '@ethersproject/units';
 import { v4 as uuidv4 } from 'uuid';
 import {
@@ -19,7 +16,6 @@ import {
 
 import { shortenAddress } from 'utils';
 import { useFactoryContract } from 'hooks/useHelperContract';
-import MBMarketContract from 'abis/MBMarket.json';
 import { bgColor7 } from 'utils/theme';
 
 interface IOutcome {
@@ -27,85 +23,62 @@ interface IOutcome {
   bets: string;
 }
 
-const InfoModal = ({ infoModalToggle }: any): JSX.Element => {
+const InfoModal = ({ infoModalToggle, marketContract }: any): JSX.Element => {
   const factoryContract = useFactoryContract();
   const { colorMode } = useColorMode();
 
   const MarketStates = ['SETUP', 'WAITING', 'OPEN', 'LOCKED', 'WITHDRAW'];
   const [marketState, setMarketState] = useState<string>('');
-  const [pot, setPot] = useState<string>('');
+  const [pot, setPot] = useState<string>('0');
   const [owner, setOwner] = useState<string>('');
   const [numberOfParticipants, setNumberOfParticipants] = useState<number>(0);
   const [outcomeNamesAndAmounts, setOutcomeNamesAndAmounts] = useState<any>([]);
 
   useEffect(() => {
-    let isStale = false;
-    const fetchData = async () => {
-      if (factoryContract && !isStale) {
+    (async () => {
+      let isStale = false;
+
+      if (!isStale && factoryContract) {
         try {
-          const provider = new Web3Provider(window.web3.currentProvider);
+          const state = await marketContract.getCurrentState();
+          setMarketState(MarketStates[state]);
+          setOwner(await marketContract.owner());
+          const numberOfParticipants = await marketContract.getMarketSize();
+          setNumberOfParticipants(numberOfParticipants.toNumber());
+          const _pot = await marketContract.totalBets();
+          const pot = formatUnits(_pot.toString(), 18);
+          setPot(pot);
 
-          const deployedMarkets = await factoryContract.getMarkets();
-          const mostRecentlyDeployedAddress =
-            deployedMarkets[deployedMarkets.length - 1];
+          const numberOfOutcomes = await marketContract.numberOfOutcomes();
 
-          if (deployedMarkets.length !== 0) {
-            const marketContract = new Contract(
-              mostRecentlyDeployedAddress,
-              MBMarketContract.abi,
-              provider
-            );
+          if (numberOfOutcomes !== 0) {
+            let newOutcomesArray = [];
+            for (let i = 0; i < numberOfOutcomes; i++) {
+              let newOutcome: IOutcome = { name: '', bets: '' };
 
-            const [
-              _marketState,
-              _owner,
-              _numberOfParticipants,
-              _pot,
-            ] = await Promise.all([
-              marketContract.state(),
-              marketContract.owner(),
-              marketContract.getMarketSize(),
-              marketContract.totalBets(),
-            ]);
-            setMarketState(MarketStates[_marketState]);
-            setOwner(_owner);
-            setNumberOfParticipants(_numberOfParticipants.toNumber());
-            setPot(formatUnits(_pot.toString(), 18));
+              newOutcome.name = await marketContract.outcomeNames(i);
+              const numOfBets = await marketContract.totalBetsPerOutcome(i);
 
-            const numberOfOutcomes = await marketContract.numberOfOutcomes();
+              const hexString = numOfBets.toString();
+              const removedZeros = hexString.replace(
+                /^0+(\d)|(\d)0+$/gm,
+                '$1$2'
+              );
+              newOutcome.bets = removedZeros;
 
-            if (numberOfOutcomes !== 0) {
-              let newOutcomesArray = [];
-              for (let i = 0; i < numberOfOutcomes; i++) {
-                let newOutcome: IOutcome = { name: '', bets: '' };
-
-                newOutcome.name = await marketContract.outcomeNames(i);
-                const numOfBets = await marketContract.totalBetsPerOutcome(i);
-
-                const hexString = numOfBets.toString();
-                const removedZeros = hexString.replace(
-                  /^0+(\d)|(\d)0+$/gm,
-                  '$1$2'
-                );
-                newOutcome.bets = removedZeros;
-
-                newOutcomesArray.push(newOutcome);
-              }
-              setOutcomeNamesAndAmounts(newOutcomesArray);
+              newOutcomesArray.push(newOutcome);
             }
+            setOutcomeNamesAndAmounts(newOutcomesArray);
           }
         } catch (error) {
           console.error(error);
         }
       }
-    };
 
-    fetchData();
-
-    return () => {
-      isStale = true;
-    };
-    //eslint-disable-next-line
+      return () => {
+        isStale = true;
+      };
+    })();
   }, []);
 
   return (
@@ -129,7 +102,7 @@ const InfoModal = ({ infoModalToggle }: any): JSX.Element => {
               margin="0"
               padding="0"
             >
-              {shortenAddress(owner)}
+              {owner ? shortenAddress(owner) : '-'}
             </Heading>
             <Text
               fontSize="0.75rem"
@@ -149,7 +122,7 @@ const InfoModal = ({ infoModalToggle }: any): JSX.Element => {
               margin="0"
               padding="0"
             >
-              {marketState}
+              {marketState ? marketState : '-'}
             </Heading>
             <Text
               fontSize="0.75rem"

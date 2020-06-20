@@ -10,7 +10,7 @@ import {
   Text,
   Link,
   Tag,
-  Box as ChakraBox,
+  Box,
   IconButton,
   useColorMode,
 } from '@chakra-ui/core';
@@ -19,30 +19,40 @@ import { useEagerConnect, useInactiveListener } from '../../hooks';
 import { injected, getNetwork } from '../../utils/connectors';
 import { shortenAddress } from '../../utils';
 import { bgColor1, bgColor3, bgColor4 } from '../../utils/theme';
+import { useFactoryContract } from 'hooks/useHelperContract';
 
 const Header = () => {
   const { colorMode, toggleColorMode } = useColorMode();
   const { account, active, activate, chainId, connector, error } = useWeb3React<
     Web3Provider
   >();
+  const [owner, setOwner] = useState<string>('');
+  const factoryContract = useFactoryContract();
 
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
-  const [activatingConnector, setActivatingConnector] = useState<
-    AbstractConnector
-  >();
-
-  useEffect(() => {
-    if (activatingConnector && activatingConnector === connector)
-      setActivatingConnector(undefined);
-  }, [activatingConnector, connector]);
 
   const triedEager = useEagerConnect();
 
-  useInactiveListener(!triedEager || !!activatingConnector);
+  useInactiveListener(!triedEager);
 
   useEffect(() => {
     if (triedEager && !active && !error) activate(getNetwork(42));
   }, [triedEager, active, error, activate]);
+
+  useEffect(() => {
+    (async () => {
+      if (factoryContract) setOwner(await factoryContract.owner());
+    })();
+  }, []);
+
+  const checkOwner = (): boolean => {
+    if (owner !== null && account !== null) {
+      if (account === null) return false;
+      return account === owner;
+    } else {
+      return false;
+    }
+  };
 
   if (error) {
     return null;
@@ -130,16 +140,13 @@ const Header = () => {
                 bg={bgColor4[colorMode]}
                 _hover={{ bg: bgColor4[colorMode] }}
                 _active={{ bg: bgColor4[colorMode] }}
-                onClick={() => {
-                  setActivatingConnector(injected);
-                  activate(injected);
-                }}
+                onClick={() => activate(injected)}
               >
                 Connect
               </Button>
             )}
 
-            <ChakraBox
+            <Box
               display={{ sm: 'block', md: 'none' }}
               onClick={() => setIsExpanded(!isExpanded)}
               p="0.625rem"
@@ -149,11 +156,11 @@ const Header = () => {
               ) : (
                 <Icon name="menuClosedIcon" size="2rem" />
               )}
-            </ChakraBox>
+            </Box>
           </Flex>
         </Flex>
         {isExpanded && (
-          <ChakraBox
+          <Box
             h="auto"
             w="100%"
             position="absolute"
@@ -161,7 +168,7 @@ const Header = () => {
             bg={bgColor1[colorMode]}
             display={{ sm: 'block', md: 'none' }}
           >
-            <ChakraBox m="0" p="0" borderBottom="1px solid rgba(0, 0, 0, 0.8)">
+            <Box m="0" p="0" borderBottom="1px solid rgba(0, 0, 0, 0.8)">
               <Text
                 font-weight="500"
                 h="3rem"
@@ -198,8 +205,28 @@ const Header = () => {
                   Markets
                 </Link>
               </Text>
-            </ChakraBox>
-          </ChakraBox>
+              {checkOwner() && (
+                <Text
+                  font-weight="500"
+                  h="3rem"
+                  p="0 1rem"
+                  mt={{ base: 4, md: 0 }}
+                  mr={6}
+                  display="block"
+                >
+                  <Link
+                    textTransform="uppercase"
+                    fontWeight="bold"
+                    cursor="pointer"
+                    href="/admin"
+                    onClick={() => setIsExpanded(false)}
+                  >
+                    Admin
+                  </Link>
+                </Text>
+              )}
+            </Box>
+          </Box>
         )}
       </>
     );

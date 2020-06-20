@@ -19,11 +19,16 @@ export function useFactoryContract(): Contract | undefined {
         ? new Contract(
             factoryAddress,
             MBMarketFactoryContract.abi,
-            library.getSigner(account!).connectUnchecked()
+            library.getSigner(account!)
           )
         : undefined,
     [library, account]
   );
+}
+
+export function useFactoryContractNoSigner(): Contract {
+  const { library } = useWeb3React<Web3Provider>();
+  return new Contract(factoryAddress, MBMarketFactoryContract.abi, library);
 }
 
 export function useDaiContract(): Contract | undefined {
@@ -32,13 +37,18 @@ export function useDaiContract(): Contract | undefined {
   return useMemo(
     () =>
       !!library
-        ? new Contract(
-            daiAddress,
-            IERC20.abi,
-            library.getSigner(account!).connectUnchecked()
-          )
+        ? new Contract(daiAddress, IERC20.abi, library.getSigner(account!))
         : undefined,
     [library, account]
+  );
+}
+
+export function useDaiContractNoSigner(): Contract | undefined {
+  const { library } = useWeb3React<Web3Provider>();
+
+  return useMemo(
+    () => (!!library ? new Contract(daiAddress, IERC20.abi) : undefined),
+    [library]
   );
 }
 

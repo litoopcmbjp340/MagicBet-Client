@@ -1,6 +1,5 @@
 import React, { useState, useEffect, FormEvent } from 'react';
 import CountUp from 'react-countup';
-import CountDown from 'react-countdown';
 import { useWeb3React } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers';
 import { formatEther, parseUnits } from '@ethersproject/units';
@@ -20,77 +19,78 @@ import {
 } from '@chakra-ui/core';
 import dynamic from 'next/dynamic';
 
+import CountDown from './CountDown';
+import { injected } from '../../../utils/connectors';
 import Info from '../../../components/Modals/Info';
 import SettingsModal from 'components/Modals/Settings';
-import OwnerFunctionality from './OwnerFunctionality';
 import { shortenAddress } from '../../../utils';
-import { useEthBalance, useTokenBalance } from '../../../hooks';
-import { useTokens } from '../../../utils/tokens';
+// import { useEthBalance, useTokenBalance } from '../../../hooks';
+import { useDaiContract } from '../../../hooks/useHelperContract';
+// import { useTokens } from '../../../utils/tokens';
 import { bgColor8, color2 } from '../../../utils/theme';
 
-const MarketCard = ({ marketContract, daiContract }: any) => {
-  const { active, account, library } = useWeb3React<Web3Provider>();
+const MarketCard = ({ marketContract }: any) => {
+  const { connector, account, library } = useWeb3React<Web3Provider>();
   const { colorMode } = useColorMode();
   const infoModalToggle = useDisclosure();
   const settingsModalToggle = useDisclosure();
+  const daiContract = useDaiContract();
 
   const toast = useToast();
   const Chart = dynamic(() => import('./Chart'));
 
   const [amountToBet, setAmountToBet] = useState<number>(0);
   const [accruedInterest, setAccruedInterest] = useState<number>(0);
-  const [marketResolutionTime, setMarketResolutionTime] = useState<number>(0);
-  const MarketStates = ['SETUP', 'WAITING', 'OPEN', 'LOCKED', 'WITHDRAW'];
-  const [marketState, setMarketState] = useState<string>('');
+  const [marketResolutionTime, setMarketResolutionTime] = useState<any>();
+  const [today, setToday] = useState<number>(0);
   const [prompt, setPrompt] = useState<string>('');
-  const [owner, setOwner] = useState<string>('');
   const [choice, setChoice] = useState<string>('');
   const [outcomes, setOutcomes] = useState<any>([]);
-  const [daiApproved, setDaiApproved] = useState<boolean>(false);
-  const [usingDai, setUsingDai] = useState<boolean>(true);
+  const [state, setState] = useState<number>();
+  const [timeLeft, setTimeLeft] = useState<number>(0);
+  // const [daiApproved, setDaiApproved] = useState<boolean>(false);
+  // const [usingDai, setUsingDai] = useState<boolean>(true);
 
-  const { data } = useEthBalance(account!, false);
-  const tokens = useTokens();
-  const daiToken = tokens[0][5];
-  const { data: tokenData } = useTokenBalance(daiToken, account!, false);
+  // const { data } = useEthBalance(account!, false);
+  // const tokens = useTokens();
+  // const daiToken = tokens[0][5];
+  // const { data: tokenData } = useTokenBalance(daiToken, account!, false);
 
-  marketContract.on('StateChanged', (state: any) =>
-    console.log('State: ', state)
-  );
-  marketContract.on('ParticipantEntered', (address: any) =>
-    console.log('Address: ', address)
-  );
+  // marketContract.on('StateChanged', (state: any) =>
+  //   console.log('State: ', state)
+  // );
+  // marketContract.on('ParticipantEntered', (address: any) =>
+  //   console.log('Address: ', address)
+  // );
+
+  // let wallet: any;
+  // if (!!library && !!account) wallet = library.getSigner(account);
+
+  useEffect(() => {
+    (async () => {
+      let time = await marketContract.marketResolutionTime();
+      time = time.toNumber();
+      setMarketResolutionTime(time * 1000);
+    })();
+  }, []);
 
   useEffect(() => {
     (async () => {
       let isStale = false;
-      if (marketContract && !isStale) {
-        const [
-          _marketState,
-          _owner,
-          _marketResolutionTime,
-          _eventName,
-          _accruedInterest,
-        ] = await Promise.all([
-          marketContract.state(),
-          marketContract.owner(),
-          marketContract.marketResolutionTime(),
-          marketContract.eventName(),
-          marketContract.getTotalInterest(),
-        ]);
-        setMarketState(MarketStates[_marketState]);
-        setOwner(_owner);
-        setMarketResolutionTime(_marketResolutionTime);
-        setPrompt(_eventName);
-        const accIntFormatted = formatEther(_accruedInterest);
-        const val = parseFloat(accIntFormatted);
-        setAccruedInterest(val);
+      if (!isStale) {
+        if (marketContract.provider) {
+          const state = await marketContract.getCurrentState();
+          setState(state);
+          setPrompt(await marketContract.eventName());
+          const totalInterest = await marketContract.getTotalInterest();
+          setAccruedInterest(parseFloat(formatEther(totalInterest)));
+        }
       }
       return () => {
         isStale = true;
       };
     })();
-  }, [MarketStates, account, marketContract]);
+  }, [marketContract]);
 
   useEffect(() => {
     (async () => {
@@ -102,7 +102,8 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
         // const { data: _allowance } = useTokenAllowance(daiToken, account, marketContract.address)
         if (account) {
           getAllowance().then((allowance) => {
-            if (allowance.toString() !== '0') setDaiApproved(true);
+            // console.log('allowance:', allowance);
+            // if (allowance.toString() !== '0') setDaiApproved(true);
           });
         }
       }
@@ -220,15 +221,6 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
     }
   };
 
-  const checkOwner = (): boolean => {
-    if (owner !== null && account !== null) {
-      if (account === null) return false;
-      return account === owner;
-    } else {
-      return false;
-    }
-  };
-
   return !prompt ? null : (
     <>
       <Box bg={bgColor8[colorMode]} borderRadius="0.5rem" m="0 1.5rem">
@@ -279,6 +271,13 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
           >
             <Flex mt={0}>
               <IconButton
+                aria-label="purchase settings"
+                variant="ghost"
+                icon="settings"
+                size="md"
+                onClick={settingsModalToggle.onOpen}
+              />
+              <IconButton
                 aria-label="market info"
                 variant="ghost"
                 icon="info"
@@ -286,21 +285,14 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
                 pr={0.5}
                 onClick={infoModalToggle.onOpen}
               />
-              <IconButton
-                aria-label="purchase settings"
-                variant="ghost"
-                icon="settings"
-                size="md"
-                onClick={settingsModalToggle.onOpen}
-              />
             </Flex>
-            <Text width="5.5rem" mt="-5px">
-              {marketResolutionTime ? (
-                <CountDown date={Date.now() + marketResolutionTime} />
-              ) : (
-                '-'
-              )}
-            </Text>
+            {marketResolutionTime ? (
+              <Box width="5.5rem" mt="-5px">
+                <CountDown startDate={marketResolutionTime} />
+              </Box>
+            ) : (
+              '-'
+            )}
           </Flex>
         </Flex>
         <Heading as="h1" textAlign="center" fontSize="3rem">
@@ -312,7 +304,7 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
             <Chart marketContract={marketContract} />
           </Box> */}
 
-          {active && (
+          {connector === injected && (
             <form onSubmit={placeBet}>
               <Flex flexDirection="column" justifyContent="center">
                 <Select
@@ -356,40 +348,34 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
                 </Flex>
 
                 {!!(library && account) && (
-                  <Flex justifyContent="center">
-                    <Button
-                      borderRadius="0.5rem"
-                      cursor="pointer"
-                      fontSize="1.33rem"
-                      w="8rem"
-                      border="2px solid primary.100"
-                      color="light.100"
-                      backgroundColor="primary.100"
-                      type="submit"
-                      _hover={{ bg: 'dark.100' }}
-                      isDisabled={
-                        amountToBet <= 0 ||
-                        marketState !== 'OPEN' ||
-                        choice === ''
-                      }
-                    >
-                      Enter
-                    </Button>
-                    {marketState === 'WITHDRAW' && (
+                  <Flex justifyContent="center" alignItems="center" mb="1rem">
+                    {state === 3 ? (
                       <Button
                         cursor="pointer"
                         fontSize="1.33rem"
-                        mt="1rem"
                         w="8rem"
                         border="1px"
                         borderColor="primary.100"
-                        borderRadius="0.5rem"
                         color="primary.100"
-                        backgroundColor="light.100"
+                        bg="light.100"
                         type="button"
                         onClick={() => withdraw()}
                       >
                         Withdraw
+                      </Button>
+                    ) : (
+                      <Button
+                        cursor="pointer"
+                        fontSize="1.33rem"
+                        w="8rem"
+                        border="2px solid primary.100"
+                        color="light.100"
+                        backgroundColor="primary.100"
+                        type="submit"
+                        // _hover={{ bg: 'dark.100' }}
+                        isDisabled={amountToBet <= 0 || choice === ''}
+                      >
+                        Enter
                       </Button>
                     )}
                   </Flex>
@@ -398,10 +384,12 @@ const MarketCard = ({ marketContract, daiContract }: any) => {
             </form>
           )}
         </Flex>
-        {checkOwner() && <OwnerFunctionality marketContract={marketContract} />}
       </Box>
-      <Info infoModalToggle={infoModalToggle} />
-      <SettingsModal settingsModalToggle={settingsModalToggle} />
+      <Info infoModalToggle={infoModalToggle} marketContract={marketContract} />
+      <SettingsModal
+        settingsModalToggle={settingsModalToggle}
+        marketContract={marketContract}
+      />
     </>
   );
 };
