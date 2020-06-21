@@ -70,24 +70,31 @@ const Header = () => {
           bg={bgColor3[colorMode]}
           m="0 auto"
         >
-          {console.log(chainId, connector)}
-          <Flex
-            flexDirection="row"
-            alignItems="center"
-            justifyContent="center"
-            mr={5}
-          >
-            <span
-              style={{ fontSize: '3rem', width: '100%', marginRight: '0.5rem' }}
-              role="img"
-              aria-label="tophat"
-            >
-              🎩
-            </span>
-            <Heading as="h1" size="xl">
-              MagicBet
-            </Heading>
-          </Flex>
+          <Link href="/dashboard" passHref>
+            <StyledLink _hover={{ cursor: 'pointer' }}>
+              <Flex
+                flexDirection="row"
+                alignItems="center"
+                justifyContent="center"
+                mr={5}
+              >
+                <span
+                  style={{
+                    fontSize: '3rem',
+                    width: '100%',
+                    marginRight: '0.5rem',
+                  }}
+                  role="img"
+                  aria-label="tophat"
+                >
+                  🎩
+                </span>
+                <Heading as="h1" size="xl">
+                  MagicBet
+                </Heading>
+              </Flex>
+            </StyledLink>
+          </Link>
           <Flex alignItems="center" justifyContent="flex-end">
             <IconButton
               aria-label={`Switch to ${

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { formatEther } from '@ethersproject/units';
 import { Contract } from '@ethersproject/contracts';
 import { Box, Flex } from '@chakra-ui/core';
+import moment from 'moment';
 import {
   LineChart,
   Line,
@@ -10,7 +11,6 @@ import {
   CartesianGrid,
   Tooltip,
   Legend,
-  ResponsiveContainer,
 } from 'recharts';
 
 export default function Chart({
@@ -20,8 +20,6 @@ export default function Chart({
 }) {
   const [data, setData] = useState<any>([]);
 
-  const [numOfOutcomes, setNumOfOutcomes] = useState();
-
   useEffect(() => {
     (async () => {
       let isStale = false;
@@ -30,25 +28,20 @@ export default function Chart({
         let closingTime: any;
         let timeFrame: any;
         let numberOfOutcomes: any;
-        console.log('numberOfOutcomes:', numberOfOutcomes);
         let interval: any;
 
-        marketContract
-          .marketOpeningTime()
-          .then((res: any) => (openingTime = res.toString()));
-
-        marketContract
-          .marketLockingTime()
-          .then((res: any) => (closingTime = res.toString()));
+        openingTime = await marketContract.marketOpeningTime();
+        openingTime = openingTime.toNumber();
+        closingTime = await marketContract.marketLockingTime();
+        closingTime = closingTime.toNumber();
 
         if (!!openingTime && !!closingTime) {
           timeFrame = (closingTime - openingTime) / 14400;
           interval = Math.ceil(timeFrame);
         }
+        numberOfOutcomes = await marketContract.numberOfOutcomes();
 
-        marketContract
-          .numberOfOutcomes()
-          .then((res: any) => setNumOfOutcomes(res.toNumber()));
+        // console.log('interval:', interval);
 
         let newData0 = {
           time: interval * 0,
@@ -70,7 +63,7 @@ export default function Chart({
           time: interval * 4,
         };
 
-        let outcomeName: any;
+        let outcomeName: string;
 
         for (let i = 0; i < numberOfOutcomes; i++) {
           outcomeName = await marketContract.outcomeNames(i);
@@ -83,15 +76,15 @@ export default function Chart({
 
           async function getBetsAndTimestamps() {
             let betsForOutcome: string[] = [];
-            let amountOfBetsForOutcome = await marketContract.getBetAmountsArray(
+            const amountOfBetsForOutcome = await marketContract.getBetAmountsArray(
               i
             );
             amountOfBetsForOutcome.forEach((bet: any) => {
-              let formattedBets = formatEther(bet.toString());
+              const formattedBets = formatEther(bet.toString());
               betsForOutcome.push(formattedBets);
             });
             let timestampsForOutcome: string[] = [];
-            let betTimestampsOnOutcome = await marketContract.getTimestampsArray(
+            const betTimestampsOnOutcome = await marketContract.getTimestampsArray(
               i
             );
             betTimestampsOnOutcome.forEach((timestamp: any) => {
@@ -108,9 +101,7 @@ export default function Chart({
             let outcomeBetsAndTimestamp: IBetsAndTimestamps[] = [];
             for (let i = 0; i <= 4; i++) {
               let amount = betsForOutcome[i];
-              console.log('amount:', amount);
               let timestamp = timestampsForOutcome[i];
-              console.log('timestamp:', timestamp);
               let newBetAndTimestamp = {
                 id: i,
                 amount: parseInt(amount),
@@ -122,28 +113,41 @@ export default function Chart({
             return outcomeBetsAndTimestamp;
           }
 
-          let outcomeBetsAndTimestamp = await getBetsAndTimestamps();
+          const outcomeBetsAndTimestamp = await getBetsAndTimestamps();
+          // console.log('outcomeBetsAndTimestamp:', outcomeBetsAndTimestamp);
 
           //!CHART
           outcomeBetsAndTimestamp.forEach((item: any) => {
             let point = item.timestamp;
-            console.log('item.timestamp:', item.timestamp);
-            console.log('point:', point);
-            if (openingTime < point && point < openingTime + 60) {
+
+            let difference = point - openingTime;
+            // console.log('difference:', difference);
+
+            // put into newData0 if the point is between openingTime (1592766557) and + 18hr
+            if (openingTime < point && point < openingTime + 64800)
+              //@ts-ignore
               newData0[outcomeName] = newData0[outcomeName] + item.amount;
-            } else if (openingTime + 60 < point && point < openingTime + 120) {
+            else if (
+              openingTime + 64800 < point &&
+              point < openingTime + 129600
+            )
               //@ts-ignore
               newData1[outcomeName] = newData1[outcomeName] + item.amount;
-            } else if (openingTime + 120 < point && point < openingTime + 180) {
+            else if (
+              openingTime + 129600 < point &&
+              point < openingTime + 194400
+            )
               //@ts-ignore
               newData2[outcomeName] = newData2[outcomeName] + item.amount;
-            } else if (openingTime + 180 < point && point < openingTime + 240) {
+            else if (
+              openingTime + 194400 < point &&
+              point < openingTime + 259200
+            )
               //@ts-ignore
               newData3[outcomeName] = newData3[outcomeName] + item.amount;
-            } else if (openingTime + 240 < point) {
+            else if (openingTime + 259200 < point)
               //@ts-ignore
               newData4[outcomeName] = newData4[outcomeName] + item.amount;
-            }
           });
 
           setData([newData0, newData1, newData2, newData3, newData4]);

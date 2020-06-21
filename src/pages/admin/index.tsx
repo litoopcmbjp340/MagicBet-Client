@@ -9,14 +9,21 @@ import {
   Heading,
   Button,
   Tag,
+  Stack,
   useColorMode,
   useDisclosure,
+  Alert,
+  AlertIcon,
+  AlertTitle,
+  AlertDescription,
+  CloseButton,
 } from '@chakra-ui/core';
 
 import { bgColor1, color1, bgColor6 } from '../../utils/theme';
 import CreateMarket from '../../components/Modals/CreateMarket';
 import { useFactoryContract } from 'hooks/useHelperContract';
 import MBMarketContract from '../../abis/MBMarket.json';
+import { shortenAddress } from '../../utils';
 
 const Admin = (): JSX.Element => {
   const { account, active, library } = useWeb3React<Web3Provider>();
@@ -26,6 +33,7 @@ const Admin = (): JSX.Element => {
   const factoryContract: Contract | undefined = useFactoryContract();
   const [marketContract, setMarketContract] = useState<Contract | null>();
   const [contractAddress, setContractAddress] = useState<string>('');
+  const [alert, setAlert] = useState<boolean>(false);
 
   useEffect(() => {
     (async () => {
@@ -63,6 +71,14 @@ const Admin = (): JSX.Element => {
       };
     })();
   }, [factoryContract]);
+
+  const deteremineWinner = async () => {
+    try {
+      await marketContract!.determineWinner();
+    } catch {
+      setAlert(true);
+    }
+  };
 
   return (
     <Box bg={bgColor1[colorMode]} pb="1rem" rounded="md">
@@ -115,27 +131,48 @@ const Admin = (): JSX.Element => {
             Create Market
           </Button>
         ) : (
-          <Flex justifyContent="center" flexDirection="column" mt="1rem">
-            <Tag>{contractAddress}</Tag>
-            <Button
-              my="0.25rem"
-              color="light.100"
-              bg={bgColor6[colorMode]}
-              _hover={{ bg: 'primary.100' }}
-              onClick={async () => await marketContract.determineWinner()}
-            >
-              Determine Winner
-            </Button>
-            <Button
-              my="0.25rem"
-              color="light.100"
-              bg={bgColor6[colorMode]}
-              _hover={{ bg: 'primary.100' }}
-              onClick={async () => await marketContract.disableContract()}
-            >
-              Disable Contract
-            </Button>
-          </Flex>
+          <Box maxW="sm" borderWidth="1px" rounded="lg" overflow="hidden">
+            <Box p="6">
+              <Tag variantColor="gray">{`Contract ${shortenAddress(
+                contractAddress
+              )}`}</Tag>
+              <Stack>
+                <Button
+                  my="0.25rem"
+                  color="light.100"
+                  bg={bgColor6[colorMode]}
+                  _hover={{ bg: 'primary.100' }}
+                  onClick={() => deteremineWinner()}
+                >
+                  Determine Winner
+                </Button>
+                <Button
+                  my="0.25rem"
+                  color="light.100"
+                  bg={bgColor6[colorMode]}
+                  _hover={{ bg: 'primary.100' }}
+                  onClick={async () => await marketContract.disableContract()}
+                >
+                  Disable Contract
+                </Button>
+              </Stack>
+              {alert && (
+                <Alert status="error">
+                  <AlertIcon />
+                  <AlertTitle mr={2}>Invalid Call!</AlertTitle>
+                  <AlertDescription>
+                    You cannot call this function at this time.
+                  </AlertDescription>
+                  <CloseButton
+                    position="absolute"
+                    right="8px"
+                    top="8px"
+                    onClick={() => setAlert(false)}
+                  />
+                </Alert>
+              )}
+            </Box>
+          </Box>
         )}
       </Flex>
       <CreateMarket createMarketModalToggle={createMarketModalToggle} />

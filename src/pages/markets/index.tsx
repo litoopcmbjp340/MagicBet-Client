@@ -20,27 +20,20 @@ const Markets = (): JSX.Element => {
   const factoryAddress = addresses[KOVAN_ID].marketFactory;
   const factoryContract = useContract(
     factoryAddress,
-    MBMarketFactoryContract.abi,
-    true
+    MBMarketFactoryContract.abi
   );
 
   useEffect(() => {
-    (async () => {
-      let isStale = false;
-      if (factoryContract && !isStale) {
-        try {
-          factoryContract
-            .getMarkets()
-            .then((markets: any) => setMarkets(markets))
-            .catch((error: any) => console.error(error));
-        } catch (error) {
-          console.error(error);
-        }
-      }
-      return (): void => {
-        isStale = true;
-      };
-    })();
+    let isStale = false;
+    if (factoryContract && !isStale) {
+      factoryContract
+        .getMarkets()
+        .then((markets: any) => setMarkets(markets))
+        .catch((error: any) => console.error(error));
+    }
+    return (): void => {
+      isStale = true;
+    };
   }, [factoryContract]);
 
   return (

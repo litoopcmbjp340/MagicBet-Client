@@ -11,13 +11,13 @@ function Market({ market }: { market: string }) {
   const [maxInterests, setMaxInterest] = useState<number>(0);
   const [marketResolutionTime, setMarketResolutionTime] = useState<number>(0);
   const [winningOutcome, setWinningOutcome] = useState<number>(0);
-  const marketContract: any = useContract(market, MBMarketContract.abi);
+  const marketContract = useContract(market, MBMarketContract.abi);
 
   useEffect(() => {
     let isStale = false;
     (async () => {
       try {
-        if (!isStale) {
+        if (!isStale && marketContract) {
           const [
             _question,
             _questionId,
@@ -33,7 +33,10 @@ function Market({ market }: { market: string }) {
           ]);
 
           let _winningOutcome;
-          if (_winningOutcomeId.toString() !== '69') {
+          if (
+            _winningOutcomeId.toString() !==
+            '115792089237316195423570985008687907853269984665640564039457584007913129639935'
+          ) {
             _winningOutcome = await marketContract.outcomeNames(
               _winningOutcomeId
             );
@@ -43,7 +46,7 @@ function Market({ market }: { market: string }) {
           setQuestionId(_questionId);
           setMaxInterest(_maxInterests);
           setMarketResolutionTime(_marketResolutionTime);
-          setWinningOutcome(_winningOutcome);
+          setWinningOutcome(_winningOutcomeId);
         }
       } catch (error) {
         console.error(error);
@@ -70,7 +73,8 @@ function Market({ market }: { market: string }) {
             </Link>
           </th>
           <th>
-            {winningOutcome ? winningOutcome.toString() : 'Not yet resolved'}
+            {/* {winningOutcome ? winningOutcome.toString() : 'Not yet resolved'} */}
+            {'Not yet resolved'}
           </th>
           <th>{`${getFormattedNumber(maxInterests / 1e18, 18)} DAI`}</th>
           <th>{new Date(marketResolutionTime * 1000).toUTCString()}</th>

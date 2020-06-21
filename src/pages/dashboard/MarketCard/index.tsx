@@ -4,6 +4,7 @@ import { useWeb3React } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers';
 import { formatEther, parseUnits } from '@ethersproject/units';
 import { BigNumber } from '@ethersproject/bignumber';
+import moment from 'moment';
 import {
   Box,
   Flex,
@@ -11,15 +12,16 @@ import {
   IconButton,
   Input,
   Button,
-  Text,
   Select,
   useToast,
   useDisclosure,
   useColorMode,
+  Stat,
+  StatLabel,
+  StatNumber,
 } from '@chakra-ui/core';
 import dynamic from 'next/dynamic';
 
-import CountDown from './CountDown';
 import { injected } from '../../../utils/connectors';
 import Info from '../../../components/Modals/Info';
 import SettingsModal from 'components/Modals/Settings';
@@ -28,6 +30,39 @@ import { shortenAddress } from '../../../utils';
 import { useDaiContract } from '../../../hooks/useHelperContract';
 // import { useTokens } from '../../../utils/tokens';
 import { bgColor8, color2 } from '../../../utils/theme';
+
+const CountDown = ({ startDate }: any) => {
+  const realStartDate = moment(startDate).format('YYYY-MM-DD');
+
+  const [days, setDays] = useState(0);
+  const [hours, setHours] = useState(0);
+  const [minutes, setMinutes] = useState(0);
+  const [seconds, setSeconds] = useState(0);
+  const [time, setTime] = useState(0);
+
+  useEffect(() => {
+    setInterval(() => getTimeUntil(realStartDate), 1000);
+  }, [realStartDate]);
+
+  function getTimeUntil(realStartDate: any) {
+    const time =
+      Date.parse(realStartDate) -
+      Date.parse(new Date() + '') -
+      7 * 60 * 60 * 1000;
+    setTime(time);
+    setSeconds(Math.floor((time / 1000) % 60));
+    setMinutes(Math.floor((time / 1000 / 60) % 60));
+    setHours(Math.floor((time / (1000 * 60 * 60)) % 24));
+    setDays(Math.floor((time / (1000 * 60 * 60 * 24)) % 30));
+  }
+
+  function add0(number: any) {
+    return number < 10 ? '0' + number : number;
+  }
+  return time === 0 ? null : (
+    <>{`${add0(days)}:${add0(hours)}:${add0(minutes)}:${add0(seconds)}`}</>
+  );
+};
 
 const MarketCard = ({ marketContract }: any) => {
   console.log('marketContract:', marketContract);
@@ -223,86 +258,68 @@ const MarketCard = ({ marketContract }: any) => {
 
   return !prompt ? null : (
     <>
-      <Box bg={bgColor8[colorMode]} borderRadius="0.5rem" m="0 1.5rem">
+      <Box
+        bg={bgColor8[colorMode]}
+        borderRadius="0.5rem"
+        m="0 1.5rem"
+        px="0.5rem"
+        pb="1.5rem"
+      >
         <Flex
           borderBottom="1px solid dark.100"
           alignItems="center"
           justifyContent="space-between"
           p="0.5rem 1rem"
+          mb="1rem"
         >
-          <Flex flexDirection="column" justifyContent="space-between">
-            <Text
-              color="#555"
-              font-size="12px"
-              line-height="1.5"
-              m="0 0 10px"
-              p="0"
-              textAlign="center"
-            >
-              Address
-            </Text>
-            <Text>{shortenAddress(marketContract.address)}</Text>
-          </Flex>
-          <Flex flexDirection="column" justifyContent="space-between" ml="2rem">
-            <Text
-              color="#555"
-              font-size="12px"
-              line-height="1.5"
-              m="0 0 10px"
-              p="0"
-              textAlign="center"
-            >
-              Potential Winnings
-            </Text>
-            <Box textAlign="center">
-              <CountUp
-                start={0}
-                end={accruedInterest}
-                decimals={10}
-                preserveValue={true}
-                duration={10}
-              />
-            </Box>
-          </Flex>
-          <Flex
-            flexDirection="column"
-            alignItems="center"
-            justifyContent="center"
-          >
-            <Flex mt={0}>
-              <IconButton
-                aria-label="purchase settings"
-                variant="ghost"
-                icon="settings"
-                size="md"
-                onClick={settingsModalToggle.onOpen}
-              />
-              <IconButton
-                aria-label="market info"
-                variant="ghost"
-                icon="info"
-                size="md"
-                pr={0.5}
-                onClick={infoModalToggle.onOpen}
-              />
-            </Flex>
-            {marketResolutionTime ? (
-              <Box width="5.5rem" mt="-5px">
+          <Stat textAlign="center">
+            <StatLabel color="#555">Address</StatLabel>
+            <StatNumber>{shortenAddress(marketContract.address)}</StatNumber>
+          </Stat>
+
+          <Stat textAlign="center">
+            <StatLabel color="#555">Potential Winnings</StatLabel>
+            <StatNumber>
+              {
+                <CountUp
+                  start={0}
+                  end={accruedInterest}
+                  decimals={10}
+                  preserveValue={true}
+                  duration={10}
+                />
+              }
+            </StatNumber>
+          </Stat>
+
+          <Stat textAlign="center">
+            <StatLabel color="#555">Resolution Time</StatLabel>
+            <StatNumber>
+              {marketResolutionTime ? (
                 <CountDown startDate={marketResolutionTime} />
-              </Box>
-            ) : (
-              '-'
-            )}
-          </Flex>
+              ) : (
+                '00:00:00:00'
+              )}
+            </StatNumber>
+          </Stat>
+          <IconButton
+            aria-label="market info"
+            variant="ghost"
+            color="#555"
+            icon="info"
+            size="md"
+            pr={0.5}
+            onClick={infoModalToggle.onOpen}
+          />
         </Flex>
         <Heading as="h1" textAlign="center" fontSize="3rem">
           {prompt}
         </Heading>
 
         <Flex justifyContent="center" alignItems="center" flexWrap="wrap">
-          {/* <Box display={{ sm: 'none', md: 'block' }}>
+          <Box display={{ sm: 'none', md: 'block' }}>
             <Chart marketContract={marketContract} />
-          </Box> */}
+          </Box>
 
           {connector === injected && (
             <form onSubmit={placeBet}>
@@ -323,6 +340,14 @@ const MarketCard = ({ marketContract }: any) => {
                     </option>
                   ))}
                 </Select>
+
+                <IconButton
+                  aria-label="purchase settings"
+                  variant="ghost"
+                  icon="settings"
+                  size="md"
+                  onClick={settingsModalToggle.onOpen}
+                />
 
                 <Flex justifyContent="center">
                   <Input
@@ -348,37 +373,44 @@ const MarketCard = ({ marketContract }: any) => {
                 </Flex>
 
                 {!!(library && account) && (
-                  <Flex justifyContent="center" alignItems="center" mb="1rem">
-                    {state === 3 ? (
-                      <Button
-                        cursor="pointer"
-                        fontSize="1.33rem"
-                        w="8rem"
-                        border="1px"
-                        borderColor="primary.100"
-                        color="primary.100"
-                        bg="light.100"
-                        type="button"
-                        onClick={() => withdraw()}
-                      >
-                        Withdraw
-                      </Button>
-                    ) : (
-                      <Button
-                        cursor="pointer"
-                        fontSize="1.33rem"
-                        w="8rem"
-                        border="2px solid primary.100"
-                        color="light.100"
-                        backgroundColor="primary.100"
-                        type="submit"
-                        // _hover={{ bg: 'dark.100' }}
-                        isDisabled={amountToBet <= 0 || choice === ''}
-                      >
-                        Enter
-                      </Button>
-                    )}
-                  </Flex>
+                  <>
+                    <Flex
+                      flexDirection="column"
+                      justifyContent="center"
+                      alignItems="center"
+                      mb="1rem"
+                    >
+                      {state === 3 ? (
+                        <Button
+                          cursor="pointer"
+                          fontSize="1.33rem"
+                          w="8rem"
+                          border="1px"
+                          borderColor="primary.100"
+                          color="primary.100"
+                          bg="light.100"
+                          type="button"
+                          onClick={() => withdraw()}
+                        >
+                          Withdraw
+                        </Button>
+                      ) : (
+                        <Button
+                          cursor="pointer"
+                          fontSize="1.33rem"
+                          w="8rem"
+                          border="2px solid primary.100"
+                          color="light.100"
+                          backgroundColor="primary.100"
+                          type="submit"
+                          // _hover={{ bg: 'dark.100' }}
+                          isDisabled={amountToBet <= 0 || choice === ''}
+                        >
+                          Enter
+                        </Button>
+                      )}
+                    </Flex>
+                  </>
                 )}
               </Flex>
             </form>
