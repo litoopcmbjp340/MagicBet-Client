@@ -271,6 +271,7 @@ const MarketCard = ({ marketContract }: any) => {
           justifyContent="space-between"
           p="0.5rem 1rem"
           mb="1rem"
+          flexWrap="wrap"
         >
           <Stat textAlign="center">
             <StatLabel color="#555">Address</StatLabel>
@@ -278,13 +279,13 @@ const MarketCard = ({ marketContract }: any) => {
           </Stat>
 
           <Stat textAlign="center">
-            <StatLabel color="#555">Potential Winnings</StatLabel>
+            <StatLabel color="#555">Winnings</StatLabel>
             <StatNumber>
               {
                 <CountUp
                   start={0}
                   end={accruedInterest}
-                  decimals={10}
+                  decimals={7}
                   preserveValue={true}
                   duration={10}
                 />
@@ -293,7 +294,7 @@ const MarketCard = ({ marketContract }: any) => {
           </Stat>
 
           <Stat textAlign="center">
-            <StatLabel color="#555">Resolution Time</StatLabel>
+            <StatLabel color="#555">Resolution</StatLabel>
             <StatNumber>
               {marketResolutionTime ? (
                 <CountDown startDate={marketResolutionTime} />
@@ -302,15 +303,25 @@ const MarketCard = ({ marketContract }: any) => {
               )}
             </StatNumber>
           </Stat>
-          <IconButton
-            aria-label="market info"
-            variant="ghost"
-            color="#555"
-            icon="info"
-            size="md"
-            pr={0.5}
-            onClick={infoModalToggle.onOpen}
-          />
+          <Box>
+            <IconButton
+              aria-label="market info"
+              variant="ghost"
+              color="#555"
+              icon="info"
+              size="md"
+              pr={0.5}
+              onClick={infoModalToggle.onOpen}
+            />
+            <IconButton
+              aria-label="purchase settings"
+              variant="ghost"
+              color="#555"
+              icon="settings"
+              size="md"
+              onClick={settingsModalToggle.onOpen}
+            />
+          </Box>
         </Flex>
         <Heading as="h1" textAlign="center" fontSize="3rem">
           {prompt}
@@ -340,14 +351,6 @@ const MarketCard = ({ marketContract }: any) => {
                     </option>
                   ))}
                 </Select>
-
-                <IconButton
-                  aria-label="purchase settings"
-                  variant="ghost"
-                  icon="settings"
-                  size="md"
-                  onClick={settingsModalToggle.onOpen}
-                />
 
                 <Flex justifyContent="center">
                   <Input
@@ -396,15 +399,22 @@ const MarketCard = ({ marketContract }: any) => {
                         </Button>
                       ) : (
                         <Button
-                          cursor="pointer"
+                          textTransform="uppercase"
                           fontSize="1.33rem"
-                          w="8rem"
-                          border="2px solid primary.100"
                           color="light.100"
-                          backgroundColor="primary.100"
+                          w="8rem"
+                          bg="primary.100"
+                          border="none"
+                          box-shadow="0 0.5rem 1rem rgba(0, 0, 0, 0.1)"
+                          transition="all 0.3s ease 0s"
+                          outline="none"
+                          cursor="pointer"
                           type="submit"
-                          // _hover={{ bg: 'dark.100' }}
                           isDisabled={amountToBet <= 0 || choice === ''}
+                          _hover={{
+                            boxShadow: '0px 15px 20px rgba(0, 0, 0, 0.3)',
+                            transform: 'translateY(-5px)',
+                          }}
                         >
                           Enter
                         </Button>

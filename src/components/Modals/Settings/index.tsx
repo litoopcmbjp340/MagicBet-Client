@@ -8,7 +8,6 @@ import {
   ModalHeader,
   ModalBody,
   ModalCloseButton,
-  ModalFooter,
   Flex,
   Tag,
   Stack,
@@ -51,23 +50,12 @@ const SettingsModal = ({ settingsModalToggle }: any): JSX.Element => {
           <Stack direction="column">
             <Stack direction="row" justify="space-between">
               <Button
-                textTransform="uppercase"
-                fontWeight="500"
-                color="dark.100"
-                bg="light.100"
-                border="none"
-                box-shadow="0 0.5rem 1rem rgba(0, 0, 0, 0.1)"
-                transition="all 0.3s ease 0s"
-                outline="none"
                 cursor="pointer"
-                my="1.25rem"
+                border="2px solid primary.100"
+                color="light.100"
+                backgroundColor="primary.100"
                 type="button"
-                _hover={{
-                  backgroundColor: 'primary.100',
-                  boxShadow: '0px 15px 20px rgba(0, 0, 0, 0.3)',
-                  color: 'light.100',
-                  transform: 'translateY(-5px)',
-                }}
+                // _hover={{ bg: 'dark.100' }}
                 onClick={() => setUsingDai(!usingDai)}
               >
                 {usingDai ? 'Dai' : 'Ether'}
@@ -113,9 +101,6 @@ const SettingsModal = ({ settingsModalToggle }: any): JSX.Element => {
             </Button>
           </Stack>
         </ModalBody>
-        <ModalFooter>
-          <Button onClick={settingsModalToggle.onClose}>Okay</Button>
-        </ModalFooter>
       </ModalContent>
     </Modal>
   );
