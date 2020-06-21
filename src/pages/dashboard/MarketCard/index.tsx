@@ -20,8 +20,8 @@ import {
   StatLabel,
   StatNumber,
 } from '@chakra-ui/core';
-import dynamic from 'next/dynamic';
 
+import Chart from './Chart';
 import { injected } from '../../../utils/connectors';
 import Info from '../../../components/Modals/Info';
 import SettingsModal from 'components/Modals/Settings';
@@ -73,7 +73,6 @@ const MarketCard = ({ marketContract }: any) => {
   const daiContract = useDaiContract();
 
   const toast = useToast();
-  const Chart = dynamic(() => import('./Chart'));
 
   const [amountToBet, setAmountToBet] = useState<number>(0);
   const [accruedInterest, setAccruedInterest] = useState<number>(0);
@@ -90,9 +89,6 @@ const MarketCard = ({ marketContract }: any) => {
   // const daiToken = tokens[0][5];
   // const { data: tokenData } = useTokenBalance(daiToken, account!, false);
 
-  // marketContract.on('StateChanged', (state: any) =>
-  //   console.log('State: ', state)
-  // );
   // marketContract.on('ParticipantEntered', (address: any) =>
   //   console.log('Address: ', address)
   // );

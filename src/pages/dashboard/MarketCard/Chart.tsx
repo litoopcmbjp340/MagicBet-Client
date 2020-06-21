@@ -13,6 +13,12 @@ import {
   Legend,
 } from 'recharts';
 
+interface IBetsAndTimestamps {
+  id: number;
+  amount: number;
+  timestamp: number;
+}
+
 export default function Chart({
   marketContract,
 }: {
@@ -20,53 +26,59 @@ export default function Chart({
 }) {
   const [data, setData] = useState<any>([]);
 
+  const [newAddress, setNewAddress] = useState('');
+  marketContract.on('ParticipantEntered', (address: any) => {
+    console.log('address:', address);
+    setNewAddress(address);
+  });
+
   useEffect(() => {
     (async () => {
       let isStale = false;
-      if (!isStale) {
-        let openingTime: any;
-        let closingTime: any;
-        let timeFrame: any;
-        let numberOfOutcomes: any;
-        let interval: any;
 
-        openingTime = await marketContract.marketOpeningTime();
+      let newData0 = {
+        time: 0,
+      };
+
+      let newData1 = {
+        time: 0,
+      };
+
+      let newData2 = {
+        time: 0,
+      };
+
+      let newData3 = {
+        time: 0,
+      };
+
+      let newData4 = {
+        time: 0,
+      };
+
+      if (!isStale) {
+        let outcomes = await marketContract.getOutcomeNames();
+
+        let openingTime = await marketContract.marketOpeningTime();
         openingTime = openingTime.toNumber();
-        closingTime = await marketContract.marketLockingTime();
+        let closingTime = await marketContract.marketLockingTime();
         closingTime = closingTime.toNumber();
 
+        let timeFrame: any;
+        let interval: any;
         if (!!openingTime && !!closingTime) {
           timeFrame = (closingTime - openingTime) / 14400;
           interval = Math.ceil(timeFrame);
         }
-        numberOfOutcomes = await marketContract.numberOfOutcomes();
 
-        // console.log('interval:', interval);
+        newData0.time = interval * 0;
+        newData1.time = interval * 1;
+        newData2.time = interval * 2;
+        newData3.time = interval * 3;
+        newData4.time = interval * 4;
 
-        let newData0 = {
-          time: interval * 0,
-        };
-
-        let newData1 = {
-          time: interval * 1,
-        };
-
-        let newData2 = {
-          time: interval * 2,
-        };
-
-        let newData3 = {
-          time: interval * 3,
-        };
-
-        let newData4 = {
-          time: interval * 4,
-        };
-
-        let outcomeName: string;
-
-        for (let i = 0; i < numberOfOutcomes; i++) {
-          outcomeName = await marketContract.outcomeNames(i);
+        for (let i = 0; i < outcomes.length; i++) {
+          let outcomeName: string = outcomes[i];
           let pair = { [outcomeName]: 0 };
           newData0 = { ...newData0, ...pair };
           newData1 = { ...newData1, ...pair };
@@ -74,47 +86,35 @@ export default function Chart({
           newData3 = { ...newData3, ...pair };
           newData4 = { ...newData4, ...pair };
 
-          async function getBetsAndTimestamps() {
-            let betsForOutcome: string[] = [];
-            const amountOfBetsForOutcome = await marketContract.getBetAmountsArray(
-              i
-            );
-            amountOfBetsForOutcome.forEach((bet: any) => {
-              const formattedBets = formatEther(bet.toString());
-              betsForOutcome.push(formattedBets);
-            });
-            let timestampsForOutcome: string[] = [];
-            const betTimestampsOnOutcome = await marketContract.getTimestampsArray(
-              i
-            );
-            betTimestampsOnOutcome.forEach((timestamp: any) => {
-              let formattedTimestamp = timestamp.toString();
-              timestampsForOutcome.push(formattedTimestamp);
-            });
+          let betsForOutcome: string[] = [];
+          const amountOfBetsForOutcome = await marketContract.getBetAmountsArray(
+            i
+          );
+          amountOfBetsForOutcome.forEach((bet: any) => {
+            const formattedBets = formatEther(bet.toString());
+            betsForOutcome.push(formattedBets);
+          });
+          let timestampsForOutcome: string[] = [];
+          const betTimestampsOnOutcome = await marketContract.getTimestampsArray(
+            i
+          );
+          betTimestampsOnOutcome.forEach((timestamp: any) => {
+            let formattedTimestamp = timestamp.toString();
+            timestampsForOutcome.push(formattedTimestamp);
+          });
 
-            //!Combine
-            interface IBetsAndTimestamps {
-              id: number;
-              amount: number;
-              timestamp: number;
-            }
-            let outcomeBetsAndTimestamp: IBetsAndTimestamps[] = [];
-            for (let i = 0; i <= 4; i++) {
-              let amount = betsForOutcome[i];
-              let timestamp = timestampsForOutcome[i];
-              let newBetAndTimestamp = {
-                id: i,
-                amount: parseInt(amount),
-                timestamp: parseInt(timestamp),
-              };
-
-              outcomeBetsAndTimestamp.push(newBetAndTimestamp);
-            }
-            return outcomeBetsAndTimestamp;
+          //!COMBINE
+          let outcomeBetsAndTimestamp: IBetsAndTimestamps[] = [];
+          for (let i = 0; i <= 4; i++) {
+            let amount = betsForOutcome[i];
+            let timestamp = timestampsForOutcome[i];
+            let newBetAndTimestamp = {
+              id: i,
+              amount: parseInt(amount),
+              timestamp: parseInt(timestamp),
+            };
+            outcomeBetsAndTimestamp.push(newBetAndTimestamp);
           }
-
-          const outcomeBetsAndTimestamp = await getBetsAndTimestamps();
-          // console.log('outcomeBetsAndTimestamp:', outcomeBetsAndTimestamp);
 
           //!CHART
           outcomeBetsAndTimestamp.forEach((item: any) => {
@@ -158,7 +158,7 @@ export default function Chart({
         isStale = true;
       };
     })();
-  }, []);
+  }, [newAddress]);
 
   return <Graph data={data} />;
 }
