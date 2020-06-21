@@ -22,7 +22,7 @@ import { bgColor1, color1 } from '../../utils/theme';
 import MarketCard from './MarketCard';
 
 const Dashboard = (): JSX.Element => {
-  const { library, connector } = useWeb3React<Web3Provider>();
+  const { library, connector, account } = useWeb3React<Web3Provider>();
   const { colorMode } = useColorMode();
 
   const [factoryContract, setFactoryContract] = useState<Contract>();
@@ -48,8 +48,12 @@ const Dashboard = (): JSX.Element => {
           if (factoryContract.provider !== null) {
             const mostRecentAddress = await factoryContract.getMostRecentMarket();
             if (mostRecentAddress !== AddressZero) {
-              let providerOrSigner = library;
-              if (connector == injected) providerOrSigner;
+              let providerOrSigner;
+              if (connector == injected && account) {
+                providerOrSigner = library.getSigner(account);
+              } else {
+                providerOrSigner = library;
+              }
 
               const marketContract = new Contract(
                 mostRecentAddress,

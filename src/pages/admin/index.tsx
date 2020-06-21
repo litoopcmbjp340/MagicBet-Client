@@ -122,18 +122,9 @@ const Admin = (): JSX.Element => {
               color="light.100"
               bg={bgColor6[colorMode]}
               _hover={{ bg: 'primary.100' }}
-              onClick={async () => await marketContract.incrementState()}
-            >
-              Increment Market State
-            </Button>
-            <Button
-              my="0.25rem"
-              color="light.100"
-              bg={bgColor6[colorMode]}
-              _hover={{ bg: 'primary.100' }}
               onClick={async () => await marketContract.determineWinner()}
             >
-              Get Winner from Oracle
+              Determine Winner
             </Button>
             <Button
               my="0.25rem"

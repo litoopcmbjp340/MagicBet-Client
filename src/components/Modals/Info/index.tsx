@@ -27,7 +27,7 @@ const InfoModal = ({ infoModalToggle, marketContract }: any): JSX.Element => {
   const factoryContract = useFactoryContract();
   const { colorMode } = useColorMode();
 
-  const MarketStates = ['SETUP', 'WAITING', 'OPEN', 'LOCKED', 'WITHDRAW'];
+  const MarketStates = ['WAITING', 'OPEN', 'LOCKED', 'WITHDRAW'];
   const [marketState, setMarketState] = useState<string>('');
   const [pot, setPot] = useState<string>('0');
   const [owner, setOwner] = useState<string>('');

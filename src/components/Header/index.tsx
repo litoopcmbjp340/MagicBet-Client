@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { AbstractConnector } from '@web3-react/abstract-connector';
+import Link from 'next/link';
 import { useWeb3React } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers';
 import {
@@ -8,7 +8,7 @@ import {
   Button,
   Icon,
   Text,
-  Link,
+  Link as StyledLink,
   Tag,
   Box,
   IconButton,
@@ -101,7 +101,7 @@ const Header = () => {
               icon={colorMode === 'light' ? 'moon' : 'sun'}
               _hover={{ bg: 'Transparent' }}
             />
-            <Link
+            <StyledLink
               bg="none"
               mr="1rem"
               cursor="pointer"
@@ -110,7 +110,7 @@ const Header = () => {
               aria-label="Github Link"
             >
               <Icon name="githubIcon" size="2rem" color="light.100" />
-            </Link>
+            </StyledLink>
 
             {active && !!(connector === injected) ? (
               <Tag
@@ -169,42 +169,46 @@ const Header = () => {
             display={{ sm: 'block', md: 'none' }}
           >
             <Box m="0" p="0" borderBottom="1px solid rgba(0, 0, 0, 0.8)">
-              <Text
-                font-weight="500"
-                h="3rem"
-                p="0 1rem"
-                mt={{ base: 4, md: 0 }}
-                mr={6}
-                display="block"
-              >
-                <Link
-                  textTransform="uppercase"
-                  fontWeight="bold"
-                  cursor="pointer"
-                  href="/dashboard"
-                  onClick={() => setIsExpanded(false)}
+              <Link href="/dashboard" passHref>
+                <Text
+                  font-weight="500"
+                  h="3rem"
+                  p="0 1rem"
+                  mt={{ base: 4, md: 0 }}
+                  mr={6}
+                  display="block"
                 >
-                  Dashboard
-                </Link>
-              </Text>
-              <Text
-                font-weight="500"
-                h="3rem"
-                p="0 1rem"
-                mt={{ base: 4, md: 0 }}
-                mr={6}
-                display="block"
-              >
-                <Link
-                  textTransform="uppercase"
-                  fontWeight="bold"
-                  cursor="pointer"
-                  href="/markets"
-                  onClick={() => setIsExpanded(false)}
+                  <StyledLink
+                    textTransform="uppercase"
+                    fontWeight="bold"
+                    cursor="pointer"
+                    href="/dashboard"
+                    onClick={() => setIsExpanded(false)}
+                  >
+                    Dashboard
+                  </StyledLink>
+                </Text>
+              </Link>
+              <Link href="/markets" passHref>
+                <Text
+                  font-weight="500"
+                  h="3rem"
+                  p="0 1rem"
+                  mt={{ base: 4, md: 0 }}
+                  mr={6}
+                  display="block"
                 >
-                  Markets
-                </Link>
-              </Text>
+                  <StyledLink
+                    textTransform="uppercase"
+                    fontWeight="bold"
+                    cursor="pointer"
+                    href="/markets"
+                    onClick={() => setIsExpanded(false)}
+                  >
+                    Markets
+                  </StyledLink>
+                </Text>
+              </Link>
               {checkOwner() && (
                 <Text
                   font-weight="500"
@@ -214,7 +218,7 @@ const Header = () => {
                   mr={6}
                   display="block"
                 >
-                  <Link
+                  <StyledLink
                     textTransform="uppercase"
                     fontWeight="bold"
                     cursor="pointer"
@@ -222,7 +226,7 @@ const Header = () => {
                     onClick={() => setIsExpanded(false)}
                   >
                     Admin
-                  </Link>
+                  </StyledLink>
                 </Text>
               )}
             </Box>

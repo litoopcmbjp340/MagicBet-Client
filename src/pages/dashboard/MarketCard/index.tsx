@@ -30,6 +30,7 @@ import { useDaiContract } from '../../../hooks/useHelperContract';
 import { bgColor8, color2 } from '../../../utils/theme';
 
 const MarketCard = ({ marketContract }: any) => {
+  console.log('marketContract:', marketContract);
   const { connector, account, library } = useWeb3React<Web3Provider>();
   const { colorMode } = useColorMode();
   const infoModalToggle = useDisclosure();
@@ -42,12 +43,10 @@ const MarketCard = ({ marketContract }: any) => {
   const [amountToBet, setAmountToBet] = useState<number>(0);
   const [accruedInterest, setAccruedInterest] = useState<number>(0);
   const [marketResolutionTime, setMarketResolutionTime] = useState<any>();
-  const [today, setToday] = useState<number>(0);
   const [prompt, setPrompt] = useState<string>('');
   const [choice, setChoice] = useState<string>('');
   const [outcomes, setOutcomes] = useState<any>([]);
   const [state, setState] = useState<number>();
-  const [timeLeft, setTimeLeft] = useState<number>(0);
   // const [daiApproved, setDaiApproved] = useState<boolean>(false);
   // const [usingDai, setUsingDai] = useState<boolean>(true);
 
@@ -168,15 +167,16 @@ const MarketCard = ({ marketContract }: any) => {
 
     const estimatedWei = await marketContract.getEstimatedETHforDAI(formatted);
     const estimatedWeiWithMargin = increaseByFactor(estimatedWei[0]);
-    // const estimatedGas = await marketContract.estimate.placeBet(
-    //   indexOfChoice,
-    //   formatted,
-    //   { value: estimatedWeiWithMargin }
-    // );
+
+    const estimatedGas = await marketContract.estimateGas.placeBet(
+      indexOfChoice,
+      formatted,
+      { value: estimatedWeiWithMargin }
+    );
 
     try {
       const tx = await marketContract.placeBet(indexOfChoice, formatted, {
-        // gasLimit: increaseByFactor(estimatedGas),
+        gasLimit: increaseByFactor(estimatedGas),
         value: estimatedWeiWithMargin,
       });
 
