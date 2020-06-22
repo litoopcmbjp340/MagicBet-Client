@@ -131,9 +131,16 @@ const Admin = (): JSX.Element => {
             Create Market
           </Button>
         ) : (
-          <Box maxW="sm" borderWidth="1px" rounded="lg" overflow="hidden">
+          <Box
+            maxW="sm"
+            borderWidth="1px"
+            rounded="lg"
+            overflow="hidden"
+            bg="white"
+            textAlign="center"
+          >
             <Box p="6">
-              <Tag variantColor="gray">{`Contract ${shortenAddress(
+              <Tag variantColor="gray" mb="0.25rem">{`Contract ${shortenAddress(
                 contractAddress
               )}`}</Tag>
               <Stack>

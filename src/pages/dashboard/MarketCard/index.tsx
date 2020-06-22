@@ -31,7 +31,7 @@ import { useDaiContract } from '../../../hooks/useHelperContract';
 // import { useTokens } from '../../../utils/tokens';
 import { bgColor8, color2 } from '../../../utils/theme';
 
-const CountDown = ({ startDate }: number) => {
+const CountDown = ({ startDate }: any) => {
   const realStartDate = moment(startDate).format('YYYY-MM-DD');
 
   const [days, setDays] = useState(0);
