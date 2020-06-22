@@ -31,7 +31,7 @@ import { useDaiContract } from '../../../hooks/useHelperContract';
 // import { useTokens } from '../../../utils/tokens';
 import { bgColor8, color2 } from '../../../utils/theme';
 
-const CountDown = ({ startDate }: any) => {
+const CountDown = ({ startDate }: number) => {
   const realStartDate = moment(startDate).format('YYYY-MM-DD');
 
   const [days, setDays] = useState(0);
@@ -330,7 +330,11 @@ const MarketCard = ({ marketContract }: any) => {
 
           {connector === injected && (
             <form onSubmit={placeBet}>
-              <Flex flexDirection="column" justifyContent="center">
+              <Flex
+                flexDirection="column"
+                justifyContent="center"
+                alignItems="center"
+              >
                 <Select
                   w="auto"
                   h="3rem"
@@ -373,49 +377,49 @@ const MarketCard = ({ marketContract }: any) => {
 
                 {!!(library && account) && (
                   <>
-                    <Flex
-                      flexDirection="column"
-                      justifyContent="center"
-                      alignItems="center"
-                      mb="1rem"
-                    >
-                      {state === 3 ? (
-                        <Button
-                          cursor="pointer"
-                          fontSize="1.33rem"
-                          w="8rem"
-                          border="1px"
-                          borderColor="primary.100"
-                          color="primary.100"
-                          bg="light.100"
-                          type="button"
-                          onClick={() => withdraw()}
-                        >
-                          Withdraw
-                        </Button>
-                      ) : (
-                        <Button
-                          textTransform="uppercase"
-                          fontSize="1.33rem"
-                          color="light.100"
-                          w="8rem"
-                          bg="primary.100"
-                          border="none"
-                          box-shadow="0 0.5rem 1rem rgba(0, 0, 0, 0.1)"
-                          transition="all 0.3s ease 0s"
-                          outline="none"
-                          cursor="pointer"
-                          type="submit"
-                          isDisabled={amountToBet <= 0 || choice === ''}
-                          _hover={{
-                            boxShadow: '0px 15px 20px rgba(0, 0, 0, 0.3)',
-                            transform: 'translateY(-5px)',
-                          }}
-                        >
-                          Enter
-                        </Button>
-                      )}
-                    </Flex>
+                    {state !== 3 ? (
+                      <Button
+                        textTransform="uppercase"
+                        color="primary.100"
+                        w="8rem"
+                        bg="light.100"
+                        box-shadow="0 0.5rem 1rem rgba(0, 0, 0, 0.1)"
+                        transition="all 0.3s ease 0s"
+                        outline="none"
+                        cursor="pointer"
+                        type="button"
+                        _hover={{
+                          boxShadow: '0px 15px 20px rgba(0, 0, 0, 0.3)',
+                          transform: 'translateY(-5px)',
+                          border: '1px',
+                          borderColor: 'primary.100',
+                        }}
+                        onClick={() => withdraw()}
+                      >
+                        Withdraw
+                      </Button>
+                    ) : (
+                      <Button
+                        textTransform="uppercase"
+                        fontSize="1.33rem"
+                        color="light.100"
+                        w="8rem"
+                        bg="primary.100"
+                        border="none"
+                        box-shadow="0 0.5rem 1rem rgba(0, 0, 0, 0.1)"
+                        transition="all 0.3s ease 0s"
+                        outline="none"
+                        cursor="pointer"
+                        type="submit"
+                        isDisabled={amountToBet <= 0 || choice === ''}
+                        _hover={{
+                          boxShadow: '0px 15px 20px rgba(0, 0, 0, 0.3)',
+                          transform: 'translateY(-5px)',
+                        }}
+                      >
+                        Enter
+                      </Button>
+                    )}
                   </>
                 )}
               </Flex>

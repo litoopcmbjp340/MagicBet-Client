@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { formatEther } from '@ethersproject/units';
 import { Contract } from '@ethersproject/contracts';
 import { Box, Flex } from '@chakra-ui/core';
-import moment from 'moment';
 import {
   LineChart,
   Line,

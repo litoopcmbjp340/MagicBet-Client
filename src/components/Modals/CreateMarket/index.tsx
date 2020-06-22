@@ -25,10 +25,9 @@ import { bgColor7, bgColor6 } from 'utils/theme';
 
 const CreateMarket = ({ createMarketModalToggle }: any): JSX.Element => {
   const { colorMode } = useColorMode();
-  const factoryAddress = addresses[KOVAN_ID].marketFactory;
 
   const factoryContract = useContract(
-    factoryAddress,
+    addresses[KOVAN_ID].marketFactory,
     MBMarketFactoryContract.abi,
     true
   );
@@ -37,27 +36,27 @@ const CreateMarket = ({ createMarketModalToggle }: any): JSX.Element => {
   const [marketEventName, setMarketEventName] = useState<string>(
     'Who will win the 2020 US General Election?'
   );
+  const [realitioQuestion, setRealitioQuestion] = useState<string>(
+    'Who will win the 2020 US General Election␟"Donald Trump","Joe Biden"␟news-politics␟en_US'
+  );
+  const [arbitrator, setArbitrator] = useState<string>(
+    '0xd47f72a2d1d0E91b0Ec5e5f5d02B2dc26d00A14D'
+  );
   const [marketOpeningTime, setMarketOpeningTime] = useState<number>(
     Date.now() / 1000
   );
   const [marketLockingTime, setMarketLockingTime] = useState<number>(
     Date.now() / 1000
   );
-  const [marketResolutionTime, setMarketResolutionTime] = useState<any>(
+  const [marketResolutionTime, setMarketResolutionTime] = useState<number>(
     Date.now() / 1000
   );
   const [timeout, setTimeout] = useState<number>(10);
-  const [arbitrator, setArbitrator] = useState<string>(
-    '0xd47f72a2d1d0E91b0Ec5e5f5d02B2dc26d00A14D'
-  );
-  const [realitioQuestion, setRealitioQuestion] = useState<string>(
-    'Who will win the 2020 US General Election␟"Donald Trump","Joe Biden"␟news-politics␟en_US'
-  );
   const [outcomes, setOutcomes] = useState<string[]>(['Trump', 'Biden']);
 
   const { handleSubmit, errors, register, formState } = useForm();
 
-  const createMarket = async (e: FormEvent) => {
+  const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
     const MARKET_EVENT_NAME = marketEventName;
@@ -71,6 +70,16 @@ const CreateMarket = ({ createMarketModalToggle }: any): JSX.Element => {
 
     try {
       setLoading(true);
+      // console.log(
+      //   MARKET_EVENT_NAME,
+      //   MARKET_OPENING_TIME,
+      //   MARKET_LOCKING_TIME,
+      //   MARKET_RESOLUTION_TIME,
+      //   TIMEOUT,
+      //   ARBITRATOR,
+      //   REALITIO_QUESTION,
+      //   OUTCOMES
+      // );
       const tx = await factoryContract!.createMarket(
         MARKET_EVENT_NAME,
         MARKET_OPENING_TIME,
@@ -119,15 +128,15 @@ const CreateMarket = ({ createMarketModalToggle }: any): JSX.Element => {
 
       <ModalContent bg={bgColor7[colorMode]} borderRadius="0.25rem">
         {loading ? (
-          <Flex justifyContent="center" my="1rem" mx="0">
-            <Spinner color="primary.100" size="xl" thickness="4px" />
+          <Flex justifyContent="center" m="1rem 0">
+            <Spinner color="primary.100" size="xl" thickness="0.25rem" />
           </Flex>
         ) : (
           <>
             <ModalHeader>Create a Market</ModalHeader>
             <ModalCloseButton onClick={createMarketModalToggle.onClose} />
             <ModalBody>
-              <form onSubmit={createMarket}>
+              <form onSubmit={onSubmit}>
                 <FormControl marginBottom="1rem" isInvalid={errors.name}>
                   <FormLabel color="#777" htmlFor="marketEventName">
                     Event Name

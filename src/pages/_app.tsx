@@ -29,8 +29,7 @@ function Application({ Component }: { Component: NextComponentType }) {
     <Layout>
       {error ? (
         <Error />
-      ) : typeof chainId !== 'number' ? null : chainId !== undefined &&
-        chainId !== 42 ? (
+      ) : typeof chainId !== 'number' ? null : chainId !== 42 ? (
         <SwitchChain />
       ) : (
         <Component />
