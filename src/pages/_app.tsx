@@ -7,6 +7,7 @@ import { Web3ReactProvider, useWeb3React } from '@web3-react/core';
 import { Global } from '@emotion/core';
 import { ColorModeProvider, CSSReset, ThemeProvider } from '@chakra-ui/core';
 import 'react-datepicker/dist/react-datepicker.css';
+// import * as serviceWorker from '../serviceWorker';
 
 import { ContractProvider } from '../state/contracts/Context';
 import Layout from '../components/Layout';
@@ -18,7 +19,7 @@ const useIsomorphicLayoutEffect =
   typeof window !== 'undefined' ? useLayoutEffect : useEffect;
 
 function Application({ Component }: { Component: NextComponentType }) {
-  const [painted, setPainted] = useState(false);
+  const [painted, setPainted] = useState<boolean>(false);
   useIsomorphicLayoutEffect(() => {
     setPainted(true);
   }, []);
@@ -48,7 +49,7 @@ export default class App extends NextApp {
 
     return (
       <>
-        <Head>
+        {/* <Head>
           <title key="title">MagicBet</title>
           <meta
             key="description"
@@ -66,6 +67,10 @@ export default class App extends NextApp {
             type="image/x-icon"
             href="/favicon.ico"
           />
+          <html lang="en" />
+        </Head> */}
+        <Head>
+          <title key="title">MagicBet</title>
         </Head>
         <Web3ReactProvider getLibrary={getLibrary}>
           <ContractProvider>

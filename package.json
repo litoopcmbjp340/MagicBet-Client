@@ -23,6 +23,7 @@
     "moment": "^2.27.0",
     "next": "9.4.4",
     "next-images": "^1.4.0",
+    "next-pwa": "^2.6.1",
     "react": "16.13.1",
     "react-countup": "^4.3.3",
     "react-datepicker": "^3.0.0",

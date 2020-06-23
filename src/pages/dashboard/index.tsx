@@ -78,7 +78,7 @@ const Dashboard = (): JSX.Element => {
   }, [factoryContract, library]);
 
   return (
-    <Box bg={bgColor1[colorMode]} pb="1rem" rounded="md">
+    <Box bg={bgColor1[colorMode]} pb="1rem" rounded="md" boxShadow="md">
       <Box
         borderTopRightRadius="0.25rem"
         borderTopLeftRadius="0.25rem"

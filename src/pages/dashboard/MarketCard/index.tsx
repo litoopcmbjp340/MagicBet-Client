@@ -41,7 +41,14 @@ const CountDown = ({ startDate }: any) => {
   const [time, setTime] = useState(0);
 
   useEffect(() => {
-    setInterval(() => getTimeUntil(realStartDate), 1000);
+    let isStale = false;
+    if (!isStale) {
+      setInterval(() => getTimeUntil(realStartDate), 1000);
+    }
+
+    return () => {
+      isStale = true;
+    };
   }, [realStartDate]);
 
   function getTimeUntil(realStartDate: any) {
@@ -339,14 +346,15 @@ const MarketCard = ({ marketContract }: any) => {
                   w="auto"
                   h="3rem"
                   mt="1rem"
-                  color="#777"
+                  color="black"
                   borderColor="secondary.100"
+                  aria-label="Select an option"
                   value={choice}
                   onChange={(e: any) => setChoice(e.target.value)}
                 >
                   <option disabled value="" />
                   {outcomes.map((outcome: any) => (
-                    <option key={outcome} value={outcome}>
+                    <option key={outcome} value={outcome} aria-label={outcome}>
                       {outcome}
                     </option>
                   ))}
@@ -366,6 +374,7 @@ const MarketCard = ({ marketContract }: any) => {
                     placeholder="0"
                     min={0}
                     max={100}
+                    aria-label="Bet Input"
                     onChange={(e: any) => setAmountToBet(e.target.value)}
                     onKeyDown={(e: any) =>
                       (e.key === 'e' && e.preventDefault()) ||
@@ -377,7 +386,7 @@ const MarketCard = ({ marketContract }: any) => {
 
                 {!!(library && account) && (
                   <>
-                    {state !== 3 ? (
+                    {state === 3 ? (
                       <Button
                         textTransform="uppercase"
                         color="primary.100"

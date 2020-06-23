@@ -65,7 +65,7 @@ export default {
     ...theme.colors,
     dark: { 100: '#252c41' },
     light: { 100: '#f4f5f9' },
-    primary: { 100: '#f1404b' },
+    primary: { 100: '#d02933' },
     secondary: { 100: '#dddfe6' },
     dm: {
       100: '#717171',

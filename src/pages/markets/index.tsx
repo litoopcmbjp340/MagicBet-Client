@@ -37,63 +37,61 @@ const Markets = (): JSX.Element => {
   }, [factoryContract]);
 
   return (
-    <>
-      <Box bg={bgColor1[colorMode]} m="0" pb="1rem" rounded="md">
-        <Box
-          borderTopRightRadius="0.25rem"
-          borderTopLeftRadius="0.25rem"
-          bg="primary.100"
-          h="0.5rem"
-        />
-        <Flex
-          flexDirection="column"
-          flexWrap="wrap"
-          justifyContent="space-between"
-          m="0 auto"
-          mb="-1px"
-          w="100%"
-          p="1rem 1.5rem"
+    <Box bg={bgColor1[colorMode]} m="0" pb="1rem" rounded="md" boxShadow="md">
+      <Box
+        borderTopRightRadius="0.25rem"
+        borderTopLeftRadius="0.25rem"
+        bg="primary.100"
+        h="0.5rem"
+      />
+      <Flex
+        flexDirection="column"
+        flexWrap="wrap"
+        justifyContent="space-between"
+        m="0 auto"
+        mb="-1px"
+        w="100%"
+        p="1rem 1.5rem"
+      >
+        <Heading
+          as="h3"
+          size="lg"
+          fontSize="1.5rem"
+          font-weight="500"
+          color={color1[colorMode]}
         >
-          <Heading
-            as="h3"
-            size="lg"
-            fontSize="1.5rem"
-            font-weight="500"
-            color={color1[colorMode]}
-          >
-            Markets
-          </Heading>
+          Markets
+        </Heading>
 
-          <Box mt="1rem">
-            <Table>
-              <TableHeadTop>
-                <TableRow colorMode={colorMode}>
-                  <TableHead colorMode={colorMode} roundedLeft>
-                    Address
-                  </TableHead>
-                  <TableHead colorMode={colorMode}>Question</TableHead>
-                  <TableHead colorMode={colorMode}>Winning Outcome</TableHead>
-                  <TableHead colorMode={colorMode}>Winnings</TableHead>
-                  <TableHead colorMode={colorMode} roundedRight>
-                    Finish Date
-                  </TableHead>
-                </TableRow>
-              </TableHeadTop>
-              <TableBody>
-                {markets.length > 0 &&
-                  markets.map((market: string) => {
-                    return (
-                      <TableRow colorMode={colorMode} key={market}>
-                        <Market market={market} />
-                      </TableRow>
-                    );
-                  })}
-              </TableBody>
-            </Table>
-          </Box>
-        </Flex>
-      </Box>
-    </>
+        <Box mt="1rem">
+          <Table>
+            <TableHeadTop>
+              <TableRow colorMode={colorMode}>
+                <TableHead colorMode={colorMode} roundedLeft>
+                  Address
+                </TableHead>
+                <TableHead colorMode={colorMode}>Question</TableHead>
+                <TableHead colorMode={colorMode}>Winning Outcome</TableHead>
+                <TableHead colorMode={colorMode}>Winnings</TableHead>
+                <TableHead colorMode={colorMode} roundedRight>
+                  Finish Date
+                </TableHead>
+              </TableRow>
+            </TableHeadTop>
+            <TableBody>
+              {markets.length > 0 &&
+                markets.map((market: string) => {
+                  return (
+                    <TableRow colorMode={colorMode} key={market}>
+                      <Market market={market} />
+                    </TableRow>
+                  );
+                })}
+            </TableBody>
+          </Table>
+        </Box>
+      </Flex>
+    </Box>
   );
 };
 
