@@ -21,7 +21,8 @@ import {
 
 import { bgColor1, color1, bgColor6 } from '../../utils/theme';
 import CreateMarket from '../../components/Modals/CreateMarket';
-import { useFactoryContract } from 'hooks/useHelperContract';
+import { useFactoryContract } from '../../hooks/useHelperContract';
+import { useLocalStorage } from '../../hooks';
 import MBMarketContract from '../../abis/MBMarket.json';
 import { shortenAddress } from '../../utils';
 
@@ -49,10 +50,12 @@ const Admin = (): JSX.Element => {
               MBMarketContract.abi,
               library.getSigner(account)
             );
-            setMarketContract(marketContract);
 
             const isPaused = await marketContract.paused();
             if (isPaused) setMarketContract(null);
+            else {
+              setMarketContract(marketContract);
+            }
           }
           // factoryContract.on('MarketCreated', (address: any) => {
           //   const marketInstance = new Contract(
@@ -71,14 +74,6 @@ const Admin = (): JSX.Element => {
       };
     })();
   }, [factoryContract]);
-
-  const deteremineWinner = async () => {
-    try {
-      await marketContract!.determineWinner();
-    } catch {
-      setAlert(true);
-    }
-  };
 
   return (
     <Box bg={bgColor1[colorMode]} pb="1rem" rounded="md" boxShadow="md">
@@ -113,7 +108,7 @@ const Admin = (): JSX.Element => {
         p="0rem 1rem"
         maxWidth="100%"
       >
-        {!marketContract ? (
+        {marketContract === null ? (
           <Button
             bg={bgColor6[colorMode]}
             border="none"
@@ -149,7 +144,7 @@ const Admin = (): JSX.Element => {
                   color="light.100"
                   bg={bgColor6[colorMode]}
                   _hover={{ bg: 'primary.100' }}
-                  onClick={() => deteremineWinner()}
+                  onClick={async () => await marketContract!.determineWinner()}
                 >
                   Determine Winner
                 </Button>
@@ -158,7 +153,7 @@ const Admin = (): JSX.Element => {
                   color="light.100"
                   bg={bgColor6[colorMode]}
                   _hover={{ bg: 'primary.100' }}
-                  onClick={async () => await marketContract.disableContract()}
+                  onClick={async () => await marketContract!.disableContract()}
                 >
                   Disable Contract
                 </Button>

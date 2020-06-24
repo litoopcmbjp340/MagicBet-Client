@@ -17,10 +17,10 @@ import {
   useColorMode,
 } from '@chakra-ui/core';
 
-import { useEthBalance, useTokenBalance } from 'hooks';
-import { useTokens } from 'utils/tokens';
-import { bgColor7 } from 'utils/theme';
-import { mintDai } from 'utils';
+import { useEthBalance, useTokenBalance } from '../../../hooks';
+import { useTokens } from '../../../utils/tokens';
+import { bgColor7 } from '../../../utils/theme';
+import { mintDai } from '../../../utils';
 
 const SettingsModal = ({ settingsModalToggle }: any): JSX.Element => {
   const [usingDai, setUsingDai] = useState<boolean>(true);

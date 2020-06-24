@@ -14,9 +14,9 @@ import {
   useColorMode,
 } from '@chakra-ui/core';
 
-import { shortenAddress } from 'utils';
-import { useFactoryContract } from 'hooks/useHelperContract';
-import { bgColor7 } from 'utils/theme';
+import { shortenAddress } from '../../../utils';
+import { useFactoryContract } from '../../../hooks/useHelperContract';
+import { bgColor7 } from '../../../utils/theme';
 
 interface IOutcome {
   name: string;

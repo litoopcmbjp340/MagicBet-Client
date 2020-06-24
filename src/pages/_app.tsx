@@ -25,6 +25,7 @@ function Application({ Component }: { Component: NextComponentType }) {
   }, []);
 
   const { error, chainId } = useWeb3React();
+  console.log('chainId:', chainId);
 
   return !painted ? null : (
     <Layout>
@@ -39,36 +40,16 @@ function Application({ Component }: { Component: NextComponentType }) {
   );
 }
 
+function getLibrary(provider: any): Web3Provider {
+  return new Web3Provider(provider);
+}
+
 export default class App extends NextApp {
   render() {
     const { Component } = this.props;
 
-    function getLibrary(provider: any): Web3Provider {
-      return new Web3Provider(provider);
-    }
-
     return (
       <>
-        {/* <Head>
-          <title key="title">MagicBet</title>
-          <meta
-            key="description"
-            name="Description"
-            content="The MagicBet Client"
-          />
-          <meta charSet="utf-8" />
-          <meta
-            name="viewport"
-            content="initial-scale=1.0, width=device-width"
-          />
-          <link
-            key="favicon"
-            rel="icon"
-            type="image/x-icon"
-            href="/favicon.ico"
-          />
-          <html lang="en" />
-        </Head> */}
         <Head>
           <title key="title">MagicBet</title>
         </Head>

@@ -18,10 +18,10 @@ import {
   useColorMode,
 } from '@chakra-ui/core';
 
-import { useContract } from 'hooks';
-import MBMarketFactoryContract from 'abis/MBMarketFactory.json';
-import addresses, { KOVAN_ID } from 'utils/addresses';
-import { bgColor7, bgColor6 } from 'utils/theme';
+import { useContract } from '../../../hooks';
+import MBMarketFactoryContract from '../../../abis/MBMarketFactory.json';
+import addresses, { KOVAN_ID } from '../../../utils/addresses';
+import { bgColor7, bgColor6 } from '../../../utils/theme';
 
 const CreateMarket = ({ createMarketModalToggle }: any): JSX.Element => {
   const { colorMode } = useColorMode();

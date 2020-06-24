@@ -60,7 +60,6 @@ const Dashboard = (): JSX.Element => {
                 MBMarketContract.abi,
                 providerOrSigner
               );
-              //Check if paused
               const isPaused = await marketContract.paused();
               if (isPaused) return;
 

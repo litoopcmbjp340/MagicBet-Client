@@ -31,7 +31,7 @@ import { useDaiContract } from '../../../hooks/useHelperContract';
 // import { useTokens } from '../../../utils/tokens';
 import { bgColor8, color2 } from '../../../utils/theme';
 
-const CountDown = ({ startDate }: any) => {
+const CountDown = ({ startDate }: { startDate: number }) => {
   const realStartDate = moment(startDate).format('YYYY-MM-DD');
 
   const [days, setDays] = useState(0);
@@ -83,7 +83,7 @@ const MarketCard = ({ marketContract }: any) => {
 
   const [amountToBet, setAmountToBet] = useState<number>(0);
   const [accruedInterest, setAccruedInterest] = useState<number>(0);
-  const [marketResolutionTime, setMarketResolutionTime] = useState<any>();
+  const [marketResolutionTime, setMarketResolutionTime] = useState<number>();
   const [prompt, setPrompt] = useState<string>('');
   const [choice, setChoice] = useState<string>('');
   const [outcomes, setOutcomes] = useState<any>([]);
@@ -316,14 +316,14 @@ const MarketCard = ({ marketContract }: any) => {
               pr={0.5}
               onClick={infoModalToggle.onOpen}
             />
-            <IconButton
+            {/* <IconButton
               aria-label="purchase settings"
               variant="ghost"
               color="#555"
               icon="settings"
               size="md"
               onClick={settingsModalToggle.onOpen}
-            />
+            /> */}
           </Box>
         </Flex>
         <Heading as="h1" textAlign="center" fontSize="3rem">

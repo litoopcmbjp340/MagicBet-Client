@@ -1,7 +1,7 @@
 import React from 'react';
 import { Flex, Stack, Text, Button, useColorMode } from '@chakra-ui/core';
 
-import { bgColor1 } from 'utils/theme';
+import { bgColor1 } from '../utils/theme';
 
 export default function Error(): JSX.Element {
   const { colorMode } = useColorMode();

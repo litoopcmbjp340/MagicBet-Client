@@ -24,7 +24,12 @@ export default class extends Document {
             name="viewport"
             content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no, viewport-fit=cover"
           />
-
+          <link
+            key="favicon"
+            rel="icon"
+            type="image/x-icon"
+            href="/favicon.ico"
+          />
           <link rel="manifest" href="/manifest.json" />
           <link rel="shortcut icon" href="/favicon.ico" />
           <link

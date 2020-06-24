@@ -19,25 +19,30 @@ import { useEagerConnect, useInactiveListener } from '../../hooks';
 import { injected, getNetwork } from '../../utils/connectors';
 import { shortenAddress } from '../../utils';
 import { bgColor1, bgColor3, bgColor4 } from '../../utils/theme';
-import { useFactoryContract } from 'hooks/useHelperContract';
+import { useFactoryContract } from '../../hooks/useHelperContract';
 
 const Header = () => {
   const { colorMode, toggleColorMode } = useColorMode();
-  const { account, active, activate, chainId, connector, error } = useWeb3React<
-    Web3Provider
-  >();
-  const [owner, setOwner] = useState<string>('');
-  const factoryContract = useFactoryContract();
-
+  const {
+    account,
+    active,
+    activate,
+    chainId,
+    connector,
+    error,
+    library,
+  } = useWeb3React<Web3Provider>();
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
+  const [owner, setOwner] = useState<string>('');
 
+  const factoryContract = useFactoryContract();
   const triedEager = useEagerConnect();
-
-  useInactiveListener(!triedEager);
 
   useEffect(() => {
     if (triedEager && !active && !error) activate(getNetwork(42));
   }, [triedEager, active, error, activate]);
+
+  useInactiveListener(!triedEager);
 
   useEffect(() => {
     (async () => {
@@ -53,6 +58,23 @@ const Header = () => {
       return false;
     }
   };
+
+  const [ENSName, setENSName] = useState<string>('');
+  useEffect(() => {
+    if (library && account) {
+      let isStale = false;
+      library
+        .lookupAddress(account)
+        .then((name) => {
+          if (!isStale && typeof name === 'string') setENSName(name);
+        })
+        .catch(() => {});
+      return () => {
+        isStale = true;
+        setENSName('');
+      };
+    }
+  }, [library, account, chainId]);
 
   if (error) {
     return null;
@@ -119,7 +141,7 @@ const Header = () => {
               <Icon name="githubIcon" size="2rem" color="light.100" />
             </StyledLink>
 
-            {active && !!(connector === injected) ? (
+            {connector === injected ? (
               <Tag
                 border="1px"
                 borderRadius="4px"
@@ -131,7 +153,7 @@ const Header = () => {
                 borderColor={bgColor4[colorMode]}
                 bg={bgColor4[colorMode]}
               >
-                {!!account && shortenAddress(account)}
+                {ENSName || (!!account && shortenAddress(account))}
               </Tag>
             ) : (
               <Button
@@ -166,6 +188,7 @@ const Header = () => {
             </Box>
           </Flex>
         </Flex>
+
         {isExpanded && (
           <Box
             h="auto"

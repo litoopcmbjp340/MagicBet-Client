@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { Flex, Box, Heading, useColorMode } from '@chakra-ui/core';
 
 import Market from './Market';
-import MBMarketFactoryContract from 'abis/MBMarketFactory.json';
-import addresses, { KOVAN_ID } from 'utils/addresses';
-import { bgColor1, color1 } from 'utils/theme';
-import { useContract } from 'hooks';
+import MBMarketFactoryContract from '../../abis/MBMarketFactory.json';
+import addresses, { KOVAN_ID } from '../../utils/addresses';
+import { bgColor1, color1 } from '../../utils/theme';
+import { useContract } from '../../hooks';
 import {
   Table,
   TableBody,

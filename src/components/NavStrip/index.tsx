@@ -10,16 +10,16 @@ import { bgColor4 } from '../../utils/theme';
 import { useFactoryContractNoSigner } from '../../hooks/useHelperContract';
 
 const NavStrip = (): JSX.Element | null => {
-  const router = useRouter();
+  const { pathname } = useRouter();
   const { colorMode } = useColorMode();
-  const { account, error } = useWeb3React<Web3Provider>();
+  const { account, error, library } = useWeb3React<Web3Provider>();
 
   const [owner, setOwner] = useState<string>('');
   const factoryContract = useFactoryContractNoSigner();
 
   useEffect(() => {
     let isStale = false;
-    if (!isStale && factoryContract.provider !== null)
+    if (!isStale && account && library && factoryContract.provider !== null)
       factoryContract.owner().then((res: string) => setOwner(res));
     return () => {
       isStale = true;
@@ -37,6 +37,8 @@ const NavStrip = (): JSX.Element | null => {
 
   if (error) {
     return null;
+  } else if (!library) {
+    return null;
   } else {
     return (
       <Wrapper>
@@ -44,7 +46,7 @@ const NavStrip = (): JSX.Element | null => {
           <Flex as="nav" justifyContent="center">
             <Flex mr="2rem" fontSize="1.25rem">
               <Link href="/dashboard" passHref>
-                <StyledLink active={router.pathname === '/dashboard'}>
+                <StyledLink active={pathname === '/dashboard'}>
                   <Icon name="dashboardIcon" />
                   <Text style={{ marginLeft: '0.25rem' }}>Dashboard</Text>
                 </StyledLink>
@@ -52,7 +54,7 @@ const NavStrip = (): JSX.Element | null => {
             </Flex>
             <Flex mr="2rem" fontSize="1.25rem">
               <Link href="/markets" passHref>
-                <StyledLink active={router.pathname === '/markets'}>
+                <StyledLink active={pathname === '/markets'}>
                   <Icon name="marketsIcon" />
                   <Text style={{ marginLeft: '0.25rem' }}>Markets</Text>
                 </StyledLink>
@@ -61,7 +63,7 @@ const NavStrip = (): JSX.Element | null => {
             {checkOwner() && (
               <Flex mr="2rem" fontSize="1.25rem">
                 <Link href="/admin" passHref>
-                  <StyledLink active={router.pathname === '/admin'}>
+                  <StyledLink active={pathname === '/admin'}>
                     <Icon name="edit" />
                     <Text style={{ marginLeft: '0.25rem' }}>Admin</Text>
                   </StyledLink>

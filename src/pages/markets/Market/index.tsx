@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from '@chakra-ui/core';
 
-import { shortenAddress, getFormattedNumber } from 'utils';
-import MBMarketContract from 'abis/MBMarket.json';
-import { useContract } from 'hooks';
+import { shortenAddress, getFormattedNumber } from '../../../utils';
+import MBMarketContract from '../../../abis/MBMarket.json';
+import { useContract } from '../../../hooks';
 
 function Market({ market }: { market: string }) {
   const [question, setQuestion] = useState<number>(0);
