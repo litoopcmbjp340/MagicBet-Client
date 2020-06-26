@@ -22,10 +22,6 @@ import {
   NumberInputStepper,
   NumberIncrementStepper,
   NumberDecrementStepper,
-  Stack,
-  Tag,
-  TagLabel,
-  TagCloseButton,
   IconButton,
 } from '@chakra-ui/core';
 import { isAddress } from '@ethersproject/address';
@@ -46,13 +42,7 @@ const CreateMarket = ({ createMarketModalToggle }: any): JSX.Element => {
   );
   const [loading, setLoading] = useState<boolean>(false);
 
-  const [marketEventName, setMarketEventName] = useState<string>(
-    'Who will win the 2020 US General Election?'
-  );
-
-  const [realitioQuestion, setRealitioQuestion] = useState<string>(
-    'Who will win the 2020 US General Election␟"Donald Trump","Joe Biden"␟news-politics␟en_US'
-  );
+  const [marketEventName, setMarketEventName] = useState<string>('');
   const [arbitrator, setArbitrator] = useState<string>(
     '0xd47f72a2d1d0E91b0Ec5e5f5d02B2dc26d00A14D'
   );
@@ -75,66 +65,69 @@ const CreateMarket = ({ createMarketModalToggle }: any): JSX.Element => {
 
     const MARKET_EVENT_NAME = marketEventName;
 
-    // const OUTCOMES = outcomes.map((outcome) => `"${outcome}"`).join(',');
-
     if (!isAddress(arbitrator)) {
-      console.log(`${arbitrator} is not a valid address`);
+      console.error(`${arbitrator} is not a valid address`);
       return;
     }
-    console.log('options:', options);
 
     const MARKET_OPENING_TIME = Math.round(marketOpeningTime).toString();
     const MARKET_LOCKING_TIME = Math.round(marketLockingTime).toString();
     const MARKET_RESOLUTION_TIME = Math.round(marketResolutionTime).toString();
 
-    // if (
-    //   marketOpeningTime >= marketLockingTime ||
-    //   marketLockingTime >= marketResolutionTime
-    // ) {
-    //   console.log('Times not in correct order');
-    //   return;
-    // }
+    if (
+      marketOpeningTime >= marketLockingTime ||
+      marketLockingTime >= marketResolutionTime
+    ) {
+      console.error('Times are equal or are not in the correct order');
+      return;
+    }
 
     const TIMEOUT = timeout * 1200; //convert hours to seconds
 
-    // const REALITIO_QUESTION = `${MARKET_EVENT_NAME}␟${inputs}␟${category}␟en_US`;
-    // console.log('REALITIO_QUESTION:', REALITIO_QUESTION);
+    const REALITIO_QUESTION = `${MARKET_EVENT_NAME}␟${options}␟${category}␟en_US`;
 
-    // try {
-    //   setLoading(true);
-    //   const tx = await factoryContract!.createMarket(
-    //     MARKET_EVENT_NAME,
-    //     MARKET_OPENING_TIME,
-    //     MARKET_LOCKING_TIME,
-    //     MARKET_RESOLUTION_TIME,
-    //     TIMEOUT,
-    //     arbitrator,
-    //     REALITIO_QUESTION,
-    //     inputs
-    //   );
-    //   await tx.wait();
-    // } catch (error) {
-    //   console.error(error);
-    // }
+    try {
+      setLoading(true);
+      const tx = await factoryContract!.createMarket(
+        MARKET_EVENT_NAME,
+        MARKET_OPENING_TIME,
+        MARKET_LOCKING_TIME,
+        MARKET_RESOLUTION_TIME,
+        TIMEOUT,
+        arbitrator,
+        REALITIO_QUESTION,
+        options
+      );
+      await tx.wait();
+    } catch (error) {
+      console.error(error);
+    }
 
-    // setLoading(false);
+    setLoading(false);
 
-    // createMarketModalToggle.onClose();
+    createMarketModalToggle.onClose();
   };
 
-  const [options, setOptions] = useState<any>([{ name: '' }]);
+  const [options, setOptions] = useState<any>(['']);
   const [option, setOption] = useState<string>('');
-
-  const addOption = () => setOptions(options.concat([{ name: '' }]));
 
   const removeOption = (index: any) => () =>
     setOptions(options.filter((s: any, sidx: any) => index !== sidx));
+
+  const handleOptionChange = (idx: any) => (evt: any) => {
+    const newOptions = options.map((shareholder: any, sidx: any) => {
+      if (idx !== sidx) return shareholder;
+      return evt.target.value;
+    });
+
+    setOptions(newOptions);
+  };
+
   return (
     <Modal
       isOpen={createMarketModalToggle.isOpen}
       onClose={createMarketModalToggle.onClose}
       isCentered
-      scrollBehavior="inside"
     >
       <ModalOverlay />
 
@@ -176,9 +169,8 @@ const CreateMarket = ({ createMarketModalToggle }: any): JSX.Element => {
                         borderColor="secondary.100"
                         type="text"
                         name="tokens"
-                        placeholder="Trump"
                         value={option}
-                        onChange={(e: any) => setOutcomes(e.target.value)}
+                        onChange={handleOptionChange(i)}
                       />
                       <IconButton
                         aria-label="add"
@@ -194,7 +186,7 @@ const CreateMarket = ({ createMarketModalToggle }: any): JSX.Element => {
                     type="button"
                     size="sm"
                     icon="add"
-                    onClick={addOption}
+                    onClick={() => setOptions(options.concat(['']))}
                   />
                 </FormControl>
 

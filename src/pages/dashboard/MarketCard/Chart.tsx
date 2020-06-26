@@ -11,6 +11,7 @@ import {
   Tooltip,
   Legend,
 } from 'recharts';
+import randomColor from 'randomcolor';
 
 interface IBetsAndTimestamps {
   id: number;
@@ -24,6 +25,8 @@ export default function Chart({
   marketContract: Contract;
 }) {
   const [data, setData] = useState<any>([]);
+
+  const [options, setOptions] = useState<string[]>([]);
 
   const [newAddress, setNewAddress] = useState('');
   marketContract.on('ParticipantEntered', (address: any) => {
@@ -57,6 +60,8 @@ export default function Chart({
 
       if (!isStale) {
         let outcomes = await marketContract.getOutcomeNames();
+
+        setOptions(outcomes);
 
         let openingTime = await marketContract.marketOpeningTime();
         openingTime = openingTime.toNumber();
@@ -159,11 +164,11 @@ export default function Chart({
     })();
   }, [newAddress]);
 
-  return <Graph data={data} />;
+  return <Graph data={data} options={options} />;
 }
 
-const Graph = ({ data }: any) => {
-  return !data ? null : (
+const Graph = ({ data, options }: any) => {
+  return !data ? null : !options ? null : (
     <Box mt="3rem">
       <Flex justifyContent="center">
         <LineChart
@@ -182,8 +187,16 @@ const Graph = ({ data }: any) => {
           <YAxis />
           <Tooltip />
           <Legend />
-          <Line type="monotone" dataKey="Biden" stroke="#0015BC" />
-          <Line type="monotone" dataKey="Trump" stroke="#FF0000" />
+
+          {options.map((option: any) => (
+            <Line
+              key={option}
+              type="monotone"
+              dataKey={option}
+              stroke={randomColor()}
+              dot={false}
+            />
+          ))}
         </LineChart>
       </Flex>
     </Box>

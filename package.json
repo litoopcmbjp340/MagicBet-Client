@@ -25,6 +25,7 @@
     "next": "9.4.4",
     "next-images": "^1.4.0",
     "next-pwa": "^2.6.1",
+    "randomcolor": "^0.5.4",
     "react": "16.13.1",
     "react-countup": "^4.3.3",
     "react-datepicker": "^3.0.0",
@@ -36,6 +37,7 @@
   "main": "next.config.js",
   "devDependencies": {
     "@types/node": "^14.0.14",
+    "@types/randomcolor": "^0.5.5",
     "@types/react": "^16.9.41",
     "@types/react-datepicker": "^3.0.2",
     "@types/react-dom": "^16.9.8",
