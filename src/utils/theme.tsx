@@ -119,12 +119,6 @@ export const GlobalStyle = css`
     position: relative;
   }
 
-  body > div {
-    height: 100%;
-    overflow: auto;
-    -webkit-overflow-scrolling: touch;
-  }
-
   a {
     color: inherit;
     text-decoration: none;
