@@ -83,6 +83,7 @@ export default {
 
 export const color1 = { light: 'dark.100', dark: 'white' };
 export const color2 = { light: '#777', dark: 'light.100' };
+export const color3 = { light: '#555', dark: 'light.100' };
 export const bgColor1 = { light: 'light.100', dark: 'dm.400' };
 export const bgColor2 = { light: 'secondary.100', dark: 'dm.100' };
 export const bgColor3 = { light: 'dark.100', dark: 'dm.400' };

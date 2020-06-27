@@ -4,7 +4,6 @@ import { useWeb3React } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers';
 import { formatEther, parseUnits } from '@ethersproject/units';
 import { BigNumber } from '@ethersproject/bignumber';
-import { Contract } from '@ethersproject/contracts';
 import moment from 'moment';
 import {
   Box,
@@ -27,10 +26,9 @@ import { injected } from '../../../utils/connectors';
 import Info from '../../../components/Modals/Info';
 import SettingsModal from 'components/Modals/Settings';
 import { shortenAddress } from '../../../utils';
-// import { useEthBalance, useTokenBalance } from '../../../hooks';
 import { useDaiContract } from '../../../hooks/useHelperContract';
 // import { useTokens } from '../../../utils/tokens';
-import { bgColor8, color2 } from '../../../utils/theme';
+import { bgColor8, color2, color3 } from '../../../utils/theme';
 
 const CountDown = ({ startDate }: { startDate: number }) => {
   const realStartDate = moment(startDate).format('YYYY-MM-DD');
@@ -278,12 +276,12 @@ const MarketCard = ({ marketContract }: any) => {
           flexWrap="wrap"
         >
           <Stat textAlign="center">
-            <StatLabel color="#555">Address</StatLabel>
+            <StatLabel color={color3[colorMode]}>Address</StatLabel>
             <StatNumber>{shortenAddress(marketContract.address)}</StatNumber>
           </Stat>
 
           <Stat textAlign="center">
-            <StatLabel color="#555">Winnings</StatLabel>
+            <StatLabel color={color3[colorMode]}>Winnings</StatLabel>
             <StatNumber>
               {
                 <CountUp
@@ -298,7 +296,7 @@ const MarketCard = ({ marketContract }: any) => {
           </Stat>
 
           <Stat textAlign="center">
-            <StatLabel color="#555">Resolution</StatLabel>
+            <StatLabel color={color3[colorMode]}>Resolution</StatLabel>
             <StatNumber>
               {marketResolutionTime ? (
                 <CountDown startDate={marketResolutionTime} />
@@ -311,7 +309,7 @@ const MarketCard = ({ marketContract }: any) => {
             <IconButton
               aria-label="market info"
               variant="ghost"
-              color="#555"
+              color={color3[colorMode]}
               icon="info"
               size="md"
               pr={0.5}
@@ -320,7 +318,7 @@ const MarketCard = ({ marketContract }: any) => {
             <IconButton
               aria-label="purchase settings"
               variant="ghost"
-              color="#555"
+              color={color3[colorMode]}
               icon="settings"
               size="md"
               onClick={settingsModalToggle.onOpen}
@@ -347,7 +345,6 @@ const MarketCard = ({ marketContract }: any) => {
                   w="auto"
                   h="3rem"
                   mt="1rem"
-                  color="black"
                   borderColor="secondary.100"
                   aria-label="Select an option"
                   value={choice}
@@ -370,7 +367,7 @@ const MarketCard = ({ marketContract }: any) => {
                     my="1"
                     py="3rem"
                     textAlign="center"
-                    w="50%"
+                    w="100%"
                     type="number"
                     placeholder="0"
                     min={0}
