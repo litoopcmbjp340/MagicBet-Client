@@ -4,6 +4,7 @@ import { useWeb3React } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers';
 import { formatEther, parseUnits } from '@ethersproject/units';
 import { BigNumber } from '@ethersproject/bignumber';
+import { Contract } from '@ethersproject/contracts';
 import moment from 'moment';
 import {
   Box,
@@ -316,14 +317,14 @@ const MarketCard = ({ marketContract }: any) => {
               pr={0.5}
               onClick={infoModalToggle.onOpen}
             />
-            {/* <IconButton
+            <IconButton
               aria-label="purchase settings"
               variant="ghost"
               color="#555"
               icon="settings"
               size="md"
               onClick={settingsModalToggle.onOpen}
-            /> */}
+            />
           </Box>
         </Flex>
         <Heading as="h1" textAlign="center" fontSize="3rem">

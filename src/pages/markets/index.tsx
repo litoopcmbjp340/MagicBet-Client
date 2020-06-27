@@ -1,8 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Flex, Box, Heading, useColorMode } from '@chakra-ui/core';
+import { useWeb3React } from '@web3-react/core';
+import { Web3Provider } from '@ethersproject/providers';
 
 import Market from './Market';
 import MBMarketFactoryContract from '../../abis/MBMarketFactory.json';
+import { FactoryContractContext } from '../../state/contracts/FactoryContractContext';
 import addresses, { KOVAN_ID } from '../../utils/addresses';
 import { bgColor1, color1 } from '../../utils/theme';
 import { useContract } from '../../hooks';
@@ -15,21 +18,27 @@ import {
 } from './markets.style';
 
 const Markets = (): JSX.Element => {
+  const { library } = useWeb3React<Web3Provider>();
   const { colorMode } = useColorMode();
   const [markets, setMarkets] = useState([]);
-  const factoryAddress = addresses[KOVAN_ID].marketFactory;
-  const factoryContract = useContract(
-    factoryAddress,
-    MBMarketFactoryContract.abi
-  );
+  const [factoryContract, setFactoryContract] = useState();
+
+  let factoryContractContext = useContext(FactoryContractContext);
+  factoryContractContext = factoryContractContext.FactoryContract;
+
+  useEffect(() => {
+    if (!!library) setFactoryContract(factoryContractContext.connect(library));
+  }, [library]);
 
   useEffect(() => {
     let isStale = false;
-    if (factoryContract && !isStale) {
-      factoryContract
-        .getMarkets()
-        .then((markets: any) => setMarkets(markets))
-        .catch((error: any) => console.error(error));
+    if (!isStale && !!library && factoryContract !== undefined) {
+      if (factoryContract.provider !== null) {
+        factoryContract
+          .getMarkets()
+          .then((markets: any) => setMarkets(markets))
+          .catch((error: any) => console.error(error));
+      }
     }
     return (): void => {
       isStale = true;

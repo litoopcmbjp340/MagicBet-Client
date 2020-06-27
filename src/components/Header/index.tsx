@@ -20,7 +20,7 @@ import {
 } from '@chakra-ui/core';
 
 import { useEagerConnect, useInactiveListener } from '../../hooks';
-import { injected, getNetwork } from '../../utils/connectors';
+import { injected, getNetwork, network } from '../../utils/connectors';
 import { shortenAddress } from '../../utils';
 import { bgColor3, bgColor4 } from '../../utils/theme';
 import { useFactoryContract } from '../../hooks/useHelperContract';
@@ -40,16 +40,19 @@ const Header = () => {
   const [owner, setOwner] = useState<string>('');
   const [ENSName, setENSName] = useState<string>('');
 
+  console.log('chainId:', chainId);
+
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const factoryContract = useFactoryContract();
   const triedEager = useEagerConnect();
 
   useEffect(() => {
-    if (triedEager && !active && !error) activate(getNetwork(42));
+    if (triedEager && !active && !error) activate(network);
   }, [triedEager, active, error, activate]);
 
   useInactiveListener(!triedEager);
+
+  const factoryContract = useFactoryContract();
 
   useEffect(() => {
     (async () => {
@@ -128,7 +131,6 @@ const Header = () => {
             />
             <Link
               mr="1rem"
-              cursor="pointer"
               href="https://github.com/BetTogether"
               isExternal
               aria-label="Github Link"

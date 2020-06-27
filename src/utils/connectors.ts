@@ -12,6 +12,11 @@ export function getNetwork(defaultChainId = 42): NetworkConnector {
   });
 }
 
+export const network = new NetworkConnector({
+  urls: { 42: RPC_URLS[42] },
+  defaultChainId: 42,
+});
+
 export const injected = new InjectedConnector({
   supportedChainIds: [42],
 });

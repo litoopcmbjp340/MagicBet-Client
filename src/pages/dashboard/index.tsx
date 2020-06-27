@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useWeb3React } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers';
 import { Contract } from '@ethersproject/contracts';
@@ -13,12 +13,9 @@ import {
 } from '@chakra-ui/core';
 
 import { injected } from '../../utils/connectors';
-import MBMarketFactoryContract from '../../abis/MBMarketFactory.json';
-import addresses, { KOVAN_ID } from '../../utils/addresses';
 import MBMarketContract from '../../abis/MBMarket.json';
-
 import { bgColor1, color1 } from '../../utils/theme';
-
+import { FactoryContractContext } from '../../state/contracts/FactoryContractContext';
 import MarketCard from './MarketCard';
 
 const Dashboard = (): JSX.Element => {
@@ -28,17 +25,11 @@ const Dashboard = (): JSX.Element => {
   const [factoryContract, setFactoryContract] = useState<Contract>();
   const [marketContract, setMarketContract] = useState<Contract>();
 
-  useEffect(() => {
-    if (!!library) {
-      let factoryContract: Contract = new Contract(
-        addresses[KOVAN_ID].marketFactory,
-        MBMarketFactoryContract.abi,
-        library
-      );
+  let factoryContractContext = useContext(FactoryContractContext);
+  factoryContractContext = factoryContractContext.FactoryContract;
 
-      console.log('factoryContract:', factoryContract);
-      setFactoryContract(factoryContract);
-    }
+  useEffect(() => {
+    if (!!library) setFactoryContract(factoryContractContext.connect(library));
   }, [library]);
 
   useEffect(() => {
@@ -79,7 +70,7 @@ const Dashboard = (): JSX.Element => {
   return (
     <Box bg={bgColor1[colorMode]} pb="1rem" rounded="md" boxShadow="md">
       <Box roundedTop="0.25rem" bg="primary.100" h="0.5rem" />
-      <Flex justifyContent="space-between" alignItems="center" p="1rem 1.5rem">
+      <Flex justify="space-between" align="center" p="1rem 1.5rem">
         <Heading
           as="h3"
           size="lg"
@@ -97,9 +88,9 @@ const Dashboard = (): JSX.Element => {
       </Flex>
 
       <Flex
-        flexWrap="wrap"
-        flexDirection="column"
-        justifyContent="center"
+        wrap="wrap"
+        direction="column"
+        justify="center"
         m="0 auto 1rem"
         p="0rem 1rem"
         maxW="100%"

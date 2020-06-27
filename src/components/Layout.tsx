@@ -12,11 +12,11 @@ const Layout = ({ children }: { children: ReactNode }): JSX.Element => {
     <>
       <Header />
       <NavStrip />
-      <Box pt="1rem" w="100%" h="100%" m="0 auto" bg={bgColor2[colorMode]}>
+      {/* <Box pt="1rem" w="100%" h="100%" m="0 auto" bg={bgColor2[colorMode]}>
         <Box w="100%" p="0.75rem">
           {children}
         </Box>
-      </Box>
+      </Box> */}
     </>
   );
 };

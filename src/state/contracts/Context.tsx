@@ -3,25 +3,13 @@ import { Web3Provider } from '@ethersproject/providers';
 import { Contract } from '@ethersproject/contracts';
 
 import { ContractReducer } from './Reducers';
-import MBMarketFactoryContract from 'abis/MBMarketFactory.json';
 import IERC20 from 'abis/IERC20.json';
 import addresses, { KOVAN_ID } from 'utils/addresses';
 import DaiMockup from 'abis/DaiMockup.json';
 
-// const factoryAddress = addresses[KOVAN_ID].marketFactory;
 // const daiAddress = addresses[KOVAN_ID].tokens.DAI;
 
 const initialContractState: any = [];
-
-// const provider = new providers.Web3Provider(window.web3.currentProvider);
-// const wallet = provider.getSigner();
-// const FactoryContract = new Contract(
-//   factoryAddress,
-//   MBMarketFactoryContract.abi,
-//   wallet
-// );
-
-// initialContractState.push(FactoryContract);
 
 // const DaiInstance: any = new Contract(daiAddress, IERC20.abi, wallet);
 
@@ -32,8 +20,7 @@ const initialContractState: any = [];
 
 export const ContractContext = createContext<{
   contractState: any;
-  contractDispatch: Dispatch<any>;
-}>({ contractState: initialContractState, contractDispatch: () => null });
+}>({ contractState: initialContractState });
 
 export const ContractProvider = ({ children }: any) => {
   const [contractState, contractDispatch] = useReducer<typeof ContractReducer>(
