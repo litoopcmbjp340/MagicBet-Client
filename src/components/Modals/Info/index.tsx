@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { formatUnits } from '@ethersproject/units';
 import { v4 as uuidv4 } from 'uuid';
+import { Contract } from '@ethersproject/contracts';
 import {
   Modal,
   ModalOverlay,
@@ -23,7 +24,19 @@ interface IOutcome {
   bets: string;
 }
 
-const InfoModal = ({ infoModalToggle, marketContract }: any): JSX.Element => {
+interface IProps {
+  infoModalToggle: {
+    isOpen: boolean;
+    onOpen: () => any;
+    onClose: () => any;
+  };
+  marketContract: Contract;
+}
+
+const InfoModal = ({
+  infoModalToggle,
+  marketContract,
+}: IProps): JSX.Element => {
   const factoryContract = useFactoryContract();
   const { colorMode } = useColorMode();
 
@@ -68,6 +81,7 @@ const InfoModal = ({ infoModalToggle, marketContract }: any): JSX.Element => {
 
               newOutcomesArray.push(newOutcome);
             }
+
             setOutcomeNamesAndAmounts(newOutcomesArray);
           }
         } catch (error) {
@@ -94,106 +108,46 @@ const InfoModal = ({ infoModalToggle, marketContract }: any): JSX.Element => {
         <ModalCloseButton onClick={infoModalToggle.onClose} />
         <ModalBody>
           <Flex flexDirection="column" alignItems="center">
-            <Heading
-              as="h3"
-              fontSize="1.8rem"
-              fontWeight="400"
-              lineHeight=" 2rem"
-              margin="0"
-              padding="0"
-            >
-              {owner ? shortenAddress(owner) : '-'}
+            <Heading as="h3" fontSize="1.8rem" fontWeight="400">
+              {shortenAddress(owner) ?? '-'}
             </Heading>
-            <Text
-              fontSize="0.75rem"
-              lineHeight="1.5"
-              margin="0 0 10px"
-              padding="0"
-            >
+            <Text fontSize="0.75rem" m="0 10px 10px">
               Contract Owner
             </Text>
           </Flex>
           <Flex flexDirection="column" alignItems="center">
-            <Heading
-              as="h3"
-              fontSize="1.8rem"
-              fontWeight="400"
-              lineHeight=" 2rem"
-              margin="0"
-              padding="0"
-            >
-              {marketState ? marketState : '-'}
+            <Heading as="h3" fontSize="1.8rem" fontWeight="400">
+              {marketState ?? '-'}
             </Heading>
-            <Text
-              fontSize="0.75rem"
-              lineHeight="1.5"
-              margin="0 0 10px"
-              padding="0"
-            >
+            <Text fontSize="0.75rem" m="0 10px 10px">
               Market State
             </Text>
           </Flex>
           {outcomeNamesAndAmounts &&
             outcomeNamesAndAmounts.map((outcome: IOutcome) => (
               <Flex key={uuidv4()} flexDirection="column" alignItems="center">
-                <Heading
-                  as="h3"
-                  fontSize="1.8rem"
-                  fontWeight="400"
-                  lineHeight=" 2rem"
-                  margin="0"
-                  padding="0"
-                >
+                <Heading as="h3" fontSize="1.8rem" fontWeight="400">
                   {outcome.bets}
                 </Heading>
-                <Text
-                  fontSize="0.75rem"
-                  lineHeight="1.5"
-                  margin="0 0 10px"
-                  padding="0"
-                >
+                <Text fontSize="0.75rem" m="0 10px 10px">
                   Bets for {outcome.name}
                 </Text>
               </Flex>
             ))}
 
           <Flex flexDirection="column" alignItems="center">
-            <Heading
-              as="h3"
-              fontSize="1.8rem"
-              fontWeight="400"
-              lineHeight=" 2rem"
-              margin="0"
-              padding="0"
-            >
+            <Heading as="h3" fontSize="1.8rem" fontWeight="400">
               {numberOfParticipants}
             </Heading>
-            <Text
-              fontSize="0.75rem"
-              lineHeight="1.5"
-              margin="0 0 10px"
-              padding="0"
-            >
+            <Text fontSize="0.75rem" m="0 10px 10px">
               Number of Participants
             </Text>
           </Flex>
           <Flex flexDirection="column" alignItems="center">
-            <Heading
-              as="h3"
-              fontSize="1.8rem"
-              fontWeight="400"
-              lineHeight=" 2rem"
-              margin="0"
-              padding="0"
-            >
+            <Heading as="h3" fontSize="1.8rem" fontWeight="400">
               {pot}
             </Heading>
-            <Text
-              fontSize="0.75rem"
-              lineHeight="1.5"
-              margin="0 0 10px"
-              padding="0"
-            >
+            <Text fontSize="0.75rem" m="0 10px 10px">
               Total Pot Size (in Dai)
             </Text>
           </Flex>

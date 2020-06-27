@@ -34,11 +34,11 @@ import { bgColor8, color2 } from '../../../utils/theme';
 const CountDown = ({ startDate }: { startDate: number }) => {
   const realStartDate = moment(startDate).format('YYYY-MM-DD');
 
-  const [days, setDays] = useState(0);
-  const [hours, setHours] = useState(0);
-  const [minutes, setMinutes] = useState(0);
-  const [seconds, setSeconds] = useState(0);
-  const [time, setTime] = useState(0);
+  const [days, setDays] = useState<number>(0);
+  const [hours, setHours] = useState<number>(0);
+  const [minutes, setMinutes] = useState<number>(0);
+  const [seconds, setSeconds] = useState<number>(0);
+  const [time, setTime] = useState<number>(0);
 
   useEffect(() => {
     let isStale = false;
@@ -364,7 +364,7 @@ const MarketCard = ({ marketContract }: any) => {
                   <Input
                     borderStyle="none"
                     color={color2[colorMode]}
-                    backgroundColor={bgColor8[colorMode]}
+                    bg={bgColor8[colorMode]}
                     fontSize="70px"
                     my="1"
                     py="3rem"

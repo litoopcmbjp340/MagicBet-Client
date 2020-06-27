@@ -10,8 +10,8 @@ export default function Error(): JSX.Element {
       flexGrow={1}
       alignItems="center"
       justifyContent="center"
-      backgroundColor={bgColor1[colorMode]}
-      paddingBottom="1rem"
+      bg={bgColor1[colorMode]}
+      pb="1rem"
     >
       <Stack direction="column" alignItems="center">
         <Text fontSize="1.5rem" textAlign="center">

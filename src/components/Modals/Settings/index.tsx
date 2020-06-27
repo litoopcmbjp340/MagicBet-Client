@@ -53,7 +53,7 @@ const SettingsModal = ({ settingsModalToggle }: any): JSX.Element => {
                 cursor="pointer"
                 border="2px solid primary.100"
                 color="light.100"
-                backgroundColor="primary.100"
+                bg="primary.100"
                 type="button"
                 // _hover={{ bg: 'dark.100' }}
                 onClick={() => setUsingDai(!usingDai)}

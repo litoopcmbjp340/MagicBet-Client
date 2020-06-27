@@ -38,18 +38,12 @@ const Markets = (): JSX.Element => {
 
   return (
     <Box bg={bgColor1[colorMode]} m="0" pb="1rem" rounded="md" boxShadow="md">
-      <Box
-        borderTopRightRadius="0.25rem"
-        borderTopLeftRadius="0.25rem"
-        bg="primary.100"
-        h="0.5rem"
-      />
+      <Box roundedTop="0.25rem" bg="primary.100" h="0.5rem" />
       <Flex
         flexDirection="column"
         flexWrap="wrap"
         justifyContent="space-between"
         m="0 auto"
-        mb="-1px"
         w="100%"
         p="1rem 1.5rem"
       >

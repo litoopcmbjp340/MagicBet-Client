@@ -114,19 +114,7 @@ export const GlobalStyle = css`
     padding: 0;
     width: 100%;
     height: 100%;
-    overflow: hidden;
     background-color: #dddfe6;
     position: relative;
-  }
-
-  a {
-    color: inherit;
-    text-decoration: none;
-  }
-
-  a:hover {
-    color: inherit;
-    text-decoration: none;
-    cursor: pointer;
   }
 `;

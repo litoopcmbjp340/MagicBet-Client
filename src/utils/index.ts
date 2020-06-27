@@ -64,3 +64,12 @@ export const getFormattedNumber = (floatBalance: number, decimals: number) => {
 
   return Math.round(floatBalance);
 };
+
+export const checkOwner = (owner: string, account: string): boolean => {
+  if (owner !== null && account !== null) {
+    if (account === null) return false;
+    return account === owner;
+  } else {
+    return false;
+  }
+};

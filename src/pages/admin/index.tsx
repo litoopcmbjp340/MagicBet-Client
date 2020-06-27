@@ -19,7 +19,7 @@ import {
   CloseButton,
 } from '@chakra-ui/core';
 
-import { bgColor1, color1, bgColor6 } from '../../utils/theme';
+import { bgColor1, color1, bgColor6, bgColor8 } from '../../utils/theme';
 import CreateMarket from '../../components/Modals/CreateMarket';
 import { useFactoryContract } from '../../hooks/useHelperContract';
 import { useLocalStorage } from '../../hooks';
@@ -33,6 +33,7 @@ const Admin = (): JSX.Element => {
 
   const factoryContract: Contract | undefined = useFactoryContract();
   const [marketContract, setMarketContract] = useState<Contract | null>();
+
   const [contractAddress, setContractAddress] = useState<string>('');
   const [alert, setAlert] = useState<boolean>(false);
 
@@ -41,7 +42,7 @@ const Admin = (): JSX.Element => {
       let isStale = false;
       try {
         if (!isStale && factoryContract !== undefined) {
-          const mostRecentAddress = await factoryContract.getMostRecentMarket();
+          const mostRecentAddress = await factoryContract.mostRecentContract();
 
           if (mostRecentAddress !== AddressZero && !!library && !!account) {
             setContractAddress(mostRecentAddress + '');
@@ -57,14 +58,6 @@ const Admin = (): JSX.Element => {
               setMarketContract(marketContract);
             }
           }
-          // factoryContract.on('MarketCreated', (address: any) => {
-          //   const marketInstance = new Contract(
-          //     address,
-          //     MBMarketContract.abi,
-          //     wallet
-          //   );
-          //   setMarketContract(marketInstance);
-          // });
         }
       } catch (error) {
         console.error(error);
@@ -75,20 +68,28 @@ const Admin = (): JSX.Element => {
     })();
   }, [factoryContract]);
 
+  useEffect(() => {
+    let isStale = false;
+    if (!isStale && factoryContract && !!library && !!account) {
+      factoryContract.on('MarketCreated', (address: any) => {
+        const marketInstance = new Contract(
+          address,
+          MBMarketContract.abi,
+          library.getSigner(account)
+        );
+        setMarketContract(marketInstance);
+      });
+    }
+
+    return () => {
+      isStale = true;
+    };
+  }, []);
+
   return (
     <Box bg={bgColor1[colorMode]} pb="1rem" rounded="md" boxShadow="md">
-      <Box
-        borderTopRightRadius="0.25rem"
-        borderTopLeftRadius="0.25rem"
-        bg="primary.100"
-        h="0.5rem"
-      />
-      <Flex
-        mb="-1px"
-        justifyContent="space-between"
-        alignItems="center"
-        p="1rem 1.5rem"
-      >
+      <Box roundedTop="0.25rem" bg="primary.100" h="0.5rem" />
+      <Flex justifyContent="space-between" alignItems="center" p="1rem 1.5rem">
         <Heading
           as="h3"
           size="lg"
@@ -106,9 +107,9 @@ const Admin = (): JSX.Element => {
         justifyContent="center"
         m="0 auto 1rem"
         p="0rem 1rem"
-        maxWidth="100%"
+        maxW="100%"
       >
-        {marketContract === null ? (
+        {marketContract === undefined ? (
           <Button
             bg={bgColor6[colorMode]}
             border="none"
@@ -130,8 +131,7 @@ const Admin = (): JSX.Element => {
             maxW="sm"
             borderWidth="1px"
             rounded="lg"
-            overflow="hidden"
-            bg="white"
+            bg={bgColor8[colorMode]}
             textAlign="center"
           >
             <Box p="6">

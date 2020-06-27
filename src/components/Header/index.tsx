@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Link from 'next/link';
+import NextLink from 'next/link';
 import { useWeb3React } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers';
 import {
@@ -7,19 +7,24 @@ import {
   Heading,
   Button,
   Icon,
-  Text,
-  Link as StyledLink,
+  Link,
   Tag,
   Box,
   IconButton,
   useColorMode,
+  Drawer,
+  DrawerBody,
+  DrawerOverlay,
+  DrawerContent,
+  useDisclosure,
 } from '@chakra-ui/core';
 
 import { useEagerConnect, useInactiveListener } from '../../hooks';
 import { injected, getNetwork } from '../../utils/connectors';
 import { shortenAddress } from '../../utils';
-import { bgColor1, bgColor3, bgColor4 } from '../../utils/theme';
+import { bgColor3, bgColor4 } from '../../utils/theme';
 import { useFactoryContract } from '../../hooks/useHelperContract';
+import { checkOwner } from '../../utils';
 
 const Header = () => {
   const { colorMode, toggleColorMode } = useColorMode();
@@ -32,8 +37,10 @@ const Header = () => {
     error,
     library,
   } = useWeb3React<Web3Provider>();
-  const [isExpanded, setIsExpanded] = useState<boolean>(false);
   const [owner, setOwner] = useState<string>('');
+  const [ENSName, setENSName] = useState<string>('');
+
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const factoryContract = useFactoryContract();
   const triedEager = useEagerConnect();
@@ -50,16 +57,6 @@ const Header = () => {
     })();
   }, []);
 
-  const checkOwner = (): boolean => {
-    if (owner !== null && account !== null) {
-      if (account === null) return false;
-      return account === owner;
-    } else {
-      return false;
-    }
-  };
-
-  const [ENSName, setENSName] = useState<string>('');
   useEffect(() => {
     if (library && account) {
       let isStale = false;
@@ -92,31 +89,30 @@ const Header = () => {
           bg={bgColor3[colorMode]}
           m="0 auto"
         >
-          <Link href="/dashboard" passHref>
-            <StyledLink _hover={{ cursor: 'pointer' }}>
+          <NextLink href="/dashboard" passHref>
+            <Link _hover={{ cursor: 'pointer' }}>
               <Flex
                 flexDirection="row"
                 alignItems="center"
                 justifyContent="center"
                 mr={5}
               >
-                <span
-                  style={{
-                    fontSize: '3rem',
-                    width: '100%',
-                    marginRight: '0.5rem',
-                  }}
+                <Box
+                  as="span"
+                  fontSize="3rem"
+                  w="100%"
+                  mr="0.5rem"
                   role="img"
                   aria-label="tophat"
                 >
                   🎩
-                </span>
+                </Box>
                 <Heading as="h1" size="xl">
                   MagicBet
                 </Heading>
               </Flex>
-            </StyledLink>
-          </Link>
+            </Link>
+          </NextLink>
           <Flex alignItems="center" justifyContent="flex-end">
             <IconButton
               aria-label={`Switch to ${
@@ -130,8 +126,7 @@ const Header = () => {
               icon={colorMode === 'light' ? 'moon' : 'sun'}
               _hover={{ bg: 'Transparent' }}
             />
-            <StyledLink
-              bg="none"
+            <Link
               mr="1rem"
               cursor="pointer"
               href="https://github.com/BetTogether"
@@ -139,7 +134,7 @@ const Header = () => {
               aria-label="Github Link"
             >
               <Icon name="githubIcon" size="2rem" color="light.100" />
-            </StyledLink>
+            </Link>
 
             {connector === injected ? (
               <Tag
@@ -164,7 +159,7 @@ const Header = () => {
                 cursor="pointer"
                 m="0"
                 position="relative"
-                width="auto"
+                w="auto"
                 borderColor={bgColor4[colorMode]}
                 bg={bgColor4[colorMode]}
                 _hover={{ bg: bgColor4[colorMode] }}
@@ -175,93 +170,64 @@ const Header = () => {
               </Button>
             )}
 
-            <Box
-              display={{ sm: 'block', md: 'none' }}
-              onClick={() => setIsExpanded(!isExpanded)}
-              p="0.625rem"
-            >
-              {isExpanded ? (
-                <Icon name="menuOpenIcon" size="2rem" />
-              ) : (
-                <Icon name="menuClosedIcon" size="2rem" />
-              )}
+            <Box display={{ sm: 'block', md: 'none' }}>
+              <IconButton
+                ml="0.5rem"
+                aria-label="open"
+                variant="ghost"
+                variantColor="white"
+                icon="triangle-down"
+                onClick={onOpen}
+              />
             </Box>
           </Flex>
         </Flex>
 
-        {isExpanded && (
-          <Box
-            h="auto"
-            w="100%"
-            position="absolute"
-            zIndex={100}
-            bg={bgColor1[colorMode]}
-            display={{ sm: 'block', md: 'none' }}
-          >
-            <Box m="0" p="0" borderBottom="1px solid rgba(0, 0, 0, 0.8)">
-              <Link href="/dashboard" passHref>
-                <Text
-                  font-weight="500"
-                  h="3rem"
-                  p="0 1rem"
-                  mt={{ base: 4, md: 0 }}
-                  mr={6}
-                  display="block"
-                >
-                  <StyledLink
+        <Drawer isOpen={isOpen} placement="top" onClose={onClose}>
+          <DrawerOverlay />
+          <DrawerContent>
+            <DrawerBody>
+              <Flex justifyContent="center" alignItems="center" my="1rem">
+                <NextLink href="/dashboard" passHref>
+                  <Link
                     textTransform="uppercase"
                     fontWeight="bold"
-                    cursor="pointer"
                     href="/dashboard"
-                    onClick={() => setIsExpanded(false)}
+                    fontSize="1.25rem"
                   >
                     Dashboard
-                  </StyledLink>
-                </Text>
-              </Link>
-              <Link href="/markets" passHref>
-                <Text
-                  font-weight="500"
-                  h="3rem"
-                  p="0 1rem"
-                  mt={{ base: 4, md: 0 }}
-                  mr={6}
-                  display="block"
-                >
-                  <StyledLink
+                  </Link>
+                </NextLink>
+              </Flex>
+
+              <Flex justifyContent="center" alignItems="center" my="1rem">
+                <NextLink href="/markets" passHref>
+                  <Link
                     textTransform="uppercase"
                     fontWeight="bold"
-                    cursor="pointer"
                     href="/markets"
-                    onClick={() => setIsExpanded(false)}
+                    fontSize="1.25rem"
                   >
                     Markets
-                  </StyledLink>
-                </Text>
-              </Link>
-              {checkOwner() && (
-                <Text
-                  font-weight="500"
-                  h="3rem"
-                  p="0 1rem"
-                  mt={{ base: 4, md: 0 }}
-                  mr={6}
-                  display="block"
-                >
-                  <StyledLink
+                  </Link>
+                </NextLink>
+              </Flex>
+
+              <Flex justifyContent="center" alignItems="center" my="1rem">
+                {account && checkOwner(account, owner) && (
+                  <Link
                     textTransform="uppercase"
                     fontWeight="bold"
-                    cursor="pointer"
                     href="/admin"
-                    onClick={() => setIsExpanded(false)}
+                    fontSize="1.25rem"
                   >
                     Admin
-                  </StyledLink>
-                </Text>
-              )}
-            </Box>
-          </Box>
-        )}
+                  </Link>
+                )}
+              </Flex>
+            </DrawerBody>
+          </DrawerContent>
+        </Drawer>
       </>
     );
   }

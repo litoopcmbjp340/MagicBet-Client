@@ -57,13 +57,17 @@ const CreateMarket = ({ createMarketModalToggle }: any): JSX.Element => {
     Date.now() / 1000
   );
   const [timeout, setTimeout] = useState<number>(10);
-  const [outcomes, setOutcomes] = useState<string>('');
-  const [category, setCategory] = useState<string>('misc');
+  const [options, setOptions] = useState<any>(['']);
+  const [category, setCategory] = useState<string>('');
 
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
     const MARKET_EVENT_NAME = marketEventName;
+
+    let CATEGORY = '';
+
+    if (category === '') CATEGORY = 'misc';
 
     if (!isAddress(arbitrator)) {
       console.error(`${arbitrator} is not a valid address`);
@@ -84,7 +88,7 @@ const CreateMarket = ({ createMarketModalToggle }: any): JSX.Element => {
 
     const TIMEOUT = timeout * 1200; //convert hours to seconds
 
-    const REALITIO_QUESTION = `${MARKET_EVENT_NAME}␟${options}␟${category}␟en_US`;
+    const REALITIO_QUESTION = `${MARKET_EVENT_NAME}␟${options}␟${CATEGORY}␟en_US`;
 
     try {
       setLoading(true);
@@ -107,9 +111,6 @@ const CreateMarket = ({ createMarketModalToggle }: any): JSX.Element => {
 
     createMarketModalToggle.onClose();
   };
-
-  const [options, setOptions] = useState<any>(['']);
-  const [option, setOption] = useState<string>('');
 
   const removeOption = (index: any) => () =>
     setOptions(options.filter((s: any, sidx: any) => index !== sidx));
@@ -142,7 +143,7 @@ const CreateMarket = ({ createMarketModalToggle }: any): JSX.Element => {
             <ModalCloseButton onClick={createMarketModalToggle.onClose} />
             <ModalBody>
               <form onSubmit={onSubmit}>
-                <FormControl marginBottom="1rem" isRequired>
+                <FormControl mb="1rem" isRequired>
                   <FormLabel color="#777" htmlFor="marketEventName">
                     Event Name
                   </FormLabel>
@@ -158,40 +159,48 @@ const CreateMarket = ({ createMarketModalToggle }: any): JSX.Element => {
                   />
                 </FormControl>
 
-                <FormControl marginBottom="1rem" isRequired>
-                  <FormLabel color="#777" htmlFor="tokens">
-                    Outcomes
-                  </FormLabel>
+                <Flex justifyContent="center" alignItems="center">
+                  <FormControl mb="1rem" w="100%" isRequired>
+                    <FormLabel color="#777" htmlFor="tokens">
+                      Outcomes
+                    </FormLabel>
 
-                  {options.map((option: any, i: any) => (
-                    <Flex w="100%" mb="1rem" key={i}>
-                      <Input
-                        borderColor="secondary.100"
-                        type="text"
-                        name="tokens"
-                        value={option}
-                        onChange={handleOptionChange(i)}
-                      />
-                      <IconButton
-                        aria-label="add"
-                        icon="close"
-                        type="button"
-                        size="sm"
-                        onClick={removeOption(i)}
-                      />
-                    </Flex>
-                  ))}
-                  <IconButton
-                    aria-label="remove"
-                    type="button"
-                    size="sm"
-                    icon="add"
-                    onClick={() => setOptions(options.concat(['']))}
-                  />
-                </FormControl>
+                    {options.map((option: any, i: any) => (
+                      <Flex
+                        w="100%"
+                        mb="1rem"
+                        justifyContent="center"
+                        alignItems="center"
+                        key={i}
+                      >
+                        <Input
+                          borderColor="secondary.100"
+                          type="text"
+                          name="tokens"
+                          value={option}
+                          onChange={handleOptionChange(i)}
+                        />
+                        <IconButton
+                          aria-label="add"
+                          icon="close"
+                          type="button"
+                          size="sm"
+                          onClick={removeOption(i)}
+                        />
+                      </Flex>
+                    ))}
+                    <IconButton
+                      aria-label="remove"
+                      type="button"
+                      size="sm"
+                      icon="add"
+                      onClick={() => setOptions(options.concat(['']))}
+                    />
+                  </FormControl>
+                </Flex>
 
-                <Flex width="100%" marginBottom="1rem">
-                  <FormControl marginRight="0.5rem" isRequired>
+                <Flex w="100%" mb="1rem">
+                  <FormControl mr="0.5rem" isRequired>
                     <FormLabel color="#777" htmlFor="marketOpeningTime">
                       Opening
                     </FormLabel>
@@ -212,7 +221,7 @@ const CreateMarket = ({ createMarketModalToggle }: any): JSX.Element => {
                       }
                     />
                   </FormControl>
-                  <FormControl marginRight="0.5rem" isRequired>
+                  <FormControl mr="0.5rem" isRequired>
                     <FormLabel color="#777" htmlFor="marketLockingTime">
                       Locking
                     </FormLabel>
@@ -234,8 +243,8 @@ const CreateMarket = ({ createMarketModalToggle }: any): JSX.Element => {
                     />
                   </FormControl>
                 </Flex>
-                <Flex width="100%" marginBottom="1rem">
-                  <FormControl marginRight="0.5rem" isRequired>
+                <Flex w="100%" mb="1rem">
+                  <FormControl mr="0.5rem" isRequired>
                     <FormLabel color="#777" htmlFor="marketResolutionTime">
                       Resolution
                     </FormLabel>
@@ -256,7 +265,7 @@ const CreateMarket = ({ createMarketModalToggle }: any): JSX.Element => {
                       }
                     />
                   </FormControl>
-                  <FormControl marginRight="0.5rem" isRequired>
+                  <FormControl mr="0.5rem" isRequired>
                     <FormLabel color="#777" htmlFor="timeout">
                       Timeout
                     </FormLabel>
@@ -269,7 +278,7 @@ const CreateMarket = ({ createMarketModalToggle }: any): JSX.Element => {
                       <Icon name="info" color="#777" />
                     </Tooltip>
                     <NumberInput
-                      marginRight="0.5rem"
+                      mr="0.5rem"
                       defaultValue={15}
                       min={1}
                       value={timeout}
@@ -288,7 +297,12 @@ const CreateMarket = ({ createMarketModalToggle }: any): JSX.Element => {
                   <FormLabel htmlFor="category" color="#777">
                     Category
                   </FormLabel>
-                  <Select id="category" placeholder="Category">
+                  <Select
+                    id="category"
+                    placeholder="Category"
+                    value={category}
+                    onChange={(e: any) => setCategory(e.target.value)}
+                  >
                     <option value="arts">Arts</option>
                     <option value="business-finance">Business & Finance</option>
                     <option value="crypto">Crypto</option>
@@ -299,7 +313,7 @@ const CreateMarket = ({ createMarketModalToggle }: any): JSX.Element => {
                     <option value="misc">Miscellaneous</option>
                   </Select>
                 </FormControl>
-                <FormControl marginBottom="1rem">
+                <FormControl mb="1rem">
                   <FormLabel color="#777" htmlFor="arbitrator">
                     Arbitrator
                   </FormLabel>
@@ -326,11 +340,11 @@ const CreateMarket = ({ createMarketModalToggle }: any): JSX.Element => {
                   borderRadius="0.33rem"
                   color="light.100"
                   textAlign="center"
-                  padding="0.8rem"
-                  marginBottom="1rem"
-                  width="100%"
+                  p="0.8rem"
+                  mb="1rem"
+                  w="100%"
                   cursor="pointer"
-                  backgroundColor={bgColor6[colorMode]}
+                  bg={bgColor6[colorMode]}
                   _hover={{ bg: 'primary.100' }}
                   type="submit"
                 >

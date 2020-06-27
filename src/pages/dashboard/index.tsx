@@ -35,6 +35,8 @@ const Dashboard = (): JSX.Element => {
         MBMarketFactoryContract.abi,
         library
       );
+
+      console.log('factoryContract:', factoryContract);
       setFactoryContract(factoryContract);
     }
   }, [library]);
@@ -46,14 +48,12 @@ const Dashboard = (): JSX.Element => {
       try {
         if (!isStale && !!library && factoryContract !== undefined) {
           if (factoryContract.provider !== null) {
-            const mostRecentAddress = await factoryContract.getMostRecentMarket();
+            const mostRecentAddress = await factoryContract.mostRecentContract();
             if (mostRecentAddress !== AddressZero) {
               let providerOrSigner;
-              if (connector == injected && account) {
+              if (connector == injected && account)
                 providerOrSigner = library.getSigner(account);
-              } else {
-                providerOrSigner = library;
-              }
+              else providerOrSigner = library;
 
               const marketContract = new Contract(
                 mostRecentAddress,
@@ -78,18 +78,8 @@ const Dashboard = (): JSX.Element => {
 
   return (
     <Box bg={bgColor1[colorMode]} pb="1rem" rounded="md" boxShadow="md">
-      <Box
-        borderTopRightRadius="0.25rem"
-        borderTopLeftRadius="0.25rem"
-        bg="primary.100"
-        h="0.5rem"
-      />
-      <Flex
-        mb="-1px"
-        justifyContent="space-between"
-        alignItems="center"
-        p="1rem 1.5rem"
-      >
+      <Box roundedTop="0.25rem" bg="primary.100" h="0.5rem" />
+      <Flex justifyContent="space-between" alignItems="center" p="1rem 1.5rem">
         <Heading
           as="h3"
           size="lg"
@@ -112,7 +102,7 @@ const Dashboard = (): JSX.Element => {
         justifyContent="center"
         m="0 auto 1rem"
         p="0rem 1rem"
-        maxWidth="100%"
+        maxW="100%"
       >
         {marketContract && <MarketCard marketContract={marketContract} />}
       </Flex>

@@ -5,13 +5,13 @@ import { useWeb3React } from '@web3-react/core';
 
 import { DataType } from 'utils/constants';
 import useKeepSWRDataLiveAsBlocksArrive from './useBlockNumber';
-import { constants } from 'ethers';
+import { AddressZero } from '@ethersproject/constants';
 
 function getEthBalance(
   library: Web3Provider
 ): (chainId: number, address: string) => Promise<TokenAmount> {
   return async (chainId: number, address: string): Promise<TokenAmount> => {
-    const ETH = new Token(chainId, constants.AddressZero, 18);
+    const ETH = new Token(chainId, AddressZero, 18);
     return library
       .getBalance(address)
       .then(
