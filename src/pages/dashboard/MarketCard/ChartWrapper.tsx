@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { formatEther } from '@ethersproject/units';
 import { Contract } from '@ethersproject/contracts';
+import { Button, ButtonGroup, Flex } from '@chakra-ui/core';
 
 import Graph from './Chart';
 
@@ -166,6 +167,31 @@ export default function Chart({
   }, [newAddress]);
 
   return data === undefined ? null : options === undefined ? null : (
-    <Graph data={data} options={options} />
+    <Flex align="center" direction="column">
+      <Graph data={data} options={options} />
+      <ButtonGroup isAttached={true} size="xs">
+        <Button
+          bg="primary.100"
+          color="light.100"
+          onClick={() => console.log('render last 24h')}
+        >
+          24H
+        </Button>
+        <Button
+          bg="primary.100"
+          color="light.100"
+          onClick={() => console.log('render last 7 days')}
+        >
+          7D
+        </Button>
+        <Button
+          bg="primary.100"
+          color="light.100"
+          onClick={() => console.log('render last 30 days')}
+        >
+          30D
+        </Button>
+      </ButtonGroup>
+    </Flex>
   );
 }

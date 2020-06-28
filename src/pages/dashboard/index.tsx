@@ -86,14 +86,14 @@ const Dashboard = (): JSX.Element => {
           Dashboard
         </Heading>
 
-        <Flex justify="center" align="center">
+        <Box>
           <FormLabel htmlFor="email-alerts">Enable alerts?</FormLabel>
           <Switch
             id="email-alerts"
             color="red"
             aria-label="Enable email alerts"
           />
-        </Flex>
+        </Box>
       </Flex>
 
       <Flex
