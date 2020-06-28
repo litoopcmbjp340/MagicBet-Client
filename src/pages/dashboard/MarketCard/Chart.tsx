@@ -9,11 +9,13 @@ import {
   Tooltip,
   Legend,
 } from 'recharts';
+import ColorHash from 'color-hash-ts';
 
-export default function Graph({ data, options, optionsWithColor }: any) {
-  console.log('data:', data);
-  console.log('optionsWithColor:', optionsWithColor);
-  console.log('options:', options);
+export default function Graph({ data, options }: any) {
+  const colorHash = new ColorHash();
+  function stringToHex(str: string): string {
+    return colorHash.hex(str);
+  }
 
   return (
     <Box mt="3rem">
@@ -29,8 +31,7 @@ export default function Graph({ data, options, optionsWithColor }: any) {
             bottom: 5,
           }}
         >
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="time" />
+          <XAxis dataKey="time" padding={{ left: 30, right: 30 }} />
           <YAxis />
           <Tooltip />
           <Legend />
@@ -40,8 +41,7 @@ export default function Graph({ data, options, optionsWithColor }: any) {
               key={option}
               type="monotone"
               dataKey={option}
-              // stroke={randomColor()}
-              stroke={'#000000'}
+              stroke={stringToHex(option)}
               dot={false}
             />
           ))}

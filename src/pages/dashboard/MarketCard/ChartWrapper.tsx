@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { formatEther } from '@ethersproject/units';
 import { Contract } from '@ethersproject/contracts';
-import randomColor from 'randomcolor';
 
 import Graph from './Chart';
 
@@ -21,17 +20,8 @@ export default function Chart({
   marketContract: Contract;
 }) {
   const [data, setData] = useState<any>([]);
-
   const [options, setOptions] = useState<string[]>([]);
-  const [optionsWithColor, setOptionsWithColor] = useState<
-    { option: string; color: string }[]
-  >();
-
   const [newAddress, setNewAddress] = useState<string>('');
-
-  marketContract.on('ParticipantEntered', (address: string) =>
-    setNewAddress(address)
-  );
 
   useEffect(() => {
     let isStale = false;
@@ -73,16 +63,6 @@ export default function Chart({
         let outcomes = await marketContract.getOutcomeNames();
 
         setOptions(outcomes);
-
-        {
-          options.forEach((option: any) => {
-            let optionObject = { option: '', color: '' };
-            optionObject.option = option;
-            optionObject.color = randomColor();
-
-            setOptionsWithColor([optionObject]);
-          });
-        }
 
         let openingTime = await marketContract.marketOpeningTime();
         openingTime = openingTime.toNumber();
@@ -186,6 +166,6 @@ export default function Chart({
   }, [newAddress]);
 
   return data === undefined ? null : options === undefined ? null : (
-    <Graph data={data} options={options} optionsWithColor={optionsWithColor} />
+    <Graph data={data} options={options} />
   );
 }
