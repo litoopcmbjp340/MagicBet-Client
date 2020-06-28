@@ -19,7 +19,6 @@ import '../utils/customDatePickerStyles.css';
 // import * as serviceWorker from '../serviceWorker';
 
 import { ContractProvider } from '../state/contracts/Context';
-import { FactoryContractProvider } from '../state/contracts/FactoryContractContext';
 import Layout from '../components/Layout';
 import Error from '../components/Error';
 import SwitchChain from '../components/SwitchChain';
@@ -80,17 +79,15 @@ export default class App extends NextApp {
           <title key="title">MagicBet</title>
         </Head>
         <Web3ReactProvider getLibrary={getLibrary}>
-          <FactoryContractProvider>
-            <ContractProvider>
-              <ThemeProvider theme={theme}>
-                <ColorModeProvider>
-                  <CSSReset />
-                  <Global styles={GlobalStyle} />
-                  <Application Component={Component} />
-                </ColorModeProvider>
-              </ThemeProvider>
-            </ContractProvider>
-          </FactoryContractProvider>
+          <ContractProvider>
+            <ThemeProvider theme={theme}>
+              <ColorModeProvider>
+                <CSSReset />
+                <Global styles={GlobalStyle} />
+                <Application Component={Component} />
+              </ColorModeProvider>
+            </ThemeProvider>
+          </ContractProvider>
         </Web3ReactProvider>
       </>
     );

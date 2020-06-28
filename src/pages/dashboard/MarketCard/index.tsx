@@ -21,12 +21,12 @@ import {
   StatNumber,
 } from '@chakra-ui/core';
 
-import Chart from './Chart';
+import ChartWrapper from './ChartWrapper';
 import { injected } from '../../../utils/connectors';
 import Info from '../../../components/Modals/Info';
 import SettingsModal from 'components/Modals/Settings';
 import { shortenAddress } from '../../../utils';
-import { useDaiContract } from '../../../hooks/useHelperContract';
+import useDaiContract from '../../../hooks/useDaiContract';
 // import { useTokens } from '../../../utils/tokens';
 import { bgColor8, color2, color3 } from '../../../utils/theme';
 
@@ -269,11 +269,11 @@ const MarketCard = ({ marketContract }: any) => {
       >
         <Flex
           borderBottom="1px solid dark.100"
-          alignItems="center"
-          justifyContent="space-between"
+          align="center"
+          justify="space-between"
           p="0.5rem 1rem"
           mb="1rem"
-          flexWrap="wrap"
+          wrap="wrap"
         >
           <Stat textAlign="center">
             <StatLabel color={color3[colorMode]}>Address</StatLabel>
@@ -329,18 +329,14 @@ const MarketCard = ({ marketContract }: any) => {
           {prompt}
         </Heading>
 
-        <Flex justifyContent="center" alignItems="center" flexWrap="wrap">
+        <Flex justify="center" align="center" wrap="wrap">
           <Box display={{ sm: 'none', md: 'block' }}>
-            <Chart marketContract={marketContract} />
+            <ChartWrapper marketContract={marketContract} />
           </Box>
 
           {connector === injected && (
             <form onSubmit={placeBet}>
-              <Flex
-                flexDirection="column"
-                justifyContent="center"
-                alignItems="center"
-              >
+              <Flex direction="column" justify="center" align="center">
                 <Select
                   w="auto"
                   h="3rem"
@@ -358,7 +354,7 @@ const MarketCard = ({ marketContract }: any) => {
                   ))}
                 </Select>
 
-                <Flex justifyContent="center">
+                <Flex justify="center">
                   <Input
                     borderStyle="none"
                     color={color2[colorMode]}

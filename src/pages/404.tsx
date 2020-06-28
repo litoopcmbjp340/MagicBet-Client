@@ -7,8 +7,8 @@ const NotFound = () => {
   const { colorMode } = useColorMode();
   return (
     <Flex
-      flexDirection="column"
-      justifyContent="space-evenly"
+      direction="column"
+      justify="space-evenly"
       textAlign="center"
       h="100%"
       bg={bgColor1[colorMode]}

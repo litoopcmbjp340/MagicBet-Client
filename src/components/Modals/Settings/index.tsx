@@ -62,11 +62,7 @@ const SettingsModal = ({ settingsModalToggle }: any): JSX.Element => {
               </Button>
 
               {usingDai ? (
-                <Flex
-                  justifyContent="center"
-                  alignItems="center"
-                  color="dark.100"
-                >
+                <Flex justify="center" align="center" color="dark.100">
                   <Tag>
                     <Suspense fallback={<Spinner />}>
                       {tokenData &&
@@ -75,11 +71,7 @@ const SettingsModal = ({ settingsModalToggle }: any): JSX.Element => {
                   </Tag>
                 </Flex>
               ) : (
-                <Flex
-                  justifyContent="center"
-                  alignItems="center"
-                  color="dark.100"
-                >
+                <Flex justify="center" align="center" color="dark.100">
                   <Tag>
                     <Suspense fallback={<Spinner />}>
                       {data && data.toSignificant(4, { groupSeparator: ',' })}

@@ -9,12 +9,12 @@ export default function SwitchChain(): JSX.Element {
   return (
     <Flex
       flexGrow={1}
-      alignItems="center"
-      justifyContent="center"
+      align="center"
+      justify="center"
       bg={bgColor1[colorMode]}
       pb="1rem"
     >
-      <Stack direction="column" alignItems="center">
+      <Stack direction="column" align="center">
         <Text fontSize="1.5rem" textAlign="center">
           Wrong Network. <br />
           Please connect to Kovan.

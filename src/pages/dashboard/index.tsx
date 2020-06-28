@@ -9,27 +9,30 @@ import {
   Heading,
   Switch,
   FormLabel,
+  Spinner,
   useColorMode,
 } from '@chakra-ui/core';
 
 import { injected } from '../../utils/connectors';
 import MBMarketContract from '../../abis/MBMarket.json';
 import { bgColor1, color1 } from '../../utils/theme';
-import { FactoryContractContext } from '../../state/contracts/FactoryContractContext';
 import MarketCard from './MarketCard';
+import { ContractContext } from '../../state/contracts/Context';
 
 const Dashboard = (): JSX.Element => {
   const { library, connector, account } = useWeb3React<Web3Provider>();
   const { colorMode } = useColorMode();
 
+  const { contracts } = useContext(ContractContext);
+  const FactoryContract = contracts[0];
+
   const [factoryContract, setFactoryContract] = useState<Contract>();
   const [marketContract, setMarketContract] = useState<Contract>();
 
-  let factoryContractContext = useContext(FactoryContractContext);
-  factoryContractContext = factoryContractContext.FactoryContract;
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    if (!!library) setFactoryContract(factoryContractContext.connect(library));
+    if (!!library) setFactoryContract(FactoryContract.connect(library));
   }, [library]);
 
   useEffect(() => {
@@ -51,12 +54,14 @@ const Dashboard = (): JSX.Element => {
                 MBMarketContract.abi,
                 providerOrSigner
               );
+
               const isPaused = await marketContract.paused();
               if (isPaused) return;
 
               setMarketContract(marketContract);
             }
           }
+          setLoading(false);
         }
       } catch (error) {
         console.error(error);
@@ -83,7 +88,11 @@ const Dashboard = (): JSX.Element => {
 
         <Flex justify="center" align="center">
           <FormLabel htmlFor="email-alerts">Enable alerts?</FormLabel>
-          <Switch id="email-alerts" color="red" />
+          <Switch
+            id="email-alerts"
+            color="red"
+            aria-label="Enable email alerts"
+          />
         </Flex>
       </Flex>
 
@@ -95,7 +104,13 @@ const Dashboard = (): JSX.Element => {
         p="0rem 1rem"
         maxW="100%"
       >
-        {marketContract && <MarketCard marketContract={marketContract} />}
+        {loading ? (
+          <Spinner />
+        ) : marketContract ? (
+          <MarketCard marketContract={marketContract} />
+        ) : (
+          <h1>No Market Available...</h1>
+        )}
       </Flex>
     </Box>
   );

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import NextLink from 'next/link';
 import { useWeb3React } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers';
@@ -18,12 +18,13 @@ import {
   DrawerContent,
   useDisclosure,
 } from '@chakra-ui/core';
+import { Contract } from '@ethersproject/contracts';
 
+import { ContractContext } from '../../state/contracts/Context';
 import { useEagerConnect, useInactiveListener } from '../../hooks';
 import { injected, getNetwork, network } from '../../utils/connectors';
 import { shortenAddress } from '../../utils';
 import { bgColor3, bgColor4 } from '../../utils/theme';
-import { useFactoryContract } from '../../hooks/useHelperContract';
 import { checkOwner } from '../../utils';
 
 const Header = () => {
@@ -40,8 +41,6 @@ const Header = () => {
   const [owner, setOwner] = useState<string>('');
   const [ENSName, setENSName] = useState<string>('');
 
-  console.log('chainId:', chainId);
-
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const triedEager = useEagerConnect();
@@ -52,11 +51,19 @@ const Header = () => {
 
   useInactiveListener(!triedEager);
 
-  const factoryContract = useFactoryContract();
+  const [factoryContract, setFactoryContract] = useState<Contract>();
+
+  const { contracts } = useContext(ContractContext);
+  const FactoryContract = contracts[0];
+
+  useEffect(() => {
+    if (!!library) setFactoryContract(FactoryContract.connect(library));
+  }, [library]);
 
   useEffect(() => {
     (async () => {
-      if (factoryContract) setOwner(await factoryContract.owner());
+      if (factoryContract !== undefined)
+        setOwner(await factoryContract.owner());
     })();
   }, []);
 
@@ -94,12 +101,7 @@ const Header = () => {
         >
           <NextLink href="/dashboard" passHref>
             <Link _hover={{ cursor: 'pointer' }}>
-              <Flex
-                flexDirection="row"
-                alignItems="center"
-                justifyContent="center"
-                mr={5}
-              >
+              <Flex direction="row" align="center" justify="center" mr={5}>
                 <Box
                   as="span"
                   fontSize="3rem"
@@ -116,7 +118,7 @@ const Header = () => {
               </Flex>
             </Link>
           </NextLink>
-          <Flex alignItems="center" justifyContent="flex-end">
+          <Flex align="center" justify="flex-end">
             <IconButton
               aria-label={`Switch to ${
                 colorMode === 'light' ? 'dark' : 'light'
@@ -189,7 +191,7 @@ const Header = () => {
           <DrawerOverlay />
           <DrawerContent>
             <DrawerBody>
-              <Flex justifyContent="center" alignItems="center" my="1rem">
+              <Flex justify="center" align="center" my="1rem">
                 <NextLink href="/dashboard" passHref>
                   <Link
                     textTransform="uppercase"
@@ -202,7 +204,7 @@ const Header = () => {
                 </NextLink>
               </Flex>
 
-              <Flex justifyContent="center" alignItems="center" my="1rem">
+              <Flex justify="center" align="center" my="1rem">
                 <NextLink href="/markets" passHref>
                   <Link
                     textTransform="uppercase"
@@ -215,7 +217,7 @@ const Header = () => {
                 </NextLink>
               </Flex>
 
-              <Flex justifyContent="center" alignItems="center" my="1rem">
+              <Flex justify="center" align="center" my="1rem">
                 {account && checkOwner(account, owner) && (
                   <Link
                     textTransform="uppercase"

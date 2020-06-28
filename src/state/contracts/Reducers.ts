@@ -1,14 +1,20 @@
-import { CREATE_MARKET_CONTRACT } from "./Constants";
+import { ADD_MARKET_CONTRACT, DELETE_MARKET_CONTRACT } from './Constants';
 
-export function ContractReducer(state: any, action: any) {
+export const ContractReducer = (state: any, action: any) => {
   switch (action.type) {
-    case CREATE_MARKET_CONTRACT: {
-      return {
+    case ADD_MARKET_CONTRACT:
+      return [
         ...state,
-      };
-    }
-
+        {
+          title: action.book.title,
+          author: action.book.author,
+        },
+      ];
+    case DELETE_MARKET_CONTRACT:
+      return state.filter(
+        (marketContract: any) => marketContract.address !== action.address
+      );
     default:
       return state;
   }
-}
+};

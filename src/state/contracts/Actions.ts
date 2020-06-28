@@ -1,4 +1,4 @@
-import { CREATE_MARKET_CONTRACT } from "./Constants";
+import { ADD_MARKET_CONTRACT, DELETE_MARKET_CONTRACT } from './Constants';
 
 export const toggleCreateMarketModal = (value: boolean) => {
   return {

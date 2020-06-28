@@ -5,7 +5,6 @@ import { Web3Provider } from '@ethersproject/providers';
 
 import Market from './Market';
 import MBMarketFactoryContract from '../../abis/MBMarketFactory.json';
-import { FactoryContractContext } from '../../state/contracts/FactoryContractContext';
 import addresses, { KOVAN_ID } from '../../utils/addresses';
 import { bgColor1, color1 } from '../../utils/theme';
 import { useContract } from '../../hooks';
@@ -16,6 +15,7 @@ import {
   TableRow,
   TableHead,
 } from './markets.style';
+import { ContractContext } from '../../state/contracts/Context';
 
 const Markets = (): JSX.Element => {
   const { library } = useWeb3React<Web3Provider>();
@@ -23,11 +23,11 @@ const Markets = (): JSX.Element => {
   const [markets, setMarkets] = useState([]);
   const [factoryContract, setFactoryContract] = useState();
 
-  let factoryContractContext = useContext(FactoryContractContext);
-  factoryContractContext = factoryContractContext.FactoryContract;
+  const { contracts } = useContext(ContractContext);
+  const FactoryContract = contracts[0];
 
   useEffect(() => {
-    if (!!library) setFactoryContract(factoryContractContext.connect(library));
+    if (!!library) setFactoryContract(FactoryContract.connect(library));
   }, [library]);
 
   useEffect(() => {
@@ -49,9 +49,9 @@ const Markets = (): JSX.Element => {
     <Box bg={bgColor1[colorMode]} m="0" pb="1rem" rounded="md" boxShadow="md">
       <Box roundedTop="0.25rem" bg="primary.100" h="0.5rem" />
       <Flex
-        flexDirection="column"
-        flexWrap="wrap"
-        justifyContent="space-between"
+        direction="column"
+        wrap="wrap"
+        justify="space-between"
         m="0 auto"
         w="100%"
         p="1rem 1.5rem"

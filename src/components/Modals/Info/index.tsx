@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { formatUnits } from '@ethersproject/units';
 import { v4 as uuidv4 } from 'uuid';
 import { Contract } from '@ethersproject/contracts';
@@ -16,7 +16,6 @@ import {
 } from '@chakra-ui/core';
 
 import { shortenAddress } from '../../../utils';
-import { useFactoryContract } from '../../../hooks/useHelperContract';
 import { bgColor7 } from '../../../utils/theme';
 
 interface IOutcome {
@@ -37,7 +36,6 @@ const InfoModal = ({
   infoModalToggle,
   marketContract,
 }: IProps): JSX.Element => {
-  const factoryContract = useFactoryContract();
   const { colorMode } = useColorMode();
 
   const MarketStates = ['WAITING', 'OPEN', 'LOCKED', 'WITHDRAW'];
@@ -51,7 +49,7 @@ const InfoModal = ({
     (async () => {
       let isStale = false;
 
-      if (!isStale && factoryContract) {
+      if (!isStale) {
         try {
           const state = await marketContract.getCurrentState();
           setMarketState(MarketStates[state]);
@@ -107,7 +105,7 @@ const InfoModal = ({
         <ModalHeader>Market Stats</ModalHeader>
         <ModalCloseButton onClick={infoModalToggle.onClose} />
         <ModalBody>
-          <Flex flexDirection="column" alignItems="center">
+          <Flex direction="column" align="center">
             <Heading as="h3" fontSize="1.8rem" fontWeight="400">
               {shortenAddress(owner) ?? '-'}
             </Heading>
@@ -115,7 +113,7 @@ const InfoModal = ({
               Contract Owner
             </Text>
           </Flex>
-          <Flex flexDirection="column" alignItems="center">
+          <Flex direction="column" align="center">
             <Heading as="h3" fontSize="1.8rem" fontWeight="400">
               {marketState ?? '-'}
             </Heading>
@@ -125,7 +123,7 @@ const InfoModal = ({
           </Flex>
           {outcomeNamesAndAmounts &&
             outcomeNamesAndAmounts.map((outcome: IOutcome) => (
-              <Flex key={uuidv4()} flexDirection="column" alignItems="center">
+              <Flex key={uuidv4()} direction="column" align="center">
                 <Heading as="h3" fontSize="1.8rem" fontWeight="400">
                   {outcome.bets}
                 </Heading>
@@ -135,7 +133,7 @@ const InfoModal = ({
               </Flex>
             ))}
 
-          <Flex flexDirection="column" alignItems="center">
+          <Flex direction="column" align="center">
             <Heading as="h3" fontSize="1.8rem" fontWeight="400">
               {numberOfParticipants}
             </Heading>
@@ -143,7 +141,7 @@ const InfoModal = ({
               Number of Participants
             </Text>
           </Flex>
-          <Flex flexDirection="column" alignItems="center">
+          <Flex direction="column" align="center">
             <Heading as="h3" fontSize="1.8rem" fontWeight="400">
               {pot}
             </Heading>
