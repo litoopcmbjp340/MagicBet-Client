@@ -1,2 +1,0 @@
-export const ADD_OPTIONS = 'ADD_OPTIONS';
-export const DELETE_OPTIONS = 'DELETE_OPTIONS';

@@ -45,9 +45,9 @@ const Header = () => {
 
   const triedEager = useEagerConnect();
 
-  useEffect(() => {
-    if (triedEager && !active && !error) activate(network);
-  }, [triedEager, active, error, activate]);
+  // useEffect(() => {
+  //   if (triedEager && !active && !error) activate(network);
+  // }, [triedEager, active, error, activate]);
 
   useInactiveListener(!triedEager);
 

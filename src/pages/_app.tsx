@@ -19,7 +19,6 @@ import '../utils/customDatePickerStyles.css';
 // import * as serviceWorker from '../serviceWorker';
 
 import { ContractProvider } from '../state/contracts/Context';
-import { AppProvider } from '../state/app/Context';
 import Layout from '../components/Layout';
 import Error from '../components/Error';
 import SwitchChain from '../components/SwitchChain';
@@ -35,6 +34,7 @@ function Application({ Component }: { Component: NextComponentType }) {
   }, []);
 
   const { error, chainId } = useWeb3React();
+  console.log('chainId:', chainId);
 
   const getErrorMessage = () => {
     if (error instanceof NoEthereumProviderError)
@@ -81,15 +81,13 @@ export default class App extends NextApp {
         </Head>
         <Web3ReactProvider getLibrary={getLibrary}>
           <ContractProvider>
-            <AppProvider>
-              <ThemeProvider theme={theme}>
-                <ColorModeProvider>
-                  <CSSReset />
-                  <Global styles={GlobalStyle} />
-                  <Application Component={Component} />
-                </ColorModeProvider>
-              </ThemeProvider>
-            </AppProvider>
+            <ThemeProvider theme={theme}>
+              <ColorModeProvider>
+                <CSSReset />
+                <Global styles={GlobalStyle} />
+                <Application Component={Component} />
+              </ColorModeProvider>
+            </ThemeProvider>
           </ContractProvider>
         </Web3ReactProvider>
       </>

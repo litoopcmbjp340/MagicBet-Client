@@ -9,10 +9,10 @@ const Layout = ({ children }: { children: ReactNode }): JSX.Element => {
   const { colorMode } = useColorMode();
 
   return (
-    <Box bg={bgColor2[colorMode]}>
+    <Box h="100vh" bg={bgColor2[colorMode]}>
       <Header />
       <NavStrip />
-      <Box w="100vw" m="2rem auto" p="1rem 1.25rem">
+      <Box w="100vw" m="2rem auto" p="1rem 1.25rem" bg={bgColor2[colorMode]}>
         {children}
       </Box>
     </Box>
