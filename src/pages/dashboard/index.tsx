@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useWeb3React } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers';
-import { Contract } from '@ethersproject/contracts';
 import { AddressZero } from '@ethersproject/constants';
 import {
   Box,
@@ -9,68 +8,43 @@ import {
   Heading,
   Switch,
   FormLabel,
-  Spinner,
   useColorMode,
 } from '@chakra-ui/core';
 
-import { injected } from '../../utils/connectors';
-import MBMarketContract from '../../abis/MBMarket.json';
+//import { injected } from '../../utils/connectors';
+
 import { bgColor1, color1 } from '../../utils/theme';
 import MarketCard from './MarketCard';
 import { ContractContext } from '../../state/contracts/Context';
 
 const Dashboard = (): JSX.Element => {
-  const { library, connector, account } = useWeb3React<Web3Provider>();
+  const { contracts } = useContext(ContractContext);
+  const [marketContractAddress, setMarketContractAddress] = useState<string>(
+    ''
+  );
+
+  const { library, account, connector } = useWeb3React<Web3Provider>();
   const { colorMode } = useColorMode();
 
-  const { contracts } = useContext(ContractContext);
-  const FactoryContract = contracts[0];
-
-  const [factoryContract, setFactoryContract] = useState<Contract>();
-  const [marketContract, setMarketContract] = useState<Contract>();
-
-  const [loading, setLoading] = useState<boolean>(true);
-
   useEffect(() => {
-    if (!!library) setFactoryContract(FactoryContract.connect(library));
-  }, [library]);
-
-  useEffect(() => {
-    (async () => {
+    if (!!library && !!account) {
       let isStale = false;
+      const factoryInstance = contracts[0].connect(library);
 
-      try {
-        if (!isStale && !!library && factoryContract !== undefined) {
-          if (factoryContract.provider !== null) {
-            const mostRecentAddress = await factoryContract.mostRecentContract();
-            if (mostRecentAddress !== AddressZero) {
-              let providerOrSigner;
-              if (connector == injected && account)
-                providerOrSigner = library.getSigner(account);
-              else providerOrSigner = library;
-
-              const marketContract = new Contract(
-                mostRecentAddress,
-                MBMarketContract.abi,
-                providerOrSigner
-              );
-
-              const isPaused = await marketContract.paused();
-              if (isPaused) return;
-
-              setMarketContract(marketContract);
-            }
-          }
-          setLoading(false);
-        }
-      } catch (error) {
-        console.error(error);
+      if (!isStale) {
+        factoryInstance
+          .mostRecentContract()
+          .then((mostRecentAddress: string) => {
+            if (mostRecentAddress !== AddressZero)
+              setMarketContractAddress(mostRecentAddress);
+          });
       }
+
       return () => {
         isStale = true;
       };
-    })();
-  }, [factoryContract, library]);
+    }
+  }, [library]);
 
   return (
     <Box bg={bgColor1[colorMode]} pb="1rem" rounded="md" boxShadow="md">
@@ -104,10 +78,8 @@ const Dashboard = (): JSX.Element => {
         p="0rem 1rem"
         maxW="100%"
       >
-        {loading ? (
-          <Spinner />
-        ) : marketContract ? (
-          <MarketCard marketContract={marketContract} />
+        {!!marketContractAddress ? (
+          <MarketCard marketContractAddress={marketContractAddress} />
         ) : (
           <h1>No Market Available...</h1>
         )}

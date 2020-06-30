@@ -17,51 +17,55 @@ import { ColorModeProvider, CSSReset, ThemeProvider } from '@chakra-ui/core';
 import 'react-datepicker/dist/react-datepicker.css';
 import '../utils/customDatePickerStyles.css';
 // import * as serviceWorker from '../serviceWorker';
+import {
+  Alert,
+  AlertIcon,
+  AlertTitle,
+  AlertDescription,
+} from '@chakra-ui/core';
 
 import { ContractProvider } from '../state/contracts/Context';
 import { AppProvider } from '../state/app/Context';
 import Layout from '../components/Layout';
 import Error from '../components/Error';
-import SwitchChain from '../components/SwitchChain';
 import theme, { GlobalStyle } from '../utils/theme';
+
+function getErrorMessage(error: any) {
+  if (error instanceof NoEthereumProviderError)
+    return 'No Ethereum browser extension detected, install MetaMask on desktop or visit from a dApp browser on mobile.';
+  else if (error instanceof UnsupportedChainIdError)
+    return "You're connected to an unsupported network.";
+  else if (error instanceof UserRejectedRequestErrorInjected)
+    return 'Please authorize this website to access your Ethereum account.';
+  else {
+    console.error(error);
+    return 'An unknown error occurred. Check the console for more details.';
+  }
+}
 
 const useIsomorphicLayoutEffect =
   typeof window !== 'undefined' ? useLayoutEffect : useEffect;
 
 function Application({ Component }: { Component: NextComponentType }) {
   const [painted, setPainted] = useState<boolean>(false);
+  const { error } = useWeb3React();
+
   useIsomorphicLayoutEffect(() => {
     setPainted(true);
   }, []);
 
-  const { error, chainId } = useWeb3React();
-
-  const getErrorMessage = () => {
-    if (error instanceof NoEthereumProviderError)
-      console.log(
-        'No Ethereum browser extension detected, install MetaMask on desktop or visit from a dApp browser on mobile.'
-      );
-    else if (error instanceof UnsupportedChainIdError)
-      console.log("You're connected to an unsupported network.");
-    else if (error instanceof UserRejectedRequestErrorInjected)
-      console.log(
-        'Please authorize this website to access your Ethereum account.'
-      );
-    else {
-      console.error(error);
-      return 'An unknown error occurred. Check the console for more details.';
-    }
-  };
-
   return !painted ? null : (
     <Layout>
-      {error ? (
-        getErrorMessage()
-      ) : typeof chainId !== 'number' ? null : chainId !== 42 ? (
-        <SwitchChain />
-      ) : (
-        <Component />
+      {!!error && (
+        <Alert status="error">
+          <AlertIcon />
+          <AlertTitle>{getErrorMessage(error)}</AlertTitle>
+          <AlertDescription>
+            &nbsp;Please connect to Kovan and try again.
+          </AlertDescription>
+        </Alert>
       )}
+      <Component />
     </Layout>
   );
 }

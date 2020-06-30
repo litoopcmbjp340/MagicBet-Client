@@ -16,15 +16,18 @@ import {
   useToast,
   useDisclosure,
   useColorMode,
+  Spinner,
   Stat,
   StatLabel,
   StatNumber,
 } from '@chakra-ui/core';
 
+import MBMarketContract from '../../../abis/MBMarket.json';
+import useContract from '../../../hooks/useContract';
 import ChartWrapper from './ChartWrapper';
 import { injected } from '../../../utils/connectors';
 import Info from '../../../components/Modals/Info';
-import SettingsModal from 'components/Modals/Settings';
+import SettingsModal from '../../../components/Modals/Settings';
 import { shortenAddress } from '../../../utils';
 import useDaiContract from '../../../hooks/useDaiContract';
 // import { useTokens } from '../../../utils/tokens';
@@ -41,9 +44,7 @@ const CountDown = ({ startDate }: { startDate: number }) => {
 
   useEffect(() => {
     let isStale = false;
-    if (!isStale) {
-      setInterval(() => getTimeUntil(realStartDate), 1000);
-    }
+    if (!isStale) setInterval(() => getTimeUntil(realStartDate), 1000);
 
     return () => {
       isStale = true;
@@ -70,13 +71,18 @@ const CountDown = ({ startDate }: { startDate: number }) => {
   );
 };
 
-const MarketCard = ({ marketContract }: any) => {
-  console.log('marketContract:', marketContract);
+const MarketCard = ({ marketContractAddress }: any) => {
+  const marketContract = useContract(
+    marketContractAddress,
+    MBMarketContract.abi,
+    true
+  );
   const { connector, account, library } = useWeb3React<Web3Provider>();
   const { colorMode } = useColorMode();
   const infoModalToggle = useDisclosure();
   const settingsModalToggle = useDisclosure();
   const daiContract = useDaiContract();
+  const [loading, setLoading] = useState<boolean>(true);
 
   const toast = useToast();
 

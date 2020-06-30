@@ -18,32 +18,30 @@ import {
 import { ContractContext } from '../../state/contracts/Context';
 
 const Markets = (): JSX.Element => {
-  const { library } = useWeb3React<Web3Provider>();
+  const { library, account } = useWeb3React<Web3Provider>();
   const { colorMode } = useColorMode();
   const [markets, setMarkets] = useState([]);
-  const [factoryContract, setFactoryContract] = useState();
 
   const { contracts } = useContext(ContractContext);
-  const FactoryContract = contracts[0];
 
   useEffect(() => {
-    if (!!library) setFactoryContract(FactoryContract.connect(library));
-  }, [library]);
+    if (!!library && !!account) {
+      let isStale = false;
+      const factoryInstance = contracts[0].connect(library);
 
-  useEffect(() => {
-    let isStale = false;
-    if (!isStale && !!library && factoryContract !== undefined) {
-      if (factoryContract.provider !== null) {
-        factoryContract
+      if (!isStale) {
+        factoryInstance
           .getMarkets()
           .then((markets: any) => setMarkets(markets))
-          .catch((error: any) => console.error(error));
+          .catch((error: Error) => console.error(error));
       }
+
+      return () => {
+        isStale = true;
+        setMarkets([]);
+      };
     }
-    return (): void => {
-      isStale = true;
-    };
-  }, [factoryContract]);
+  }, [library]);
 
   return (
     <Box bg={bgColor1[colorMode]} m="0" pb="1rem" rounded="md" boxShadow="md">
