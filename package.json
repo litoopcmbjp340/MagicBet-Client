@@ -7,7 +7,7 @@
     "build": "next build && next export"
   },
   "dependencies": {
-    "@apollo/client": "3.0.0-rc.9",
+    "@apollo/client": "3.0.0-rc.10",
     "@chakra-ui/core": "^0.8.0",
     "@emotion/core": "^10.0.28",
     "@emotion/styled": "^10.0.27",
@@ -43,7 +43,7 @@
     "@types/uuid": "^8.0.0",
     "husky": "^4.2.5",
     "recharts": "^1.8.5",
-    "typescript": "^3.9.5"
+    "typescript": "^3.9.6"
   },
   "keywords": [],
   "author": "",

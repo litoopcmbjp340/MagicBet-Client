@@ -110,16 +110,18 @@ const MarketCard = ({ marketContractAddress }: any) => {
 
   useEffect(() => {
     (async () => {
-      let time = await marketContract.marketResolutionTime();
-      time = time.toNumber();
-      setMarketResolutionTime(time * 1000);
+      if (!!marketContract) {
+        let time = await marketContract.marketResolutionTime();
+        time = time.toNumber();
+        setMarketResolutionTime(time * 1000);
+      }
     })();
   }, []);
 
   useEffect(() => {
     (async () => {
       let isStale = false;
-      if (!isStale) {
+      if (!isStale && !!marketContract) {
         if (marketContract.provider) {
           const state = await marketContract.getCurrentState();
           setState(state);
@@ -137,7 +139,7 @@ const MarketCard = ({ marketContractAddress }: any) => {
   useEffect(() => {
     (async () => {
       let isStale = false;
-      if (account && library && daiContract && !isStale) {
+      if (account && library && daiContract && !isStale && !!marketContract) {
         const getAllowance = async () => {
           return await daiContract.allowance(account, marketContract.address);
         };
@@ -153,26 +155,28 @@ const MarketCard = ({ marketContractAddress }: any) => {
         isStale = true;
       };
     })();
-  }, [account, daiContract, library, marketContract.address]);
+  }, [account, daiContract, library]);
 
   useEffect(() => {
     (async () => {
-      let isStale = false;
-      const numberOfOutcomes = await marketContract.numberOfOutcomes();
-      if (numberOfOutcomes.toNumber() !== 0 && !isStale) {
-        const numberOfOutcomes = (
-          await marketContract.numberOfOutcomes()
-        ).toNumber();
-        let newOutcomes = [];
-        for (let i = 0; i < numberOfOutcomes; i++) {
-          const outcomeName = await marketContract.outcomeNames(i);
-          newOutcomes.push(outcomeName);
+      if (!!marketContract) {
+        let isStale = false;
+        const numberOfOutcomes = await marketContract.numberOfOutcomes();
+        if (numberOfOutcomes.toNumber() !== 0 && !isStale) {
+          const numberOfOutcomes = (
+            await marketContract.numberOfOutcomes()
+          ).toNumber();
+          let newOutcomes = [];
+          for (let i = 0; i < numberOfOutcomes; i++) {
+            const outcomeName = await marketContract.outcomeNames(i);
+            newOutcomes.push(outcomeName);
+          }
+          setOutcomes(newOutcomes);
         }
-        setOutcomes(newOutcomes);
+        return () => {
+          isStale = true;
+        };
       }
-      return () => {
-        isStale = true;
-      };
     })();
   }, [marketContract]);
 
@@ -208,17 +212,17 @@ const MarketCard = ({ marketContractAddress }: any) => {
     const increaseByFactor = (number: any) =>
       number.mul(BigNumber.from(120)).div(BigNumber.from(100));
 
-    const estimatedWei = await marketContract.getEstimatedETHforDAI(formatted);
+    const estimatedWei = await marketContract!.getEstimatedETHforDAI(formatted);
     const estimatedWeiWithMargin = increaseByFactor(estimatedWei[0]);
 
-    const estimatedGas = await marketContract.estimateGas.placeBet(
+    const estimatedGas = await marketContract!.estimateGas.placeBet(
       indexOfChoice,
       formatted,
       { value: estimatedWeiWithMargin }
     );
 
     try {
-      const tx = await marketContract.placeBet(indexOfChoice, formatted, {
+      const tx = await marketContract!.placeBet(indexOfChoice, formatted, {
         gasLimit: increaseByFactor(estimatedGas),
         value: estimatedWeiWithMargin,
       });
@@ -256,7 +260,7 @@ const MarketCard = ({ marketContractAddress }: any) => {
 
   const withdraw = async () => {
     try {
-      const tx = await marketContract.withdraw();
+      const tx = await marketContract!.withdraw();
       console.log(tx.hash);
       await tx.wait();
     } catch (error) {
@@ -283,7 +287,7 @@ const MarketCard = ({ marketContractAddress }: any) => {
         >
           <Stat textAlign="center">
             <StatLabel color={color3[colorMode]}>Address</StatLabel>
-            <StatNumber>{shortenAddress(marketContract.address)}</StatNumber>
+            <StatNumber>{shortenAddress(marketContract!.address)}</StatNumber>
           </Stat>
 
           <Stat textAlign="center">
@@ -337,7 +341,7 @@ const MarketCard = ({ marketContractAddress }: any) => {
 
         <Flex justify="center" align="center" wrap="wrap">
           <Box display={{ sm: 'none', md: 'block' }}>
-            <ChartWrapper marketContract={marketContract} />
+            <ChartWrapper marketContract={marketContract!} />
           </Box>
 
           {connector === injected && (
@@ -436,7 +440,10 @@ const MarketCard = ({ marketContractAddress }: any) => {
           )}
         </Flex>
       </Box>
-      <Info infoModalToggle={infoModalToggle} marketContract={marketContract} />
+      <Info
+        infoModalToggle={infoModalToggle}
+        marketContract={marketContract!}
+      />
       <SettingsModal
         settingsModalToggle={settingsModalToggle}
         marketContract={marketContract}

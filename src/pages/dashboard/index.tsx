@@ -11,8 +11,6 @@ import {
   useColorMode,
 } from '@chakra-ui/core';
 
-//import { injected } from '../../utils/connectors';
-
 import { bgColor1, color1 } from '../../utils/theme';
 import MarketCard from './MarketCard';
 import { ContractContext } from '../../state/contracts/Context';
@@ -23,7 +21,7 @@ const Dashboard = (): JSX.Element => {
     ''
   );
 
-  const { library, account, connector } = useWeb3React<Web3Provider>();
+  const { library, account } = useWeb3React<Web3Provider>();
   const { colorMode } = useColorMode();
 
   useEffect(() => {
@@ -35,6 +33,7 @@ const Dashboard = (): JSX.Element => {
         factoryInstance
           .mostRecentContract()
           .then((mostRecentAddress: string) => {
+            console.log('mostRecentAddress:', mostRecentAddress);
             if (mostRecentAddress !== AddressZero)
               setMarketContractAddress(mostRecentAddress);
           });

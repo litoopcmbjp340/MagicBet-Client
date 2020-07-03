@@ -44,12 +44,14 @@ const Header = ({ triedEager }: { triedEager: boolean }): JSX.Element => {
 
   useEffect(() => {
     if (!!library && !!account) {
-      console.log('account in header:', account);
       let isStale = false;
       const factoryInstance = contracts[0].connect(library);
-      factoryInstance.owner().then((res: string) => {
-        if (!isStale) setIsOwner(checkOwner(account, res));
-      });
+      factoryInstance
+        .owner()
+        .then((owner: string) => {
+          if (!isStale) setIsOwner(checkOwner(account, owner));
+        })
+        .catch((error: Error) => console.error(error));
       return () => {
         isStale = true;
         setIsOwner(false);
@@ -57,21 +59,21 @@ const Header = ({ triedEager }: { triedEager: boolean }): JSX.Element => {
     }
   }, [library, connector, account]);
 
-  useEffect(() => {
-    if (!!library && !!account) {
-      let isStale = false;
-      library
-        .lookupAddress(account)
-        .then((name) => {
-          if (!isStale && typeof name === 'string') setENSName(name);
-        })
-        .catch(() => {});
-      return () => {
-        isStale = true;
-        setENSName('');
-      };
-    }
-  }, [library, account, chainId]);
+  // useEffect(() => {
+  //   if (!!library && !!account) {
+  //     let isStale = false;
+  //     library
+  //       .lookupAddress(account)
+  //       .then((name) => {
+  //         if (!isStale && typeof name === 'string') setENSName(name);
+  //       })
+  //       .catch(() => {});
+  //     return () => {
+  //       isStale = true;
+  //       setENSName('');
+  //     };
+  //   }
+  // }, [library, account, chainId]);
 
   return (
     <>
