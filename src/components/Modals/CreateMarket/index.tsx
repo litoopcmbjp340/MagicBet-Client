@@ -37,9 +37,7 @@ import { ContractContext } from 'state/contracts/Context';
 const CreateMarket = ({ createMarketModalToggle }: any): JSX.Element => {
   const { colorMode } = useColorMode();
   const values = useContext(ContractContext);
-  console.log('values:', values.dispatch);
   const { contracts, dispatch } = useContext(ContractContext);
-  console.log('contracts:', contracts);
 
   const factoryContract = useContract(
     addresses[KOVAN_ID].marketFactory,
@@ -57,10 +55,10 @@ const CreateMarket = ({ createMarketModalToggle }: any): JSX.Element => {
     Date.now() / 1000
   );
   const [marketLockingTime, setMarketLockingTime] = useState<number>(
-    Date.now() / 1000
+    Date.now() / 1000 + 86400
   );
   const [marketResolutionTime, setMarketResolutionTime] = useState<number>(
-    Date.now() / 1000
+    Date.now() / 1000 + 172800
   );
   const [timeout, setTimeout] = useState<number>(10);
   const [options, setOptions] = useState<any>(['']);

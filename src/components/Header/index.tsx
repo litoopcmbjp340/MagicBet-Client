@@ -18,7 +18,6 @@ import {
   DrawerContent,
   useDisclosure,
 } from '@chakra-ui/core';
-import { Contract } from '@ethersproject/contracts';
 
 import { ContractContext } from '../../state/contracts/Context';
 import { injected } from '../../utils/connectors';
@@ -28,18 +27,12 @@ import { checkOwner } from '../../utils';
 
 const Header = ({ triedEager }: { triedEager: boolean }): JSX.Element => {
   const { colorMode, toggleColorMode } = useColorMode();
-  const {
-    account,
-    activate,
-    chainId,
-    connector,
-    error,
-    library,
-  } = useWeb3React<Web3Provider>();
+  const { account, activate, connector, error, library } = useWeb3React<
+    Web3Provider
+  >();
   const { contracts } = useContext(ContractContext);
 
   const [isOwner, setIsOwner] = useState<boolean>(false);
-  const [ENSName, setENSName] = useState<string>('');
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   useEffect(() => {
@@ -58,22 +51,6 @@ const Header = ({ triedEager }: { triedEager: boolean }): JSX.Element => {
       };
     }
   }, [library, connector, account]);
-
-  // useEffect(() => {
-  //   if (!!library && !!account) {
-  //     let isStale = false;
-  //     library
-  //       .lookupAddress(account)
-  //       .then((name) => {
-  //         if (!isStale && typeof name === 'string') setENSName(name);
-  //       })
-  //       .catch(() => {});
-  //     return () => {
-  //       isStale = true;
-  //       setENSName('');
-  //     };
-  //   }
-  // }, [library, account, chainId]);
 
   return (
     <>
@@ -132,7 +109,7 @@ const Header = ({ triedEager }: { triedEager: boolean }): JSX.Element => {
               borderColor={bgColor4[colorMode]}
               bg={bgColor4[colorMode]}
             >
-              {ENSName || (!!account && shortenAddress(account))}
+              {!!account && shortenAddress(account)}
             </Tag>
           ) : (
             <Button

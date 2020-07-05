@@ -47,14 +47,14 @@ const useIsomorphicLayoutEffect =
   typeof window !== 'undefined' ? useLayoutEffect : useEffect;
 
 function Application({ Component }: { Component: NextComponentType }) {
-  const [painted, setPainted] = useState<boolean>(false);
+  const [ready, setReady] = useState<boolean>(false);
   const { error } = useWeb3React();
 
   useIsomorphicLayoutEffect(() => {
-    setPainted(true);
+    setReady(true);
   }, []);
 
-  return !painted ? null : (
+  return !ready ? null : (
     <Layout>
       {!!error && (
         <Alert status="error">

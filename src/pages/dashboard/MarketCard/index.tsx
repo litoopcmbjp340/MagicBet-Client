@@ -24,14 +24,13 @@ import {
 
 import MBMarketContract from '../../../abis/MBMarket.json';
 import useContract from '../../../hooks/useContract';
+import useDaiContract from '../../../hooks/useDaiContract';
 import ChartWrapper from './ChartWrapper';
-import { injected } from '../../../utils/connectors';
 import Info from '../../../components/Modals/Info';
 import SettingsModal from '../../../components/Modals/Settings';
 import { shortenAddress } from '../../../utils';
-import useDaiContract from '../../../hooks/useDaiContract';
-// import { useTokens } from '../../../utils/tokens';
 import { bgColor8, color2, color3 } from '../../../utils/theme';
+import { injected } from '../../../utils/connectors';
 
 const CountDown = ({ startDate }: { startDate: number }) => {
   const realStartDate = moment(startDate).format('YYYY-MM-DD');
@@ -307,7 +306,7 @@ const MarketCard = ({ marketContractAddress }: any) => {
 
           <Stat textAlign="center">
             <StatLabel color={color3[colorMode]}>Resolution</StatLabel>
-            <StatNumber>
+            <StatNumber position="sticky">
               {marketResolutionTime ? (
                 <CountDown startDate={marketResolutionTime} />
               ) : (
@@ -315,7 +314,7 @@ const MarketCard = ({ marketContractAddress }: any) => {
               )}
             </StatNumber>
           </Stat>
-          <Box>
+          <Box display={{ sm: 'none', md: 'block' }}>
             <IconButton
               aria-label="market info"
               variant="ghost"
@@ -335,9 +334,31 @@ const MarketCard = ({ marketContractAddress }: any) => {
             />
           </Box>
         </Flex>
+
         <Heading as="h1" textAlign="center" fontSize="3rem">
           {prompt}
         </Heading>
+        <Box display={{ sm: 'block', md: 'none' }}>
+          <Flex align="center" justify="center" mt="1rem">
+            <IconButton
+              aria-label="market info"
+              variant="ghost"
+              color={color3[colorMode]}
+              icon="info"
+              size="md"
+              pr={0.5}
+              onClick={infoModalToggle.onOpen}
+            />
+            <IconButton
+              aria-label="purchase settings"
+              variant="ghost"
+              color={color3[colorMode]}
+              icon="settings"
+              size="md"
+              onClick={settingsModalToggle.onOpen}
+            />
+          </Flex>
+        </Box>
 
         <Flex justify="center" align="center" wrap="wrap">
           <Box display={{ sm: 'none', md: 'block' }}>

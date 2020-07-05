@@ -1,14 +1,6 @@
 import React from 'react';
 import { Box, Flex } from '@chakra-ui/core';
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-} from 'recharts';
+import { LineChart, Line, XAxis, YAxis, Tooltip, Legend } from 'recharts';
 import ColorHash from 'color-hash-ts';
 
 export default function Graph({ data, options }: any) {

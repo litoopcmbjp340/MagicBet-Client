@@ -33,7 +33,6 @@ const Dashboard = (): JSX.Element => {
         factoryInstance
           .mostRecentContract()
           .then((mostRecentAddress: string) => {
-            console.log('mostRecentAddress:', mostRecentAddress);
             if (mostRecentAddress !== AddressZero)
               setMarketContractAddress(mostRecentAddress);
           });
@@ -65,6 +64,7 @@ const Dashboard = (): JSX.Element => {
             id="email-alerts"
             color="red"
             aria-label="Enable email alerts"
+            isDisabled
           />
         </Box>
       </Flex>

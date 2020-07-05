@@ -67,8 +67,10 @@ export default function Chart({
 
         let openingTime = await marketContract.marketOpeningTime();
         openingTime = openingTime.toNumber();
+        console.log('openingTime:', openingTime);
         let closingTime = await marketContract.marketLockingTime();
         closingTime = closingTime.toNumber();
+        console.log('closingTime:', closingTime);
 
         let timeFrame: any;
         let interval: any;
@@ -183,13 +185,6 @@ export default function Chart({
           onClick={() => console.log('render last 7 days')}
         >
           7D
-        </Button>
-        <Button
-          bg="primary.100"
-          color="light.100"
-          onClick={() => console.log('render last 30 days')}
-        >
-          30D
         </Button>
       </ButtonGroup>
     </Flex>
