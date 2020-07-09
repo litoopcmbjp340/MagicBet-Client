@@ -53,7 +53,7 @@ const NavStrip = (): JSX.Element | null => {
       w="100%"
       m="0 auto"
       bg={bgColor4[colorMode]}
-      display={{ sm: 'none', md: 'block' }}
+      display={{ xs: 'none', sm: 'none', md: 'block' }}
     >
       <Flex as="nav" justify="center">
         <Flex mr="2rem" fontSize="1.25rem">

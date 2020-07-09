@@ -24,7 +24,6 @@ import {
 
 import MBMarketContract from '../../../abis/MBMarket.json';
 import useContract from '../../../hooks/useContract';
-import useDaiContract from '../../../hooks/useDaiContract';
 import ChartWrapper from './ChartWrapper';
 import Info from '../../../components/Modals/Info';
 import SettingsModal from '../../../components/Modals/Settings';
@@ -32,7 +31,10 @@ import { shortenAddress } from '../../../utils';
 import { bgColor8, color2, color3 } from '../../../utils/theme';
 import { injected } from '../../../utils/connectors';
 
-const CountDown = ({ startDate }: { startDate: number }) => {
+import IERC20 from 'abis/IERC20.json';
+import addresses, { KOVAN_ID } from 'utils/addresses';
+
+const CountDown = ({ startDate }: { startDate: number }): any => {
   const realStartDate = moment(startDate).format('YYYY-MM-DD');
 
   const [days, setDays] = useState<number>(0);
@@ -65,7 +67,10 @@ const CountDown = ({ startDate }: { startDate: number }) => {
   function add0(number: any) {
     return number < 10 ? '0' + number : number;
   }
-  return time === 0 ? null : (
+
+  return time <= 0 ? (
+    '-'
+  ) : (
     <>{`${add0(days)}:${add0(hours)}:${add0(minutes)}:${add0(seconds)}`}</>
   );
 };
@@ -76,14 +81,17 @@ const MarketCard = ({ marketContractAddress }: any) => {
     MBMarketContract.abi,
     true
   );
+  const daiContract = useContract(
+    addresses[KOVAN_ID].tokens.DAI,
+    IERC20.abi,
+    true
+  );
+
   const { connector, account, library } = useWeb3React<Web3Provider>();
   const { colorMode } = useColorMode();
+  const toast = useToast();
   const infoModalToggle = useDisclosure();
   const settingsModalToggle = useDisclosure();
-  const daiContract = useDaiContract();
-  const [loading, setLoading] = useState<boolean>(true);
-
-  const toast = useToast();
 
   const [amountToBet, setAmountToBet] = useState<number>(0);
   const [accruedInterest, setAccruedInterest] = useState<number>(0);
@@ -109,19 +117,35 @@ const MarketCard = ({ marketContractAddress }: any) => {
 
   useEffect(() => {
     (async () => {
+      let isStale = false;
       if (!!marketContract) {
         let time = await marketContract.marketResolutionTime();
-        time = time.toNumber();
-        setMarketResolutionTime(time * 1000);
+        setMarketResolutionTime(time.toNumber() * 1000);
+
+        const numberOfOutcomes = await marketContract.numberOfOutcomes();
+        if (numberOfOutcomes.toNumber() !== 0 && !isStale) {
+          const numberOfOutcomes = (
+            await marketContract.numberOfOutcomes()
+          ).toNumber();
+          let newOutcomes = [];
+          for (let i = 0; i < numberOfOutcomes; i++) {
+            const outcomeName = await marketContract.outcomeNames(i);
+            newOutcomes.push(outcomeName);
+          }
+          setOutcomes(newOutcomes);
+        }
       }
+      return () => {
+        isStale = true;
+      };
     })();
-  }, []);
+  }, [marketContract]);
 
   useEffect(() => {
     (async () => {
       let isStale = false;
-      if (!isStale && !!marketContract) {
-        if (marketContract.provider) {
+      if (!!marketContract) {
+        if (!isStale && marketContract.provider) {
           const state = await marketContract.getCurrentState();
           setState(state);
           setPrompt(await marketContract.eventName());
@@ -155,29 +179,6 @@ const MarketCard = ({ marketContractAddress }: any) => {
       };
     })();
   }, [account, daiContract, library]);
-
-  useEffect(() => {
-    (async () => {
-      if (!!marketContract) {
-        let isStale = false;
-        const numberOfOutcomes = await marketContract.numberOfOutcomes();
-        if (numberOfOutcomes.toNumber() !== 0 && !isStale) {
-          const numberOfOutcomes = (
-            await marketContract.numberOfOutcomes()
-          ).toNumber();
-          let newOutcomes = [];
-          for (let i = 0; i < numberOfOutcomes; i++) {
-            const outcomeName = await marketContract.outcomeNames(i);
-            newOutcomes.push(outcomeName);
-          }
-          setOutcomes(newOutcomes);
-        }
-        return () => {
-          isStale = true;
-        };
-      }
-    })();
-  }, [marketContract]);
 
   const placeBet = async (e: FormEvent): Promise<void> => {
     e.preventDefault();
@@ -284,14 +285,16 @@ const MarketCard = ({ marketContractAddress }: any) => {
           mb="1rem"
           wrap="wrap"
         >
-          <Stat textAlign="center">
+          <Stat>
             <StatLabel color={color3[colorMode]}>Address</StatLabel>
-            <StatNumber>{shortenAddress(marketContract!.address)}</StatNumber>
+            <StatNumber fontFamily="monospace">
+              {shortenAddress(marketContract!.address)}
+            </StatNumber>
           </Stat>
 
-          <Stat textAlign="center">
+          <Stat>
             <StatLabel color={color3[colorMode]}>Winnings</StatLabel>
-            <StatNumber>
+            <StatNumber fontFamily="monospace">
               {
                 <CountUp
                   start={0}
@@ -304,24 +307,22 @@ const MarketCard = ({ marketContractAddress }: any) => {
             </StatNumber>
           </Stat>
 
-          <Stat textAlign="center">
+          <Stat>
             <StatLabel color={color3[colorMode]}>Resolution</StatLabel>
-            <StatNumber position="sticky">
-              {marketResolutionTime ? (
+            <StatNumber fontFamily="monospace">
+              {marketResolutionTime && (
                 <CountDown startDate={marketResolutionTime} />
-              ) : (
-                '00:00:00:00'
               )}
             </StatNumber>
           </Stat>
-          <Box display={{ sm: 'none', md: 'block' }}>
+
+          <Box display={{ xs: 'none', md: 'block' }}>
             <IconButton
               aria-label="market info"
               variant="ghost"
               color={color3[colorMode]}
               icon="info"
               size="md"
-              pr={0.5}
               onClick={infoModalToggle.onOpen}
             />
             <IconButton
@@ -346,7 +347,6 @@ const MarketCard = ({ marketContractAddress }: any) => {
               color={color3[colorMode]}
               icon="info"
               size="md"
-              pr={0.5}
               onClick={infoModalToggle.onOpen}
             />
             <IconButton
@@ -361,7 +361,7 @@ const MarketCard = ({ marketContractAddress }: any) => {
         </Box>
 
         <Flex justify="center" align="center" wrap="wrap">
-          <Box display={{ sm: 'none', md: 'block' }}>
+          <Box display={{ xs: 'none', md: 'block' }}>
             <ChartWrapper marketContract={marketContract!} />
           </Box>
 

@@ -96,12 +96,11 @@ export const bgColor8 = { light: 'secondary.100', dark: 'dm.300' };
 export const GlobalStyle = css`
   @import url('https://rsms.me/inter/inter.css');
   html {
-    font-family: 'Inter', sans-serif;
-    letter-spacing: -0.018em;
+    font-family: 'Inter', monospace;
   }
   @supports (font-variation-settings: normal) {
     html {
-      font-family: 'Inter var', sans-serif;
+      font-family: 'Inter var', monospace;
     }
   }
 
@@ -113,7 +112,8 @@ export const GlobalStyle = css`
   body {
     margin: 0;
     padding: 0;
-    width: 100%;
+    /* width: 100%; */
+    min-width: 480px;
     height: 100%;
     background-color: #dddfe6;
     position: relative;

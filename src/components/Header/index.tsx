@@ -100,7 +100,12 @@ const Header = ({ triedEager }: { triedEager: boolean }): JSX.Element => {
             isExternal
             aria-label="Github Link"
           >
-            <Icon name="githubIcon" size="2rem" color="light.100" />
+            <Icon
+              display={{ xs: 'none', md: 'block' }}
+              name="githubIcon"
+              size="2rem"
+              color="light.100"
+            />
           </Link>
 
           {connector === injected && !error ? (

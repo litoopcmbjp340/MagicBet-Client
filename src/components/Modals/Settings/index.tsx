@@ -1,4 +1,4 @@
-import React, { useState, Suspense } from 'react';
+import React, { useState } from 'react';
 import { useWeb3React } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers';
 import {
@@ -13,7 +13,6 @@ import {
   Stack,
   Button,
   Icon,
-  Spinner,
   useColorMode,
 } from '@chakra-ui/core';
 
@@ -29,6 +28,7 @@ const SettingsModal = ({ settingsModalToggle }: any): JSX.Element => {
   const { account, library } = useWeb3React<Web3Provider>();
 
   const { data } = useEthBalance(account!, false);
+  console.log('data:', data);
   const tokens = useTokens();
   const daiToken = tokens[0][5];
   const { data: tokenData } = useTokenBalance(daiToken, account!, false);
@@ -64,18 +64,14 @@ const SettingsModal = ({ settingsModalToggle }: any): JSX.Element => {
               {usingDai ? (
                 <Flex justify="center" align="center" color="dark.100">
                   <Tag>
-                    <Suspense fallback={<Spinner />}>
-                      {tokenData &&
-                        tokenData.toSignificant(6, { groupSeparator: ',' })}
-                    </Suspense>
+                    {tokenData &&
+                      tokenData.toSignificant(6, { groupSeparator: ',' })}
                   </Tag>
                 </Flex>
               ) : (
                 <Flex justify="center" align="center" color="dark.100">
                   <Tag>
-                    <Suspense fallback={<Spinner />}>
-                      {data && data.toSignificant(4, { groupSeparator: ',' })}
-                    </Suspense>
+                    {data && data.toSignificant(4, { groupSeparator: ',' })}
                   </Tag>
                 </Flex>
               )}
