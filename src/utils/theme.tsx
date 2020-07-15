@@ -112,10 +112,8 @@ export const GlobalStyle = css`
   body {
     margin: 0;
     padding: 0;
-    /* width: 100%; */
     min-width: 480px;
     height: 100%;
-    background-color: #dddfe6;
     position: relative;
   }
 `;

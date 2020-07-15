@@ -419,8 +419,6 @@ const MarketCard = ({ marketContractAddress }: any) => {
                         bg="light.100"
                         box-shadow="0 0.5rem 1rem rgba(0, 0, 0, 0.1)"
                         transition="all 0.3s ease 0s"
-                        outline="none"
-                        cursor="pointer"
                         type="button"
                         _hover={{
                           boxShadow: '0px 15px 20px rgba(0, 0, 0, 0.3)',
@@ -442,8 +440,6 @@ const MarketCard = ({ marketContractAddress }: any) => {
                         border="none"
                         box-shadow="0 0.5rem 1rem rgba(0, 0, 0, 0.1)"
                         transition="all 0.3s ease 0s"
-                        outline="none"
-                        cursor="pointer"
                         type="submit"
                         isDisabled={amountToBet <= 0 || choice === ''}
                         _hover={{

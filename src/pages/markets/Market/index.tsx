@@ -1,9 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from '@chakra-ui/core';
+import { Link, Icon } from '@chakra-ui/core';
+import styled from '@emotion/styled';
 
 import { shortenAddress, getFormattedNumber } from '../../../utils';
 import MBMarketContract from '../../../abis/MBMarket.json';
 import { useContract } from '../../../hooks';
+
+const TableHead = styled.th`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
 
 function Market({ market }: { market: string }) {
   const [question, setQuestion] = useState<number>(0);
@@ -76,7 +83,10 @@ function Market({ market }: { market: string }) {
             {/* {winningOutcome ? winningOutcome.toString() : 'Not yet resolved'} */}
             {'Not yet resolved'}
           </th>
-          <th>{`${getFormattedNumber(maxInterests / 1e18, 18)} DAI`}</th>
+          <TableHead>
+            {`${getFormattedNumber(maxInterests / 1e18, 18)}`}{' '}
+            <Icon name="daiIcon" size="20px" />
+          </TableHead>
           <th>{new Date(marketResolutionTime * 1000).toUTCString()}</th>
         </>
       }

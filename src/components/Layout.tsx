@@ -25,7 +25,7 @@ const Layout = ({ children }: { children: ReactNode }): JSX.Element => {
     <Box bg={bgColor2[colorMode]}>
       <Header triedEager={triedEager} />
       <NavStrip />
-      <Box m="2rem auto" p="1rem 1.25rem">
+      <Box m="auto" p="1rem 1.25rem" h="100vh">
         {children}
       </Box>
     </Box>

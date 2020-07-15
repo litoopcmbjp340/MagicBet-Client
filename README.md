@@ -22,7 +22,7 @@ This repo contains the front end client, the smart contracts code can be found u
 
 Given that [NodeJS](https://nodejs.org/) and [npm](https://www.npmjs.com/) are installed, clone the repo and then run `npm install` inside the root directory to install the dependencies.
 
-Now follow the Setup instructions in the Contracts repo (link above), including copying the application binary interface files in the `abis/` folder, and take a note of the address of the deployed `MBMarketFactory.sol`, and update the relevant variable in `src/utils/addresses.ts` (line 6 for kovan).
+Now follow the Setup instructions in the Contracts repo (link above), including copying the application binary interface files in the `abis/` folder and updating the relevant MBMarketFactory contract address in `src/utils/addresses.ts` (line 6 for kovan).
 
 ## Start local server
 
@@ -32,18 +32,16 @@ Your browser will now open the platform site.
 
 ## How to use the app
 
-Originally, only a factory contract will be deployed. To deploy a market, click _Create Market_ in the dashboard tab.
+Originally, only a factory contract will be deployed. To deploy a market, click _Admin_ in the navigation bar.
 
-You will be given a set of options to complete. They are pre-filled with a sample market (November 2020 US Election).
-
-- Event name: self-explanatory
-- Realit.io question: this is the string that is passed to the oracle when the market contract is deployed. It is in a specific format, as outlined in the realit.io documentation
-- Arbitrator: who ultimately decides the outcome in the case of continued disputes
-- Opening: the timestamp when betting opens
-- Locking: the timestamp when betting ends
-- Resolution: the timestamp of when the event itself occurs, sent to the oracle
-- Timeout: sent to the oracle, determines how many seconds the oracle waits for a dispute before finalizing an answer
-- Outcomes: this is an array of strings, with each outcome name. This variable is also used to name the ERC20 token for each outcome.
+-   Event name: self-explanatory
+-   Realit.io question: this is the string that is passed to the oracle when the market contract is deployed. It is in a specific format, as outlined in the realit.io documentation
+-   Arbitrator: who ultimately decides the outcome in the case of continued disputes
+-   Opening: the timestamp when betting opens
+-   Locking: the timestamp when betting ends
+-   Resolution: the timestamp of when the event itself occurs, sent to the oracle
+-   Timeout: sent to the oracle, determines how many seconds the oracle waits for a dispute before finalizing an answer
+-   Outcomes: this is an array of strings, with each outcome name. This variable is also used to name the ERC20 token for each outcome.
 
 After a market is created, it will be in the _WAITING_ state. The state must be incremented before it will move to the _OPEN_ state, which can be achieved by selecting _increment state_. Note that this tx will revert if the Opening timestamp is in the future.
 
