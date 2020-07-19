@@ -30,7 +30,7 @@ import { ContractContext } from '../../state/contracts/Context';
 const Admin = (): JSX.Element | null => {
     const { account, active, library, connector } = useWeb3React<Web3Provider>();
     const { colorMode } = useColorMode();
-    const createMarketModalToggle = useDisclosure();
+    const { isOpen, onOpen, onClose } = useDisclosure();
 
     const { contracts } = useContext(ContractContext);
 
@@ -116,7 +116,7 @@ const Admin = (): JSX.Element | null => {
                                     cursor="pointer"
                                     _hover={{ bg: 'primary.100' }}
                                     isDisabled={!active}
-                                    onClick={createMarketModalToggle.onOpen}
+                                    onClick={onOpen}
                                 >
                                     Create Market
                                 </Button>
@@ -173,7 +173,7 @@ const Admin = (): JSX.Element | null => {
                         </>
                     )}
                 </Flex>
-                <CreateMarket createMarketModalToggle={createMarketModalToggle} />
+                <CreateMarket isOpen={isOpen} onClose={onClose} />
             </Box>
         );
     }
