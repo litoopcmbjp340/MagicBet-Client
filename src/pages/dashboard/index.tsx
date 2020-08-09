@@ -33,10 +33,10 @@ const Dashboard = (): JSX.Element => {
     }, [library]);
 
     return (
-        <Box bg={bgColor1[colorMode]} mt="2rem" rounded="md" boxShadow="md">
-            <Box roundedTop="0.25rem" bg="primary.100" h="0.5rem" />
+        <Box bg={bgColor1[colorMode]} mt="2rem" borderRadius="md" boxShadow="md">
+            <Box borderTopRadius="0.25rem" bg="primary.100" h="0.5rem" />
             <Flex justify="space-between" align="center" p="1rem 1.5rem">
-                <Heading as="h3" size="lg" fontSize="1.5rem" font-weight="500" color={color1[colorMode]}>
+                <Heading as="h1" size="lg" fontSize="1.5rem" fontWeight="500" color={color1[colorMode]}>
                     Dashboard
                 </Heading>
 
