@@ -90,10 +90,10 @@ const Admin = (): JSX.Element | null => {
         return null;
     } else {
         return (
-            <Box bg={bgColor1[colorMode]} mt="2rem" pb="1rem" rounded="md" boxShadow="md">
-                <Box roundedTop="0.25rem" bg="primary.100" h="0.5rem" />
+            <Box bg={bgColor1[colorMode]} mt="2rem" pb="1rem" borderRadius="md" boxShadow="md">
+                <Box borderTopRadius="0.25rem" bg="primary.100" h="0.5rem" />
                 <Flex justify="space-between" align="center" p="1rem 1.5rem">
-                    <Heading as="h3" size="lg" fontSize="1.5rem" font-weight="500" color={color1[colorMode]}>
+                    <Heading as="h1" size="lg" fontSize="1.5rem" fontWeight="500" color={color1[colorMode]}>
                         Admin
                     </Heading>
                 </Flex>
@@ -109,7 +109,7 @@ const Admin = (): JSX.Element | null => {
                                     border="none"
                                     borderRadius="0.33rem"
                                     color="light.100"
-                                    text-Align="center"
+                                    textAlign="center"
                                     fontSize="1rem"
                                     p="0.8rem"
                                     w="auto"
@@ -124,7 +124,7 @@ const Admin = (): JSX.Element | null => {
                                 <Box
                                     maxW="sm"
                                     borderWidth="1px"
-                                    rounded="lg"
+                                    borderRadius="lg"
                                     bg={bgColor8[colorMode]}
                                     textAlign="center"
                                 >

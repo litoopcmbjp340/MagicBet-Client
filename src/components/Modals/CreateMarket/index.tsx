@@ -26,6 +26,7 @@ import {
 } from '@chakra-ui/core';
 import { isAddress } from '@ethersproject/address';
 import moment from 'moment';
+import { FiPlus, FiMinus, FiInfo } from 'react-icons/fi';
 
 import { useContract } from '../../../hooks';
 import MBMarketFactoryContract from '../../../abis/MBMarketFactory.json';
@@ -116,184 +117,187 @@ const CreateMarket = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => any
     };
 
     return (
-        <Modal isOpen={isOpen} onClose={onClose} isCentered>
-            <ModalOverlay />
+        <Modal isOpen={isOpen} onClose={onClose} isCentered scrollBehavior="inside">
+            <ModalOverlay>
+                <ModalContent bg={bgColor7[colorMode]} borderRadius="0.25rem">
+                    {loading ? (
+                        <Flex justify="center" m="1rem 0">
+                            <Spinner color="primary.100" size="xl" thickness="0.25rem" />
+                        </Flex>
+                    ) : (
+                        <>
+                            <ModalHeader>Create a Market</ModalHeader>
+                            <ModalCloseButton onClick={onClose} />
+                            <ModalBody>
+                                <form onSubmit={onSubmit}>
+                                    <FormControl mb="1rem" isRequired>
+                                        <FormLabel htmlFor="marketEventName">Event Name</FormLabel>
+                                        <Input
+                                            name="marketEventName"
+                                            type="text"
+                                            placeholder={marketEventName}
+                                            value={marketEventName}
+                                            onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                                                setMarketEventName(e.target.value)
+                                            }
+                                        />
+                                    </FormControl>
 
-            <ModalContent bg={bgColor7[colorMode]} borderRadius="0.25rem">
-                {loading ? (
-                    <Flex justify="center" m="1rem 0">
-                        <Spinner color="primary.100" size="xl" thickness="0.25rem" />
-                    </Flex>
-                ) : (
-                    <>
-                        <ModalHeader>Create a Market</ModalHeader>
-                        <ModalCloseButton onClick={onClose} />
-                        <ModalBody>
-                            <form onSubmit={onSubmit}>
-                                <FormControl mb="1rem" isRequired>
-                                    <FormLabel htmlFor="marketEventName">Event Name</FormLabel>
-                                    <Input
-                                        name="marketEventName"
-                                        type="text"
-                                        placeholder={marketEventName}
-                                        value={marketEventName}
-                                        onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                                            setMarketEventName(e.target.value)
-                                        }
-                                    />
-                                </FormControl>
+                                    <Flex justify="center" align="center">
+                                        <FormControl mb="1rem" w="100%" isRequired>
+                                            <FormLabel htmlFor="tokens">Outcomes</FormLabel>
 
-                                <Flex justify="center" align="center">
-                                    <FormControl mb="1rem" w="100%" isRequired>
-                                        <FormLabel htmlFor="tokens">Outcomes</FormLabel>
-
-                                        {options.map((option: any, i: any) => (
-                                            <Flex w="100%" mb="1rem" justify="center" align="center" key={i}>
-                                                <Input
-                                                    type="text"
-                                                    name="tokens"
-                                                    value={option}
-                                                    onChange={handleOptionChange(i)}
-                                                />
-                                                <IconButton
-                                                    aria-label="remove"
-                                                    icon="small-close"
-                                                    type="button"
-                                                    size="sm"
-                                                    ml="0.5rem"
-                                                    onClick={removeOption(i)}
-                                                    isDisabled={options.length === 1}
-                                                />
-                                                {options.length - 1 === i && (
-                                                    <IconButton
-                                                        aria-label="add"
-                                                        type="button"
-                                                        size="sm"
-                                                        ml="0.5rem"
-                                                        icon="small-add"
-                                                        onClick={() => setOptions(options.concat(['']))}
+                                            {options.map((option: any, i: any) => (
+                                                <Flex w="100%" mb="1rem" justify="center" align="center" key={i}>
+                                                    <Input
+                                                        type="text"
+                                                        name="tokens"
+                                                        value={option}
+                                                        onChange={handleOptionChange(i)}
                                                     />
-                                                )}
-                                            </Flex>
-                                        ))}
-                                    </FormControl>
-                                </Flex>
+                                                    {options.length !== 1 && (
+                                                        <IconButton
+                                                            aria-label="remove"
+                                                            icon={<FiMinus />}
+                                                            type="button"
+                                                            size="sm"
+                                                            ml="0.5rem"
+                                                            color="light.100"
+                                                            bg={bgColor6[colorMode]}
+                                                            onClick={removeOption(i)}
+                                                        />
+                                                    )}
+                                                    {options.length - 1 === i && (
+                                                        <IconButton
+                                                            aria-label="add"
+                                                            type="button"
+                                                            size="sm"
+                                                            ml="0.5rem"
+                                                            icon={<FiPlus />}
+                                                            color="light.100"
+                                                            bg={bgColor6[colorMode]}
+                                                            onClick={() => setOptions(options.concat(['']))}
+                                                        />
+                                                    )}
+                                                </Flex>
+                                            ))}
+                                        </FormControl>
+                                    </Flex>
 
-                                <Flex w="100%" mb="1rem">
-                                    <FormControl mr="0.5rem" isRequired>
-                                        <FormLabel htmlFor="marketOpeningTime">Opening</FormLabel>
-                                        <DatePicker
-                                            id="marketOpeningTime"
-                                            minDate={moment().toDate()}
-                                            selected={new Date(marketOpeningTime * 1000)}
-                                            onChange={(date: Date) => setMarketOpeningTime(date.getTime() / 1000)}
-                                            dateFormat="MMMM d, yyyy h:mm aa"
-                                            showTimeSelect
-                                            customInput={<Input value={marketOpeningTime} />}
-                                        />
-                                    </FormControl>
-                                    <FormControl isRequired>
-                                        <FormLabel htmlFor="marketLockingTime">Locking</FormLabel>
-                                        <DatePicker
-                                            id="marketLockingTime"
-                                            minDate={moment().toDate()}
-                                            selected={new Date(marketLockingTime * 1000)}
-                                            onChange={(date: Date) => setMarketLockingTime(date.getTime() / 1000)}
-                                            dateFormat="MMMM d, yyyy h:mm aa"
-                                            showTimeSelect
-                                            customInput={<Input value={marketLockingTime} />}
-                                        />
-                                    </FormControl>
-                                </Flex>
-                                <Flex w="100%" mb="1rem">
-                                    <FormControl mr="0.5rem" w="50%" isRequired>
-                                        <FormLabel htmlFor="marketResolutionTime">Resolution</FormLabel>
-                                        <DatePicker
-                                            id="marketResolutionTime"
-                                            minDate={moment().toDate()}
-                                            selected={new Date(marketResolutionTime * 1000)}
-                                            onChange={(date: Date) => setMarketResolutionTime(date.getTime() / 1000)}
-                                            dateFormat="MMMM d, yyyy h:mm aa"
-                                            showTimeSelect
-                                            customInput={<Input value={marketResolutionTime} />}
-                                        />
-                                    </FormControl>
-                                    <FormControl w="50%" isRequired>
-                                        <FormLabel htmlFor="timeout">Timeout</FormLabel>
-                                        <Tooltip
-                                            label="Hours before market can finalize"
-                                            placement="top"
-                                            aria-label="info"
-                                            zIndex={1800}
+                                    <Flex w="100%" mb="1rem">
+                                        <FormControl mr="0.5rem" isRequired>
+                                            <FormLabel htmlFor="marketOpeningTime">Opening</FormLabel>
+                                            <DatePicker
+                                                id="marketOpeningTime"
+                                                minDate={moment().toDate()}
+                                                selected={new Date(marketOpeningTime * 1000)}
+                                                onChange={(date: Date) => setMarketOpeningTime(date.getTime() / 1000)}
+                                                dateFormat="MMMM d, yyyy h:mm aa"
+                                                showTimeSelect
+                                                customInput={<Input value={marketOpeningTime} />}
+                                            />
+                                        </FormControl>
+                                        <FormControl isRequired>
+                                            <FormLabel htmlFor="marketLockingTime">Locking</FormLabel>
+                                            <DatePicker
+                                                id="marketLockingTime"
+                                                minDate={moment().toDate()}
+                                                selected={new Date(marketLockingTime * 1000)}
+                                                onChange={(date: Date) => setMarketLockingTime(date.getTime() / 1000)}
+                                                dateFormat="MMMM d, yyyy h:mm aa"
+                                                showTimeSelect
+                                                customInput={<Input value={marketLockingTime} />}
+                                            />
+                                        </FormControl>
+                                    </Flex>
+                                    <Flex w="100%" mb="1rem">
+                                        <FormControl mr="0.5rem" w="50%" isRequired>
+                                            <FormLabel htmlFor="marketResolutionTime">Resolution</FormLabel>
+                                            <DatePicker
+                                                id="marketResolutionTime"
+                                                minDate={moment().toDate()}
+                                                selected={new Date(marketResolutionTime * 1000)}
+                                                onChange={(date: Date) =>
+                                                    setMarketResolutionTime(date.getTime() / 1000)
+                                                }
+                                                dateFormat="MMMM d, yyyy h:mm aa"
+                                                showTimeSelect
+                                                customInput={<Input value={marketResolutionTime} />}
+                                            />
+                                        </FormControl>
+                                        <FormControl w="50%" isRequired>
+                                            <Flex align="center" justify="space-between">
+                                                <FormLabel htmlFor="timeout">Timeout</FormLabel>
+                                                {/* <Tooltip
+                                                    label="Hours before market can finalize"
+                                                    aria-label="Hours before market can finalize"
+                                                    zIndex={1800}
+                                                > */}
+                                                <FiInfo size="20px" />
+                                                {/* </Tooltip> */}
+                                            </Flex>
+                                            <NumberInput
+                                                defaultValue={15}
+                                                min={1}
+                                                value={timeout}
+                                                //@ts-ignore
+                                                onChange={(e) => setTimeout(e)}
+                                            >
+                                                <NumberInputField type="number" />
+                                                <NumberInputStepper>
+                                                    <NumberIncrementStepper />
+                                                    <NumberDecrementStepper />
+                                                </NumberInputStepper>
+                                            </NumberInput>
+                                        </FormControl>
+                                    </Flex>
+                                    <FormControl mb="1rem">
+                                        <FormLabel htmlFor="category">Category</FormLabel>
+                                        <Select
+                                            id="category"
+                                            placeholder="Category"
+                                            value={category}
+                                            onChange={(e: any) => setCategory(e.target.value)}
                                         >
-                                            <Icon name="info" />
-                                        </Tooltip>
-                                        <NumberInput
-                                            defaultValue={15}
-                                            min={1}
-                                            value={timeout}
-                                            //@ts-ignore
-                                            onChange={(e) => setTimeout(e)}
-                                        >
-                                            <NumberInputField type="number" />
-                                            <NumberInputStepper>
-                                                <NumberIncrementStepper />
-                                                <NumberDecrementStepper />
-                                            </NumberInputStepper>
-                                        </NumberInput>
+                                            <option value="arts">Arts</option>
+                                            <option value="business-finance">Business & Finance</option>
+                                            <option value="crypto">Crypto</option>
+                                            <option value="news-politics">News & Politics</option>
+                                            <option value="science-tech">Science & Tech</option>
+                                            <option value="sports">Sports</option>
+                                            <option value="weather">Weather</option>
+                                            <option value="misc">Miscellaneous</option>
+                                        </Select>
                                     </FormControl>
-                                </Flex>
-                                <FormControl mb="1rem">
-                                    <FormLabel htmlFor="category">Category</FormLabel>
-                                    <Select
-                                        id="category"
-                                        placeholder="Category"
-                                        value={category}
-                                        onChange={(e: any) => setCategory(e.target.value)}
+                                    <FormControl mb="1rem">
+                                        <FormLabel htmlFor="arbitrator">Arbitrator</FormLabel>
+
+                                        <Input
+                                            name="arbitrator"
+                                            type="text"
+                                            isRequired
+                                            value={arbitrator}
+                                            onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                                                setArbitrator(e.target.value)
+                                            }
+                                        />
+                                    </FormControl>
+                                    <Button
+                                        textAlign="center"
+                                        mb="1rem"
+                                        w="100%"
+                                        color="light.100"
+                                        bg={bgColor6[colorMode]}
+                                        type="submit"
                                     >
-                                        <option value="arts">Arts</option>
-                                        <option value="business-finance">Business & Finance</option>
-                                        <option value="crypto">Crypto</option>
-                                        <option value="news-politics">News & Politics</option>
-                                        <option value="science-tech">Science & Tech</option>
-                                        <option value="sports">Sports</option>
-                                        <option value="weather">Weather</option>
-                                        <option value="misc">Miscellaneous</option>
-                                    </Select>
-                                </FormControl>
-                                <FormControl mb="1rem">
-                                    <FormLabel htmlFor="arbitrator">Arbitrator</FormLabel>
-                                    <Tooltip
-                                        label="Arbitrator Contract. Defaults to Kleros."
-                                        placement="right"
-                                        aria-label="info"
-                                        zIndex={1800}
-                                    >
-                                        <Icon name="info" />
-                                    </Tooltip>
-                                    <Input
-                                        name="arbitrator"
-                                        type="text"
-                                        isRequired
-                                        value={arbitrator}
-                                        onChange={(e: ChangeEvent<HTMLInputElement>) => setArbitrator(e.target.value)}
-                                    />
-                                </FormControl>
-                                <Button
-                                    color="light.100"
-                                    textAlign="center"
-                                    mb="1rem"
-                                    w="100%"
-                                    bg={bgColor6[colorMode]}
-                                    type="submit"
-                                >
-                                    Create Market
-                                </Button>
-                            </form>
-                        </ModalBody>
-                    </>
-                )}
-            </ModalContent>
+                                        Create Market
+                                    </Button>
+                                </form>
+                            </ModalBody>
+                        </>
+                    )}
+                </ModalContent>
+            </ModalOverlay>
         </Modal>
     );
 };
