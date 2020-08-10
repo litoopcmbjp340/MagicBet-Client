@@ -4,6 +4,8 @@ import { useWeb3React } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers';
 import { formatEther, parseUnits } from '@ethersproject/units';
 import { BigNumber } from '@ethersproject/bignumber';
+import { FiInfo, FiSettings } from 'react-icons/fi';
+
 import moment from 'moment';
 import {
   Box,
@@ -321,7 +323,7 @@ const MarketCard = ({ marketContractAddress }: any) => {
               aria-label="market info"
               variant="ghost"
               color={color3[colorMode]}
-              icon="info"
+              icon={<FiInfo />}
               size="md"
               onClick={infoModalToggle.onOpen}
             />
@@ -329,7 +331,7 @@ const MarketCard = ({ marketContractAddress }: any) => {
               aria-label="purchase settings"
               variant="ghost"
               color={color3[colorMode]}
-              icon="settings"
+              icon={<FiSettings />}
               size="md"
               onClick={settingsModalToggle.onOpen}
             />
@@ -345,7 +347,7 @@ const MarketCard = ({ marketContractAddress }: any) => {
               aria-label="market info"
               variant="ghost"
               color={color3[colorMode]}
-              icon="info"
+              icon={<FiInfo />}
               size="md"
               onClick={infoModalToggle.onOpen}
             />
@@ -353,7 +355,7 @@ const MarketCard = ({ marketContractAddress }: any) => {
               aria-label="purchase settings"
               variant="ghost"
               color={color3[colorMode]}
-              icon="settings"
+              icon={<FiSettings />}
               size="md"
               onClick={settingsModalToggle.onOpen}
             />
