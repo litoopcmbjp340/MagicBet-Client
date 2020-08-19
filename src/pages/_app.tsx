@@ -8,18 +8,16 @@ import { Global } from '@emotion/core';
 import { CSSReset, ChakraProvider } from '@chakra-ui/core';
 
 import theme, { GlobalStyle } from '../utils/theme';
-import 'react-datepicker/dist/react-datepicker.css';
-import '../utils/customDatePickerStyles.css';
-// import * as serviceWorker from '../serviceWorker';
 import { ContractProvider } from '../state/contracts/Context';
-import { AppProvider } from '../state/app/Context';
 import Layout from '../components/Layout';
 import Error from '../components/Error';
+import 'react-datepicker/dist/react-datepicker.css';
+import '../utils/customDatePickerStyles.css';
 
 const useIsomorphicLayoutEffect = typeof window !== 'undefined' ? useLayoutEffect : useEffect;
 
 function Application({ Component }: { Component: NextComponentType }) {
-    const [ready, setReady] = useState<boolean>(false);
+    const [ready, setReady] = useState(false);
     const { error } = useWeb3React();
 
     useIsomorphicLayoutEffect(() => {
@@ -50,18 +48,14 @@ export default class App extends NextApp {
                 </Head>
                 <Web3ReactProvider getLibrary={getLibrary}>
                     <ContractProvider>
-                        <AppProvider>
-                            <ChakraProvider theme={theme}>
-                                <CSSReset />
-                                <Global styles={GlobalStyle} />
-                                <Application Component={Component} />
-                            </ChakraProvider>
-                        </AppProvider>
+                        <ChakraProvider theme={theme}>
+                            <CSSReset />
+                            <Global styles={GlobalStyle} />
+                            <Application Component={Component} />
+                        </ChakraProvider>
                     </ContractProvider>
                 </Web3ReactProvider>
             </>
         );
     }
 }
-
-// serviceWorker.register();

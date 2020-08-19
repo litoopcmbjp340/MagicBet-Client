@@ -20,11 +20,11 @@ import {
 } from '@chakra-ui/core';
 import { FiSun, FiMoon, FiChevronDown, FiGithub } from 'react-icons/fi';
 
-import { ContractContext } from '../../state/contracts/Context';
-import { injected } from '../../utils/connectors';
-import { shortenAddress } from '../../utils';
-import { bgColor3, bgColor4 } from '../../utils/theme';
-import { checkOwner } from '../../utils';
+import { ContractContext } from '../state/contracts/Context';
+import { injected } from '../utils/connectors';
+import { shortenAddress } from '../utils';
+import { bgColor3, bgColor4 } from '../utils/theme';
+import { checkOwner } from '../utils';
 
 const Header = ({ triedEager }: { triedEager: boolean }): JSX.Element => {
     const { colorMode, toggleColorMode } = useColorMode();

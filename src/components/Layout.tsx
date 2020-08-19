@@ -10,26 +10,26 @@ import { network } from '../utils/connectors';
 import { useEagerConnect, useInactiveListener } from '../hooks';
 
 const Layout = ({ children }: { children: ReactNode }): JSX.Element => {
-  const { colorMode } = useColorMode();
-  const { activate, active, error } = useWeb3React<Web3Provider>();
+    const { colorMode } = useColorMode();
+    const { activate, active, error } = useWeb3React<Web3Provider>();
 
-  const triedEager = useEagerConnect();
+    const triedEager = useEagerConnect();
 
-  useEffect(() => {
-    if (triedEager && !active && !error) activate(network);
-  }, [triedEager, active, error, activate]);
+    useEffect(() => {
+        if (triedEager && !active && !error) activate(network);
+    }, [triedEager, active, error, activate]);
 
-  useInactiveListener(!triedEager);
+    useInactiveListener(!triedEager);
 
-  return (
-    <Box bg={bgColor2[colorMode]}>
-      <Header triedEager={triedEager} />
-      <NavStrip />
-      <Box m="auto" p="1rem 1.25rem" h="100vh">
-        {children}
-      </Box>
-    </Box>
-  );
+    return (
+        <Box bg={bgColor2[colorMode]}>
+            <Header triedEager={triedEager} />
+            <NavStrip />
+            <Box m="auto" p="1rem 1.25rem" h="100vh">
+                {children}
+            </Box>
+        </Box>
+    );
 };
 
 export default Layout;

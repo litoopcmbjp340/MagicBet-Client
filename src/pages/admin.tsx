@@ -18,16 +18,18 @@ import {
     AlertDescription,
     CloseButton,
     Spinner,
+    useToast,
 } from '@chakra-ui/core';
 
-import { injected } from '../../utils/connectors';
-import { bgColor1, color1, bgColor6, bgColor8 } from '../../utils/theme';
-import CreateMarket from '../../components/Modals/CreateMarket';
-import MBMarketContract from '../../abis/MBMarket.json';
-import { shortenAddress } from '../../utils';
-import { ContractContext } from '../../state/contracts/Context';
+import { injected } from '../utils/connectors';
+import { bgColor1, color1, bgColor6, bgColor8 } from '../utils/theme';
+import CreateMarket from '../components/Modals/CreateMarket';
+import MBMarketContract from '../abis/MBMarket.json';
+import { shortenAddress } from '../utils';
+import { ContractContext } from '../state/contracts/Context';
 
 const Admin = (): JSX.Element | null => {
+    const toast = useToast();
     const { account, active, library, connector } = useWeb3React<Web3Provider>();
     const { colorMode } = useColorMode();
     const { isOpen, onOpen, onClose } = useDisclosure();
@@ -35,11 +37,10 @@ const Admin = (): JSX.Element | null => {
     const { contracts } = useContext(ContractContext);
 
     const [factoryContract, setFactoryContract] = useState<Contract>(contracts[0]);
-    const [loading, setLoading] = useState<boolean>(true);
-
+    const [loading, setLoading] = useState(true);
     const [marketContract, setMarketContract] = useState<Contract | null>();
 
-    const [alert, setAlert] = useState<boolean>(false);
+    const [alert, setAlert] = useState(false);
 
     useEffect(() => {
         (async () => {
@@ -49,29 +50,50 @@ const Admin = (): JSX.Element | null => {
                 setFactoryContract(factoryInstance);
 
                 if (!isStale) {
-                    const mostRecentAddress = await factoryInstance.mostRecentContract();
+                    try {
+                        const mostRecentAddress = await factoryInstance.mostRecentContract();
 
-                    if (mostRecentAddress !== AddressZero) {
-                        const marketContract = new Contract(
-                            mostRecentAddress,
-                            MBMarketContract.abi,
-                            library.getSigner(account),
-                        );
-
-                        const isPaused = await marketContract.paused();
-                        if (isPaused) setMarketContract(undefined);
-                        else setMarketContract(marketContract);
-
-                        factoryInstance.on('MarketCreated', (address: any) => {
-                            const marketInstance = new Contract(
-                                address,
+                        if (mostRecentAddress !== AddressZero) {
+                            const marketContract = new Contract(
+                                mostRecentAddress,
                                 MBMarketContract.abi,
                                 library.getSigner(account),
                             );
-                            setMarketContract(marketInstance);
-                        });
+
+                            const isPaused = await marketContract.paused();
+                            console.log('isPaused:', isPaused);
+                            if (isPaused) setMarketContract(undefined);
+                            else setMarketContract(marketContract);
+
+                            factoryInstance.on('MarketCreated', (address: any) => {
+                                const marketInstance = new Contract(
+                                    address,
+                                    MBMarketContract.abi,
+                                    library.getSigner(account),
+                                );
+                                setMarketContract(marketInstance);
+                                () =>
+                                    toast({
+                                        title: 'Market Created.',
+                                        description: 'Successfully deployed a market csontract.',
+                                        status: 'success',
+                                        duration: 3000,
+                                        isClosable: true,
+                                    });
+                            });
+                        }
+                        setLoading(false);
+                    } catch (error) {
+                        console.error(error);
+                        () =>
+                            toast({
+                                title: 'No Market Created.',
+                                description: 'There was an error while attempting to create a contract.',
+                                status: 'error',
+                                duration: 3000,
+                                isClosable: true,
+                            });
                     }
-                    setLoading(false);
                 }
 
                 return () => {

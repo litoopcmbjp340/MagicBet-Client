@@ -7,9 +7,9 @@ import { Flex, Box, Icon, Text, useColorMode } from '@chakra-ui/core';
 import styled from '@emotion/styled';
 import { FiHome, FiCalendar, FiEdit2 } from 'react-icons/fi';
 
-import { ContractContext } from '../../state/contracts/Context';
-import { checkOwner } from '../../utils';
-import { bgColor4 } from '../../utils/theme';
+import { ContractContext } from '../state/contracts/Context';
+import { checkOwner } from '../utils';
+import { bgColor4 } from '../utils/theme';
 
 const StyledLink = styled.a<{ active: boolean }>`
     display: flex;
@@ -26,7 +26,8 @@ const StyledLink = styled.a<{ active: boolean }>`
     }
 `;
 
-const NavStrip = (): JSX.Element | null => {
+const NavStrip = (): JSX.Element => {
+    console.log('bgColor4:', bgColor4);
     const { pathname } = useRouter();
     const { colorMode } = useColorMode();
 

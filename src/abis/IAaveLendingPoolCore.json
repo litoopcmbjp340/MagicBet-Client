@@ -13,21 +13,21 @@
     "absolutePath": "/Users/brenfife/Desktop/MagicBet-Contracts/contracts/interfaces/IAave.sol",
     "exportedSymbols": {
       "IAaveLendingPool": [
-        1610
+        1596
       ],
       "IAaveLendingPoolCore": [
-        1611
+        1597
       ],
       "IaToken": [
-        1600
+        1586
       ]
     },
-    "id": 1612,
+    "id": 1598,
     "license": "UNLICENSED",
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 1587,
+        "id": 1573,
         "literals": [
           "solidity",
           ">=",
@@ -47,9 +47,9 @@
         "contractKind": "interface",
         "documentation": null,
         "fullyImplemented": false,
-        "id": 1600,
+        "id": 1586,
         "linearizedBaseContracts": [
-          1600
+          1586
         ],
         "name": "IaToken",
         "nodeType": "ContractDefinition",
@@ -58,7 +58,7 @@
             "body": null,
             "documentation": null,
             "functionSelector": "70a08231",
-            "id": 1594,
+            "id": 1580,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
@@ -66,17 +66,17 @@
             "nodeType": "FunctionDefinition",
             "overrides": null,
             "parameters": {
-              "id": 1590,
+              "id": 1576,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1589,
+                  "id": 1575,
                   "mutability": "mutable",
                   "name": "_user",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 1594,
+                  "scope": 1580,
                   "src": "116:13:4",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -85,7 +85,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 1588,
+                    "id": 1574,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "116:7:4",
@@ -102,17 +102,17 @@
               "src": "115:15:4"
             },
             "returnParameters": {
-              "id": 1593,
+              "id": 1579,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1592,
+                  "id": 1578,
                   "mutability": "mutable",
                   "name": "",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 1594,
+                  "scope": 1580,
                   "src": "154:7:4",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -121,7 +121,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 1591,
+                    "id": 1577,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "154:7:4",
@@ -136,7 +136,7 @@
               ],
               "src": "153:9:4"
             },
-            "scope": 1600,
+            "scope": 1586,
             "src": "97:66:4",
             "stateMutability": "view",
             "virtual": false,
@@ -146,7 +146,7 @@
             "body": null,
             "documentation": null,
             "functionSelector": "db006a75",
-            "id": 1599,
+            "id": 1585,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
@@ -154,17 +154,17 @@
             "nodeType": "FunctionDefinition",
             "overrides": null,
             "parameters": {
-              "id": 1597,
+              "id": 1583,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1596,
+                  "id": 1582,
                   "mutability": "mutable",
                   "name": "_amount",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 1599,
+                  "scope": 1585,
                   "src": "185:15:4",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -173,7 +173,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 1595,
+                    "id": 1581,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "185:7:4",
@@ -189,19 +189,19 @@
               "src": "184:17:4"
             },
             "returnParameters": {
-              "id": 1598,
+              "id": 1584,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "210:0:4"
             },
-            "scope": 1600,
+            "scope": 1586,
             "src": "169:42:4",
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
           }
         ],
-        "scope": 1612,
+        "scope": 1598,
         "src": "73:140:4"
       },
       {
@@ -211,9 +211,9 @@
         "contractKind": "interface",
         "documentation": null,
         "fullyImplemented": false,
-        "id": 1610,
+        "id": 1596,
         "linearizedBaseContracts": [
-          1610
+          1596
         ],
         "name": "IAaveLendingPool",
         "nodeType": "ContractDefinition",
@@ -222,7 +222,7 @@
             "body": null,
             "documentation": null,
             "functionSelector": "d2d0e066",
-            "id": 1609,
+            "id": 1595,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
@@ -230,17 +230,17 @@
             "nodeType": "FunctionDefinition",
             "overrides": null,
             "parameters": {
-              "id": 1607,
+              "id": 1593,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1602,
+                  "id": 1588,
                   "mutability": "mutable",
                   "name": "_reserve",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 1609,
+                  "scope": 1595,
                   "src": "275:16:4",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -249,7 +249,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 1601,
+                    "id": 1587,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "275:7:4",
@@ -264,12 +264,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 1604,
+                  "id": 1590,
                   "mutability": "mutable",
                   "name": "_amount",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 1609,
+                  "scope": 1595,
                   "src": "301:15:4",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -278,7 +278,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 1603,
+                    "id": 1589,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "301:7:4",
@@ -292,12 +292,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 1606,
+                  "id": 1592,
                   "mutability": "mutable",
                   "name": "_referralCode",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 1609,
+                  "scope": 1595,
                   "src": "326:20:4",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -306,7 +306,7 @@
                     "typeString": "uint16"
                   },
                   "typeName": {
-                    "id": 1605,
+                    "id": 1591,
                     "name": "uint16",
                     "nodeType": "ElementaryTypeName",
                     "src": "326:6:4",
@@ -322,19 +322,19 @@
               "src": "265:87:4"
             },
             "returnParameters": {
-              "id": 1608,
+              "id": 1594,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "361:0:4"
             },
-            "scope": 1610,
+            "scope": 1596,
             "src": "249:113:4",
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
           }
         ],
-        "scope": 1612,
+        "scope": 1598,
         "src": "216:148:4"
       },
       {
@@ -344,14 +344,14 @@
         "contractKind": "interface",
         "documentation": null,
         "fullyImplemented": true,
-        "id": 1611,
+        "id": 1597,
         "linearizedBaseContracts": [
-          1611
+          1597
         ],
         "name": "IAaveLendingPoolCore",
         "nodeType": "ContractDefinition",
         "nodes": [],
-        "scope": 1612,
+        "scope": 1598,
         "src": "367:33:4"
       }
     ],
@@ -361,21 +361,21 @@
     "absolutePath": "/Users/brenfife/Desktop/MagicBet-Contracts/contracts/interfaces/IAave.sol",
     "exportedSymbols": {
       "IAaveLendingPool": [
-        1610
+        1596
       ],
       "IAaveLendingPoolCore": [
-        1611
+        1597
       ],
       "IaToken": [
-        1600
+        1586
       ]
     },
-    "id": 1612,
+    "id": 1598,
     "license": "UNLICENSED",
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 1587,
+        "id": 1573,
         "literals": [
           "solidity",
           ">=",
@@ -395,9 +395,9 @@
         "contractKind": "interface",
         "documentation": null,
         "fullyImplemented": false,
-        "id": 1600,
+        "id": 1586,
         "linearizedBaseContracts": [
-          1600
+          1586
         ],
         "name": "IaToken",
         "nodeType": "ContractDefinition",
@@ -406,7 +406,7 @@
             "body": null,
             "documentation": null,
             "functionSelector": "70a08231",
-            "id": 1594,
+            "id": 1580,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
@@ -414,17 +414,17 @@
             "nodeType": "FunctionDefinition",
             "overrides": null,
             "parameters": {
-              "id": 1590,
+              "id": 1576,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1589,
+                  "id": 1575,
                   "mutability": "mutable",
                   "name": "_user",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 1594,
+                  "scope": 1580,
                   "src": "116:13:4",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -433,7 +433,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 1588,
+                    "id": 1574,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "116:7:4",
@@ -450,17 +450,17 @@
               "src": "115:15:4"
             },
             "returnParameters": {
-              "id": 1593,
+              "id": 1579,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1592,
+                  "id": 1578,
                   "mutability": "mutable",
                   "name": "",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 1594,
+                  "scope": 1580,
                   "src": "154:7:4",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -469,7 +469,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 1591,
+                    "id": 1577,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "154:7:4",
@@ -484,7 +484,7 @@
               ],
               "src": "153:9:4"
             },
-            "scope": 1600,
+            "scope": 1586,
             "src": "97:66:4",
             "stateMutability": "view",
             "virtual": false,
@@ -494,7 +494,7 @@
             "body": null,
             "documentation": null,
             "functionSelector": "db006a75",
-            "id": 1599,
+            "id": 1585,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
@@ -502,17 +502,17 @@
             "nodeType": "FunctionDefinition",
             "overrides": null,
             "parameters": {
-              "id": 1597,
+              "id": 1583,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1596,
+                  "id": 1582,
                   "mutability": "mutable",
                   "name": "_amount",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 1599,
+                  "scope": 1585,
                   "src": "185:15:4",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -521,7 +521,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 1595,
+                    "id": 1581,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "185:7:4",
@@ -537,19 +537,19 @@
               "src": "184:17:4"
             },
             "returnParameters": {
-              "id": 1598,
+              "id": 1584,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "210:0:4"
             },
-            "scope": 1600,
+            "scope": 1586,
             "src": "169:42:4",
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
           }
         ],
-        "scope": 1612,
+        "scope": 1598,
         "src": "73:140:4"
       },
       {
@@ -559,9 +559,9 @@
         "contractKind": "interface",
         "documentation": null,
         "fullyImplemented": false,
-        "id": 1610,
+        "id": 1596,
         "linearizedBaseContracts": [
-          1610
+          1596
         ],
         "name": "IAaveLendingPool",
         "nodeType": "ContractDefinition",
@@ -570,7 +570,7 @@
             "body": null,
             "documentation": null,
             "functionSelector": "d2d0e066",
-            "id": 1609,
+            "id": 1595,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
@@ -578,17 +578,17 @@
             "nodeType": "FunctionDefinition",
             "overrides": null,
             "parameters": {
-              "id": 1607,
+              "id": 1593,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1602,
+                  "id": 1588,
                   "mutability": "mutable",
                   "name": "_reserve",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 1609,
+                  "scope": 1595,
                   "src": "275:16:4",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -597,7 +597,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 1601,
+                    "id": 1587,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "275:7:4",
@@ -612,12 +612,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 1604,
+                  "id": 1590,
                   "mutability": "mutable",
                   "name": "_amount",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 1609,
+                  "scope": 1595,
                   "src": "301:15:4",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -626,7 +626,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 1603,
+                    "id": 1589,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "301:7:4",
@@ -640,12 +640,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 1606,
+                  "id": 1592,
                   "mutability": "mutable",
                   "name": "_referralCode",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 1609,
+                  "scope": 1595,
                   "src": "326:20:4",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -654,7 +654,7 @@
                     "typeString": "uint16"
                   },
                   "typeName": {
-                    "id": 1605,
+                    "id": 1591,
                     "name": "uint16",
                     "nodeType": "ElementaryTypeName",
                     "src": "326:6:4",
@@ -670,19 +670,19 @@
               "src": "265:87:4"
             },
             "returnParameters": {
-              "id": 1608,
+              "id": 1594,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "361:0:4"
             },
-            "scope": 1610,
+            "scope": 1596,
             "src": "249:113:4",
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
           }
         ],
-        "scope": 1612,
+        "scope": 1598,
         "src": "216:148:4"
       },
       {
@@ -692,14 +692,14 @@
         "contractKind": "interface",
         "documentation": null,
         "fullyImplemented": true,
-        "id": 1611,
+        "id": 1597,
         "linearizedBaseContracts": [
-          1611
+          1597
         ],
         "name": "IAaveLendingPoolCore",
         "nodeType": "ContractDefinition",
         "nodes": [],
-        "scope": 1612,
+        "scope": 1598,
         "src": "367:33:4"
       }
     ],
@@ -710,8 +710,8 @@
     "version": "0.6.10+commit.00c0fcaf.Emscripten.clang"
   },
   "networks": {},
-  "schemaVersion": "3.2.2",
-  "updatedAt": "2020-07-15T16:16:31.007Z",
+  "schemaVersion": "3.2.3",
+  "updatedAt": "2020-08-09T22:21:32.875Z",
   "devdoc": {
     "methods": {}
   },
