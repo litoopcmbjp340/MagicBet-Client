@@ -68,7 +68,7 @@ const Markets = (): JSX.Element => {
         <Box bg={bgColor1[colorMode]} my="2rem" rounded="md" boxShadow="md">
             <Box roundedTop="0.25rem" bg="primary.100" h="0.5rem" />
             <Flex direction="column" wrap="wrap" justify="space-between" m="0 auto" w="100%" p="1rem 1.5rem">
-                <Heading as="h3" size="lg" fontSize="1.5rem" font-weight="500" color={color1[colorMode]}>
+                <Heading as="h3" size="lg" fontSize="1.5rem" fontWeight="500" color={color1[colorMode]}>
                     Markets
                 </Heading>
 
